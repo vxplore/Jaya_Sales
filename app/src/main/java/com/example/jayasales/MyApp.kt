@@ -5,7 +5,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.debduttapanda.j3lib.MyScreen
+import com.example.jayasales.presentation.screens.LoginScreen
 import com.example.jayasales.presentation.screens.SplashScreen
+import com.example.jayasales.presentation.viewmodels.LoginViewModel
 import com.example.jayasales.presentation.viewmodels.SplashViewModel
 
 
@@ -21,6 +23,12 @@ fun MyApp() {
             wirelessViewModel = { hiltViewModel<SplashViewModel>() }
         ) {
             SplashScreen()
+        }
+        MyScreen(
+            navController, Routes.login,
+            wirelessViewModel = { hiltViewModel<LoginViewModel>() }
+        ) {
+            LoginScreen()
         }
     }
 }

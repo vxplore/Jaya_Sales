@@ -7,7 +7,7 @@ import com.debduttapanda.j3lib.InterCom
 import com.debduttapanda.j3lib.WirelessViewModel
 import com.debduttapanda.j3lib.models.EventBusDescription
 import com.debduttapanda.j3lib.models.Route
-import com.example.jayasales.BuildConfig
+//import com.example.jayasales.BuildConfig
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.Routes
 import com.example.jayasales.repository.Repository
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    //private val repo : Repository
+    private val repo : Repository
 ): WirelessViewModel(){
     private val versionName = mutableStateOf("")
     override fun eventBusDescription(): EventBusDescription? {
@@ -40,25 +40,25 @@ class SplashViewModel @Inject constructor(
         mapData(
             MyDataIds.versionName to versionName,
         )
-        versionName.value = BuildConfig.VERSION_NAME
+        //versionName.value = BuildConfig.VERSION_NAME
         viewModelScope.launch {
             delay(3000)
-            //goToProperLogin()
+            goToProperLogin()
         }
     }
-    /*private fun goToProperLogin(){
+    private fun goToProperLogin(){
         if(repo.getIsLoggedIn()){
             navigation {
-                navigate(Routes.splash.full){
+                navigate(Routes.login.full){
                     popUpTo(Routes.splash.full)
                 }
             }
         }else{
             navigation {
-                navigate(Routes.splash.full){
+                navigate(Routes.login.full){
                     popUpTo(Routes.splash.full)
                 }
             }
         }
-    }*/
+    }
 }

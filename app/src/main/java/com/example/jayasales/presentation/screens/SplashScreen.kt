@@ -58,7 +58,7 @@ fun SplashScreen(
         Text(
             text = "Version : ${versionName.value}",
             fontSize = 14.sep,
-            color = Color.White
+            color = Color.Black
         )
     }
 }
