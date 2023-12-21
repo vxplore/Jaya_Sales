@@ -18,12 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.debduttapanda.j3lib.dep
 import com.debduttapanda.j3lib.rememberStringState
 import com.debduttapanda.j3lib.sep
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
+import com.example.jayasales.openSans
 
 @Composable
 fun SplashScreen(
@@ -42,6 +44,14 @@ fun SplashScreen(
             modifier = Modifier
                 .height(120.dep)
                 .width(196.dep),
+        )
+        Spacer(modifier = Modifier.height(12.dep))
+        Text(
+            stringResource(id = R.string.splash),
+            fontSize = 20.sep,
+            fontFamily = openSans,
+            letterSpacing = (-0.03).sep,
+            color = Color(0xFF222222)
         )
     }
     Box(

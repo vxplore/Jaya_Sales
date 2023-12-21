@@ -27,10 +27,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -43,6 +45,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -59,6 +62,7 @@ import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
 import com.example.jayasales.openSans
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     userName: State<String> = rememberStringState(id = MyDataIds.username),
@@ -85,16 +89,16 @@ fun LoginScreen(
             .background(Color(0xFFD62B2B)),
         contentAlignment = Alignment.TopCenter
     ) {
+        //Spacer(modifier = Modifier.height(60.dep))
         Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
+                .padding(start = 24.dep)
                 .fillMaxWidth()
-                .wrapContentHeight()
-                .padding(start = 36.dep, top = 73.5.dep),
-            horizontalArrangement = Arrangement.SpaceBetween
-
         ) {
             Column(
-                modifier = Modifier.padding(top = 42.dep)
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -104,196 +108,189 @@ fun LoginScreen(
                         contentDescription = "",
                         modifier = Modifier
                             .width(42.dep)
-                            .height(86.dep),
+                            .height(76.dep),
                     )
                     Spacer(modifier = Modifier.width(5.dep))
                     Text(
                         text = "Hi",
-                        fontSize = 24.sep,
+                        fontSize = 20.sep,
                         fontFamily = openSans,
                         fontWeight = FontWeight.ExtraBold,
                         color = Color(0XFFFFEB56),
+                        //modifier = Modifier.padding(top = 20.dep)
                     )
                 }
-                Spacer(modifier = Modifier.height(14.dep))
+                Spacer(modifier = Modifier.height(8.dep))
                 Text(
                     text = "Welcome\nBack!",
-                    fontSize = 24.sep,
+                    fontSize = 20.sep,
                     fontFamily = openSans,
                     fontWeight = FontWeight.Normal,
                     color = Color.White,
-                    lineHeight = 35.sep
+                    lineHeight = 28.sep
                 )
             }
             Image(
                 painter = painterResource(id = R.drawable.girl),
                 contentDescription = "",
                 modifier = Modifier
-                    .width(221.dep)
-                    .height(303.dep)
+                    .padding(top = 40.dep)
+                    .width(200.dep)
+                    .height(304.dep)
             )
-
         }
-        Box(
+    }
+    Box(
+        contentAlignment = Alignment.BottomCenter,
+        modifier = Modifier
+            .padding(top = 260.dep)
+            .background(Color.White, shape = RoundedCornerShape(topStart = 40.dep, topEnd = 40.dep))
+            .fillMaxSize()
+    ) {
+        Column(
             modifier = Modifier
-                .padding(top = 315.dep)
-                .fillMaxSize()
-                .background(
-                    Color.White,
-                    shape = RoundedCornerShape(topStart = 40.dep, topEnd = 40.dep)
-                ),
-            contentAlignment = Alignment.Center
+                .padding(horizontal = 24.dep)
+                .fillMaxSize(),
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Spacer(modifier = Modifier.height(28.dep))
+                Text(
+                    text = stringResource(id = R.string.login),
+                    fontSize = 20.sep,
+                    color = Color(0xFF011947),
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+            Spacer(modifier = Modifier.height(24.dep))
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Log In to your Account.",
-                        modifier = Modifier
-                            .padding(top = 30.dep),
-                        fontSize = 25.sep,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold,
-                    )
-                }
-                Spacer(modifier = Modifier.height(27.dep))
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 32.5.dep)
-                ) {
-                    Text(
-                        text = "EMAIL OR USERNAME",
-                        modifier = Modifier
-                            .width(152.dep)
-                            .height(16.dep),
-                        fontSize = 14.sep,
-                        color = Color(0xF13E495E)
-                    )
-                    Spacer(modifier = Modifier.height(6.dep))
-                    OutlinedTextField(
-                        value = userName.value,
-                        onValueChange = {
-                            notifier.notify(MyDataIds.username, it)
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        placeholder = {
-                            Text(text = "use@gmail.com")
-                        },
-                        singleLine = true
-                    )
-
-                }
-                Spacer(modifier = Modifier.height(15.dep))
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 32.5.dep)
-                ) {
-                    Text(
-                        text = "PASSWORD",
-                        modifier = Modifier
-                            .width(152.dep)
-                            .height(16.dep),
-                        fontSize = 14.sep,
-                        color = Color(0XF13E495E)
-                    )
-                    Spacer(modifier = Modifier.height(6.dep))
-                    OutlinedTextField(
-                        value = password.value,
-                        onValueChange = {
-                            notifier.notify(MyDataIds.password, it)
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        placeholder = {
-                            Text(text = if (!passwordVisibility.value) "********" else "123456")
-                        },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                        singleLine = true,
-                        visualTransformation = if (passwordVisibility.value) VisualTransformation.None else PasswordVisualTransformation(),
-                        trailingIcon = {
-                            val image =
-                                if (passwordVisibility.value) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                            IconButton(onClick = {
-                                notifier.notify(MyDataIds.passwordVisibility)
-                            }) {
-                                Icon(imageVector = image, contentDescription = null)
-                            }
-                        }
-                    )
-                    Spacer(modifier = Modifier.height(14.dep))
-                    Text(
-                        text = "Recover Password?",
-                        modifier = Modifier
-                            .height(20.dep)
-                            .align(Alignment.End)
-                            .clip(RoundedCornerShape(4.dep))
-                            .clickable {
-                                // recover password
-                                notifier.notify(MyDataIds.recoverPasswordClick)
-                            },
-                        fontSize = 15.sep,
-                        /* textAlign = TextAlign.Right,*/
-                        color = Color(0XF13E495E)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(123.dep))
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(horizontal = 32.5.dep)
-                ) {
-                    Button(
-                        onClick = { notifier.notify(MyDataIds.signUpClick) },
-                        modifier = Modifier
-                            .height(72.dep)
-                            .fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(Color(0xFFFFEB56)),
-                        elevation = ButtonDefaults.buttonElevation(
-                            defaultElevation = 8.dep,
-                            pressedElevation = 10.dep
-                        ),
-                        shape = RectangleShape
-                    ) {
-                        if (loading.value) {
-                            CircularProgressIndicator(
-                                color = Color.White
-                            )
-                        } else {
-                            Text(text = "Sign In", fontSize = 20.sep, color = Color.Black)
-                        }
+            Text(
+                text = stringResource(id = R.string.username),
+                modifier = Modifier,
+                fontSize = 12.sep,
+                color = Color(0xFF677591)
+            )
+            Spacer(modifier = Modifier.height(6.dep))
+            OutlinedTextField(
+                value = userName.value,
+                onValueChange = {
+                    notifier.notify(MyDataIds.username, it)
+                },
+                modifier = Modifier
+                    .background(Color(0xFFf7f9fb), RoundedCornerShape(12.dep))
+                    .fillMaxWidth(),
+                placeholder = {
+                    Text(text = "use@gmail.com")
+                },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedTextColor = Color(0xFF011947),
+                    unfocusedTextColor = Color(0xFF011947),
+                    cursorColor = Color.Black,
+                    unfocusedBorderColor = Color(0xFF99accf)
+                ),
+                shape = RoundedCornerShape(12.dep),
+                singleLine = true
+            )
+            Spacer(modifier = Modifier.height(16.dep))
+            Text(
+                text = stringResource(id = R.string.password),
+                modifier = Modifier,
+                fontSize = 12.sep,
+                color = Color(0xFF677591)
+            )
+            Spacer(modifier = Modifier.height(6.dep))
+            OutlinedTextField(
+                value = password.value,
+                onValueChange = {
+                    notifier.notify(MyDataIds.password, it)
+                },
+                modifier = Modifier
+                    .background(Color.White, RoundedCornerShape(12.dep))
+                    .fillMaxWidth(),
+                placeholder = {
+                    Text(text = if (!passwordVisibility.value) "********" else "123456")
+                },
+                shape = RoundedCornerShape(12.dep),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                singleLine = true,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedTextColor = Color(0xFF011947),
+                    unfocusedTextColor = Color(0xFF011947),
+                    cursorColor = Color.Black,
+                    unfocusedBorderColor = Color(0xFF99accf)
+                ),
+                visualTransformation = if (passwordVisibility.value) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    val image =
+                        if (passwordVisibility.value) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                    IconButton(onClick = {
+                        notifier.notify(MyDataIds.passwordVisibility)
+                    }) {
+                        Icon(imageVector = image, contentDescription = null)
                     }
-                    Spacer(modifier = Modifier.height(40.dep))
-                    Text(
-                        text = "All Rights Reserved by Jaya Industries Pvt Ltd",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(21.dep),
-                        fontSize = 15.sep,
-                        textAlign = TextAlign.Center,
-                        color = Color(0xFFC7C7C7)
+                }
+            )
+            Spacer(modifier = Modifier.height(14.dep))
+            Text(
+                text = stringResource(id = R.string.recoverPassword),
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .clip(RoundedCornerShape(4.dep))
+                    .clickable {
+                        notifier.notify(MyDataIds.recoverPasswordClick)
+                    },
+                fontSize = 13.sep,
+                color = Color(0xFF677591)
+            )
+        }
+        Box(
+            contentAlignment = Alignment.BottomCenter,
+            modifier = Modifier
+                .padding(horizontal = 24.dep)
+                .padding(bottom = 80.dep)
+                .fillMaxSize()
+        ) {
+            Button(
+                onClick = { notifier.notify(MyDataIds.signUpClick) },
+                modifier = Modifier
+                    .height(60.dep)
+                    .fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(Color(0xFFFFEB56)),
+                elevation = ButtonDefaults.buttonElevation(
+                    defaultElevation = 8.dep,
+                    pressedElevation = 10.dep
+                ),
+                shape = RoundedCornerShape(12.dep)
+            ) {
+                if (loading.value) {
+                    CircularProgressIndicator(
+                        color = Color.White
                     )
+                } else {
+                    Text(text = "Sign In", fontSize = 18.sep, color = Color(0xFF222222))
                 }
             }
-
         }
-
+        Box(
+            contentAlignment = Alignment.BottomCenter,
+            modifier = Modifier
+                .padding(horizontal = 24.dep)
+                .padding(bottom = 20.dep)
+                .fillMaxSize()
+        ) {
+            Text(
+                text = stringResource(id = R.string.rights),
+                fontSize = 12.sep,
+                textAlign = TextAlign.Center,
+                color = Color(0xFFC7C7C7)
+            )
+        }
     }
 }
-
 
 @Composable
 private fun RecoverPasswordDialog(

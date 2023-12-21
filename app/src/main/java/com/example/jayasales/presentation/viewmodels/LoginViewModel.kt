@@ -174,7 +174,7 @@ class LoginViewModel @Inject constructor(
             MyDataIds.loading to loading,
             MyDataIds.recoverLoading to recoverLoading,
         )
-        setStatusBarColor(Color(0XFFFFEB56), false)
+        setStatusBarColor(Color(0xFFD62B2B), false)
         setSoftInputMode(SoftInputMode.adjustPan)
     }
 
@@ -192,7 +192,7 @@ class LoginViewModel @Inject constructor(
                             repo.setIsLoggedIn(true)
                             repo.saveUser(response)
                             navigation {
-                                navigate(Routes.login.full)
+                                navigate(Routes.home.full)
                                 //
                                 // loading.value = !loading.value
                                 /* {

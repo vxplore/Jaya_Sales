@@ -16,5 +16,14 @@ enum class MyDataIds {
     signUpClick,
     verify,
     resetPassword,
-    recoverPasswordClick
+    recoverPasswordClick,
+    opendialog,
+    logoutAlert,
+    Confirm,
+    dismiss,
+    logout,
+    routeList,
+    back,
+    routeSearch,
+    route
 }

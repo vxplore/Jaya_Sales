@@ -3,6 +3,8 @@ package com.example.jayasales.repository
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
 import com.example.jayasales.model.ResetDataResponse
+import com.example.jayasales.model.RouteDataResponse
+import com.example.jayasales.model.SearchRouteDataResponse
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -30,4 +32,14 @@ interface ApiInterface {
         @Field("otp") otp: String,
         @Field("new_password") confirmPassword: String,
     ): Response<ResetDataResponse>
+    @GET("routes-lists")
+    suspend fun route(
+        @Query("routes-lists") data : String,
+
+        ): Response<RouteDataResponse>
+    @GET("routes-search")
+    suspend fun searchRoute(
+        @Query("query") query : String,
+
+        ): Response<SearchRouteDataResponse>
 }

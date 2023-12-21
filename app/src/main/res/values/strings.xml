@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">Jaya Sales</string>
+    <string name="login">Log In to your Account.</string>
+    <string name="wellcome">Welcome
+        Back!</string>
+    <string name="username">EMAIL OR USERNAME</string>
+    <string name="password">PASSWORD</string>
+    <string name="recoverPassword">Recover Password?</string>
+    <string name="rights">All Rights Reserved by Jaya Industries Pvt Ltd</string>
+    <string name="splash">Jaya Sales</string>
+    <string name="logo">logo</string>
+    <string name="HamBurger">HamBurger</string>
+    <string name="notification">notification</string>
+    <string name="route">HARISH CHANDRA BOSE LANE</string>
+    <string name="payments">Today Payments</string>
+    <string name="sales">Today Sales</string>
+    <string name="Parties">Parties</string>
+    <string name="Items">Items</string>
+    <string name="Transactions">Transactions</string>
+    <string name="Attendance">Attendance</string>
+    <string name="Return">Return Request</string>
+    <string name="routes">Select Routes</string>
 </resources>

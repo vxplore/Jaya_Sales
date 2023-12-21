@@ -3,6 +3,8 @@ package com.example.jayasales.repository
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
 import com.example.jayasales.model.ResetDataResponse
+import com.example.jayasales.model.RouteDataResponse
+import com.example.jayasales.model.SearchRouteDataResponse
 import com.example.jayasales.repository.preference.PrefRepository
 import javax.inject.Inject
 
@@ -25,6 +27,24 @@ class MockRepositoryImpl @Inject constructor(
         return if (response.isSuccessful) {
             response.body()
         } else {
+            null
+        }
+    }
+
+    override suspend fun route(data: String): RouteDataResponse? {
+        val response = apiHelper.route(data)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
+
+    override suspend fun searchRoute(query: String): SearchRouteDataResponse? {
+        val response = apiHelper.searchRoute(query)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
             null
         }
     }
