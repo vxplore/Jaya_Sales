@@ -10,6 +10,7 @@ import com.debduttapanda.j3lib.WirelessViewModel
 import com.debduttapanda.j3lib.models.EventBusDescription
 import com.debduttapanda.j3lib.models.Route
 import com.example.jayasales.MyDataIds
+import com.example.jayasales.Routes
 import com.example.jayasales.model.PartiesDatum
 import com.example.jayasales.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,15 +19,20 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+enum class PartiesTab{
+    All,
+    Visited,
+    Pending
+}
+
 @HiltViewModel
 class PartiesViewModel @Inject constructor(
     private val repo: Repository
 ) : WirelessViewModel() {
     private val partiesSearch = mutableStateOf("")
-    private val allbtn = mutableStateOf(true)
-    private val visitedbtn = mutableStateOf(false)
-    private val pendingbtn = mutableStateOf(false)
-    private val partiesList = mutableStateListOf<PartiesDatum>()
+    private val selectedTab = mutableStateOf(PartiesTab.All)
+    private val effectivePartiesList = mutableStateListOf<PartiesDatum>()
+    private val allPartiesList = mutableStateListOf<PartiesDatum>()
     private val liststatus = mutableStateOf("")
     private val partiesData = mutableStateOf("parties-list")
     override fun eventBusDescription(): EventBusDescription? {
@@ -41,33 +47,32 @@ class PartiesViewModel @Inject constructor(
 
     override fun onNotification(id: Any?, arg: Any?) {
         when (id) {
+            MyDataIds.back->{
+                popBackStack()
+            }
             MyDataIds.partiesSearch -> {
                 partiesSearch.value = arg as String
-                searchParty()
+                filter()
             }
 
             MyDataIds.allbtn -> {
-                allbtn.value = !allbtn.value
-                visitedbtn.value = false
-                pendingbtn.value = false
-                //status.value =arg as String
-                getPartiesList()
+                selectedTab.value = PartiesTab.All
+                filter()
             }
 
             MyDataIds.visitedbtn -> {
-                visitedbtn.value = !visitedbtn.value
-                allbtn.value = false
-                pendingbtn.value = false
-                liststatus.value = arg as String
-                //getPartiesList()
+                selectedTab.value = PartiesTab.Visited
+                filter()
             }
 
             MyDataIds.pendingbtn -> {
-                pendingbtn.value = !pendingbtn.value
-                allbtn.value = false
-                visitedbtn.value = false
-                liststatus.value = arg as String
-                //pendingPartiesList()
+                selectedTab.value = PartiesTab.Pending
+                filter()
+            }
+            MyDataIds.storeDetails->{
+                navigation {
+                    navigate(Routes.storeDetails.full)
+                }
             }
         }
     }
@@ -78,63 +83,55 @@ class PartiesViewModel @Inject constructor(
     init {
         mapData(
             MyDataIds.partiesSearch to partiesSearch,
-            MyDataIds.allbtn to allbtn,
-            MyDataIds.pendingbtn to pendingbtn,
-            MyDataIds.visitedbtn to visitedbtn,
-            MyDataIds.partiesList to partiesList,
+            MyDataIds.SelectedTab to selectedTab,
+            MyDataIds.partiesList to effectivePartiesList,
         )
+        pendingPartiesList()
     }
 
     private fun pendingPartiesList() {
         viewModelScope.launch {
             val partiesData = partiesData.value
             try {
-                val responce = repo.parties(partiesData)
-                if (responce != null) {
-                    withContext(Dispatchers.Main){
-                        if (liststatus.value.equals("Visited",true)){
-                            val visitedList= responce.filter { it.status.equals(liststatus.value,true) }
-                            partiesList.clear()
-                            partiesList.addAll(visitedList)
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-
-            }
-        }
-    }
-
-    private fun getPartiesList() {
-        viewModelScope.launch {
-            val partiesData = partiesData.value
-            try {
                 val response = repo.parties(partiesData)
-                if (response?.status == false) {
-                    withContext(Dispatchers.Main) {
-                        Log.d("jxdhdcd", "$response")
-                        partiesList.clear()
-                        partiesList.addAll(response.data)
+                if (response?.status == true) {
+                    val list = response.data
+                    mainScope {
+                        allPartiesList.clear()
+                        allPartiesList.addAll(list)
+                        filter()
                     }
                 }
             } catch (e: Exception) {
-                Log.e("jxdhdcd", "${e.message}")
+                // Handle exceptions if needed
             }
         }
     }
 
-    private fun searchParty() {
-        val queryText = partiesSearch.value
-        viewModelScope.launch {
-            try {
-                val response = repo.searchParty(queryText)
-                if (response?.status == true) {
-                    partiesList.clear()
-                    partiesList.addAll(response.data)
-                }
-            } catch (e: Exception) {
-                Log.e("jxdhdcd", "${e.message}")
-            }
+    private fun filter() {
+        val query = partiesSearch.value
+        val tab = selectedTab.value
+        val tabString = when(tab){
+            PartiesTab.All -> ""
+            PartiesTab.Visited -> "Visited"
+            PartiesTab.Pending -> "Pending"
         }
+        val filteredList = allPartiesList.filter {
+            itemFilter(it, query, tabString)
+        }
+        effectivePartiesList.clear()
+        effectivePartiesList.addAll(filteredList)
+    }
+
+    private fun itemFilter(
+        item: PartiesDatum,
+        query: String,
+        tabString: String
+    ): Boolean {
+        val queryAllowance = query.isEmpty() || item.store_name.contains(query, true)
+        if (!queryAllowance) {
+            return false
+        }
+        return tabString.isEmpty() || tabString.equals(item.status, true)
     }
 }

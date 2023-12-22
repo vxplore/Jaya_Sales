@@ -9,4 +9,5 @@ object Routes {
     val home = Route("home")
     val selectRoute = Route("selectRoute")
     val parties = Route("parties")
+    val storeDetails = Route("storeDetails")
 }

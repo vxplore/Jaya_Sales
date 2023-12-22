@@ -10,11 +10,13 @@ import com.example.jayasales.presentation.screens.LoginScreen
 import com.example.jayasales.presentation.screens.PartiesScreen
 import com.example.jayasales.presentation.screens.SelectRouteScreen
 import com.example.jayasales.presentation.screens.SplashScreen
+import com.example.jayasales.presentation.screens.StoreDetailsScreen
 import com.example.jayasales.presentation.viewmodels.HomeViewModel
 import com.example.jayasales.presentation.viewmodels.LoginViewModel
 import com.example.jayasales.presentation.viewmodels.PartiesViewModel
 import com.example.jayasales.presentation.viewmodels.SelectRouteViewModel
 import com.example.jayasales.presentation.viewmodels.SplashViewModel
+import com.example.jayasales.presentation.viewmodels.StoreDetailsViewModel
 
 
 @Composable
@@ -22,7 +24,7 @@ fun MyApp() {
     val navController = rememberNavController()
     NavHost(
         navController,
-        startDestination = Routes.parties.full
+        startDestination = Routes.splash.full
     ) {
         MyScreen(
             navController, Routes.splash,
@@ -53,6 +55,12 @@ fun MyApp() {
             wirelessViewModel = { hiltViewModel<PartiesViewModel>() }
         ) {
             PartiesScreen()
+        }
+        MyScreen(
+            navController, Routes.storeDetails,
+            wirelessViewModel = { hiltViewModel<StoreDetailsViewModel>() }
+        ) {
+            StoreDetailsScreen()
         }
     }
 }

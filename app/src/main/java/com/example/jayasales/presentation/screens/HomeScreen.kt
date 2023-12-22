@@ -406,7 +406,7 @@ fun HomeScreen(
                     ) {
                         IconButton(
                             onClick = {
-                                //notifier.notify(MyDataIds.orders)
+                                notifier.notify(MyDataIds.parties)
                             },
                             modifier = Modifier
                                 .width(72.dep)

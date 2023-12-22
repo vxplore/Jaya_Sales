@@ -21,4 +21,7 @@
     <string name="Return">Return Request</string>
     <string name="routes">Select Routes</string>
     <string name="searchParties">Search Party</string>
+    <string name="MarkVisit">Mark Visit</string>
+    <string name="NewOrder">New Order</string>
+    <string name="PaymentIn">Payment In</string>
 </resources>

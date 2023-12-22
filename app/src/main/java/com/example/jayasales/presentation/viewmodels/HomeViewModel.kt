@@ -48,6 +48,11 @@ class HomeViewModel @Inject constructor(
                     )
                 }
             }
+            MyDataIds.parties->{
+                navigation {
+                    navigate(Routes.parties.full)
+                }
+            }
         }
     }
 

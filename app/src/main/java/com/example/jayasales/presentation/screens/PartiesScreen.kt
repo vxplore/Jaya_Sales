@@ -42,8 +42,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.DefaultShadowColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.debduttapanda.j3lib.NotificationService
@@ -51,19 +53,19 @@ import com.debduttapanda.j3lib.dep
 import com.debduttapanda.j3lib.listState
 import com.debduttapanda.j3lib.rememberBoolState
 import com.debduttapanda.j3lib.rememberNotifier
+import com.debduttapanda.j3lib.rememberTState
 import com.debduttapanda.j3lib.sep
 import com.debduttapanda.j3lib.stringState
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
 import com.example.jayasales.model.PartiesDatum
+import com.example.jayasales.presentation.viewmodels.PartiesTab
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PartiesScreen(
     notifier:NotificationService = rememberNotifier(),
-    allbtn: State<Boolean> = rememberBoolState(id = MyDataIds.allbtn),
-    visitedbtn: State<Boolean> = rememberBoolState(id = MyDataIds.visitedbtn),
-    pendingbtn: State<Boolean> = rememberBoolState(id = MyDataIds.pendingbtn),
+    selectedTab: State<PartiesTab> = rememberTState(id = MyDataIds.SelectedTab),
     partiesList: SnapshotStateList<PartiesDatum> = listState(key = MyDataIds.partiesList)
 ){
     Scaffold(
@@ -115,34 +117,34 @@ fun PartiesScreen(
             ) {
                 OutlinedButton(
                     onClick = { notifier.notify(MyDataIds.allbtn) },
-                    colors = if (allbtn.value) ButtonDefaults.buttonColors(Color(0XFF1FB574))
+                    colors = if (selectedTab.value ==  PartiesTab.All) ButtonDefaults.buttonColors(Color(0XFF1FB574))
                     else ButtonDefaults.buttonColors(Color(0XFFF3FBF8)),
                     border = BorderStroke(0.dep, Color.Transparent)
                 ) {
                     Text(
                         text = "All",
-                        color = if (allbtn.value) Color.White else Color.Black
+                        color = if (selectedTab.value ==  PartiesTab.All) Color.White else Color.Black
                     )
                 }
                 OutlinedButton(
                     onClick = { notifier.notify(MyDataIds.visitedbtn, "Visited") },
-                    colors = if (visitedbtn.value) ButtonDefaults.buttonColors(Color(0XFF1FB574))
+                    colors = if (selectedTab.value ==  PartiesTab.Visited) ButtonDefaults.buttonColors(Color(0XFF1FB574))
                     else ButtonDefaults.buttonColors(Color(0XFFF3FBF8)),
                     border = BorderStroke(0.dep, Color.Transparent)
                 )
                 {
-                    Text(text = "Visited", color = if (visitedbtn.value) Color.White else Color.Black)
+                    Text(text = "Visited", color = if (selectedTab.value ==  PartiesTab.Visited) Color.White else Color.Black)
                 }
                 OutlinedButton(
                     onClick = { notifier.notify(MyDataIds.pendingbtn, "Pending") },
-                    colors = if (pendingbtn.value) ButtonDefaults.buttonColors(Color(0XFF1FB574))
+                    colors = if (selectedTab.value ==  PartiesTab.Pending) ButtonDefaults.buttonColors(Color(0XFF1FB574))
                     else ButtonDefaults.buttonColors(Color(0XFFF3FBF8)),
                     border = BorderStroke(0.dep, Color.Transparent)
                 )
                 {
                     Text(
                         text = "Pending",
-                        color = if (pendingbtn.value) Color.White else Color.Black
+                        color = if (selectedTab.value ==  PartiesTab.All) Color.Black else Color.Black
                     )
                 }
             }
@@ -154,16 +156,24 @@ fun PartiesScreen(
                 verticalArrangement = Arrangement.spacedBy(20.dep)
             ) {
                 items(partiesList) {
-                    if (visitedbtn.value) {
+                    if (selectedTab.value ==  PartiesTab.Visited) {
                         Visited(it)
-                    }else if (pendingbtn.value){
+                    }else if (selectedTab.value ==  PartiesTab.Pending){
                         Pending(it)
                     }else{
                         Card(
                             modifier = Modifier
                                 .height(80.dep)
                                 .fillMaxWidth()
+                                .shadow(
+                                    2.dep,
+                                    RoundedCornerShape(4.dep),
+                                    clip = true,
+                                    DefaultShadowColor
+                                )
+                                .clip(RoundedCornerShape(4.dep))
                                 .clickable {
+                                           notifier.notify(MyDataIds.storeDetails)
                                 },
                             colors = CardDefaults.cardColors(Color.White),
                             elevation = CardDefaults.cardElevation(
@@ -176,7 +186,7 @@ fun PartiesScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 modifier = Modifier
-                                    .padding(horizontal = 12.dep)
+                                    .padding(start = 20.dep, end = 12.dep)
                                     .fillMaxSize()
                             ) {
                                 Row(
@@ -203,6 +213,8 @@ fun PartiesScreen(
                                     }
                                     Column(
                                         //horizontalAlignment = Alignment.CenterHorizontally
+                                        modifier = Modifier
+                                            .padding(start = 20.dep)
                                     ) {
                                         Text(
                                             text = it.store_name,
@@ -210,9 +222,10 @@ fun PartiesScreen(
                                             fontWeight = FontWeight.Medium,
                                             color = Color(0xFF222222)
                                         )
+                                        Spacer(modifier = Modifier.height(8.dep))
                                         Text(
                                             text = it.uid,
-                                            fontSize = 12.sep,
+                                            fontSize = 10.sep,
                                             //fontWeight = FontWeight.Medium,
                                             color = Color(0xFF898989)
                                         )
@@ -227,6 +240,7 @@ fun PartiesScreen(
                                         fontWeight = FontWeight.Medium,
                                         color = Color.Black
                                     )
+                                    Spacer(modifier = Modifier.height(8.dep))
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.Center,
@@ -301,13 +315,22 @@ fun PartiesSearchBox(
 
 @Composable
 fun Pending(
-    it:PartiesDatum
+    it:PartiesDatum,
+    notifier:NotificationService = rememberNotifier(),
 ){
     Card(
         modifier = Modifier
             .height(80.dep)
             .fillMaxWidth()
+            .shadow(
+                2.dep,
+                RoundedCornerShape(4.dep),
+                clip = true,
+                DefaultShadowColor
+            )
+            .clip(RoundedCornerShape(4.dep))
             .clickable {
+                notifier.notify(MyDataIds.storeDetails)
             },
         colors = CardDefaults.cardColors(Color.White),
         elevation = CardDefaults.cardElevation(
@@ -320,7 +343,7 @@ fun Pending(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .padding(horizontal = 12.dep)
+                .padding(start = 20.dep, end = 12.dep)
                 .fillMaxSize()
         ) {
             Row(
@@ -347,6 +370,8 @@ fun Pending(
                 }
                 Column(
                     //horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier
+                        .padding(start = 20.dep)
                 ) {
                     Text(
                         text = it.store_name,
@@ -354,9 +379,10 @@ fun Pending(
                         fontWeight = FontWeight.Medium,
                         color = Color(0xFF222222)
                     )
+                    Spacer(modifier = Modifier.height(8.dep))
                     Text(
                         text = it.uid,
-                        fontSize = 12.sep,
+                        fontSize = 10.sep,
                         //fontWeight = FontWeight.Medium,
                         color = Color(0xFF898989)
                     )
@@ -371,12 +397,19 @@ fun Pending(
                     fontWeight = FontWeight.Medium,
                     color = Color.Black
                 )
+                Spacer(modifier = Modifier.height(8.dep))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
 
-                        .background(Color(0xFFF2F2F2), RoundedCornerShape(12.dep))
+                        .background(
+                            if (it.status == "Pending") {
+                                Color(0xFFF2F2F2)
+                            } else {
+                                Color(0xFFF6D907)
+                            }, RoundedCornerShape(12.dep)
+                        )
                         .wrapContentSize()
                         .padding(6.dep)
                 ) {
@@ -384,7 +417,12 @@ fun Pending(
                         text = it.status,
                         fontSize = 12.sep,
                         //fontWeight = FontWeight.Medium,
-                        color = Color(0xFF1FB574)
+                        color =
+                        if (it.status == "Pending") {
+                            Color(0xFF1FB574)
+                        } else {
+                            Color(0xFFFFA956)
+                        }
                     )
                 }
             }
@@ -394,13 +432,22 @@ fun Pending(
 
 @Composable
 fun Visited(
-    it: PartiesDatum
+    it: PartiesDatum,
+    notifier:NotificationService = rememberNotifier(),
 ){
     Card(
         modifier = Modifier
             .height(80.dep)
             .fillMaxWidth()
+            .shadow(
+                2.dep,
+                RoundedCornerShape(4.dep),
+                clip = true,
+                DefaultShadowColor
+            )
+            .clip(RoundedCornerShape(4.dep))
             .clickable {
+                notifier.notify(MyDataIds.storeDetails)
             },
         colors = CardDefaults.cardColors(Color.White),
         elevation = CardDefaults.cardElevation(
@@ -413,7 +460,7 @@ fun Visited(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .padding(horizontal = 12.dep)
+                .padding(start = 20.dep, end = 12.dep)
                 .fillMaxSize()
         ) {
             Row(
@@ -440,6 +487,8 @@ fun Visited(
                 }
                 Column(
                     //horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier
+                        .padding(start = 20.dep)
                 ) {
                     Text(
                         text = it.store_name,
@@ -447,9 +496,10 @@ fun Visited(
                         fontWeight = FontWeight.Medium,
                         color = Color(0xFF222222)
                     )
+                    Spacer(modifier = Modifier.height(8.dep))
                     Text(
                         text = it.uid,
-                        fontSize = 12.sep,
+                        fontSize = 10.sep,
                         //fontWeight = FontWeight.Medium,
                         color = Color(0xFF898989)
                     )
@@ -464,12 +514,19 @@ fun Visited(
                     fontWeight = FontWeight.Medium,
                     color = Color.Black
                 )
+                Spacer(modifier = Modifier.height(8.dep))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
 
-                        .background(Color(0xFFF6D907), RoundedCornerShape(12.dep))
+                        .background(
+                            if (it.status == "Pending") {
+                                Color(0xFFF2F2F2)
+                            } else {
+                                Color(0xFFF6D907)
+                            }, RoundedCornerShape(12.dep)
+                        )
                         .wrapContentSize()
                         .padding(6.dep)
                 ) {
@@ -477,7 +534,13 @@ fun Visited(
                         text = it.status,
                         fontSize = 12.sep,
                         //fontWeight = FontWeight.Medium,
-                        color = Color(0xFFFFA956))
+                        color =
+                        if (it.status == "Pending") {
+                            Color(0xFF1FB574)
+                        } else {
+                            Color(0xFFFFA956)
+                        }
+                    )
                 }
             }
         }

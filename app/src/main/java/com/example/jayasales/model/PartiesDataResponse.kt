@@ -13,5 +13,5 @@ data class PartiesDatum (
     val gps_location: String,
     val amount: String,
     val status: String,
-    val visited_date_time: String
+    val visited_date_time: String? = null
 )

@@ -30,5 +30,8 @@ enum class MyDataIds {
     allbtn,
     visitedbtn,
     pendingbtn,
-    partiesList
+    partiesList,
+    SelectedTab,
+    parties,
+    storeDetails
 }
