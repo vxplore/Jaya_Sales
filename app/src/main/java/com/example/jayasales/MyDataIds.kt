@@ -25,5 +25,10 @@ enum class MyDataIds {
     routeList,
     back,
     routeSearch,
-    route
+    route,
+    partiesSearch,
+    allbtn,
+    visitedbtn,
+    pendingbtn,
+    partiesList
 }

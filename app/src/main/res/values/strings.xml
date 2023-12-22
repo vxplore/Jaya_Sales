@@ -20,4 +20,5 @@
     <string name="Attendance">Attendance</string>
     <string name="Return">Return Request</string>
     <string name="routes">Select Routes</string>
+    <string name="searchParties">Search Party</string>
 </resources>

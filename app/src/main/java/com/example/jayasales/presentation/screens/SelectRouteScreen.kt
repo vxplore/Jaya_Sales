@@ -197,7 +197,7 @@ fun SearchBox(
         },
         placeholder = {
             Text(
-                text = "Search Route",
+                text = stringResource(id = R.string.searchParties),
                 color = Color(0XFF898989),
                 fontSize = 16.sep
             )

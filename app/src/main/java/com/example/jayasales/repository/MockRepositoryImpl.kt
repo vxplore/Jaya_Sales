@@ -2,6 +2,7 @@ package com.example.jayasales.repository
 
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
+import com.example.jayasales.model.PartiesDataResponse
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.RouteDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
@@ -42,6 +43,24 @@ class MockRepositoryImpl @Inject constructor(
 
     override suspend fun searchRoute(query: String): SearchRouteDataResponse? {
         val response = apiHelper.searchRoute(query)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
+
+    override suspend fun parties(parties: String): PartiesDataResponse? {
+        val response = apiHelper.parties(parties)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
+
+    override suspend fun searchParty(searchParty: String): PartiesDataResponse? {
+        val response = apiHelper.searchParty(searchParty)
         return if (response.isSuccessful){
             response.body()
         }else{

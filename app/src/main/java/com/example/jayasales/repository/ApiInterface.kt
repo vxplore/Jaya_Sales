@@ -2,6 +2,7 @@ package com.example.jayasales.repository
 
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
+import com.example.jayasales.model.PartiesDataResponse
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.RouteDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
@@ -42,4 +43,15 @@ interface ApiInterface {
         @Query("query") query : String,
 
         ): Response<SearchRouteDataResponse>
+    @GET("parties-list")
+    suspend fun parties(
+        @Query("parties-list") parties : String,
+
+        ): Response<PartiesDataResponse>
+
+    @GET("parties-search")
+    suspend fun searchParty(
+        @Query("query") searchParty : String,
+
+        ): Response<PartiesDataResponse>
 }

@@ -8,4 +8,5 @@ object Routes {
     val login = Route("login")
     val home = Route("home")
     val selectRoute = Route("selectRoute")
+    val parties = Route("parties")
 }
