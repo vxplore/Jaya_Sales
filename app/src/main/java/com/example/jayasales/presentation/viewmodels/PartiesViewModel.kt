@@ -23,11 +23,11 @@ class PartiesViewModel @Inject constructor(
     private val repo: Repository
 ) : WirelessViewModel() {
     private val partiesSearch = mutableStateOf("")
-    private val allbtn =  mutableStateOf(true)
+    private val allbtn = mutableStateOf(true)
     private val visitedbtn = mutableStateOf(false)
     private val pendingbtn = mutableStateOf(false)
     private val partiesList = mutableStateListOf<PartiesDatum>()
-    private val status = mutableStateOf("")
+    private val liststatus = mutableStateOf("")
     private val partiesData = mutableStateOf("parties-list")
     override fun eventBusDescription(): EventBusDescription? {
         return null
@@ -41,30 +41,33 @@ class PartiesViewModel @Inject constructor(
 
     override fun onNotification(id: Any?, arg: Any?) {
         when (id) {
-            MyDataIds.partiesSearch->{
+            MyDataIds.partiesSearch -> {
                 partiesSearch.value = arg as String
                 searchParty()
             }
-            MyDataIds.allbtn->{
-                allbtn.value =! allbtn.value
+
+            MyDataIds.allbtn -> {
+                allbtn.value = !allbtn.value
                 visitedbtn.value = false
                 pendingbtn.value = false
                 //status.value =arg as String
                 getPartiesList()
             }
-            MyDataIds.visitedbtn->{
-                visitedbtn.value =! visitedbtn.value
+
+            MyDataIds.visitedbtn -> {
+                visitedbtn.value = !visitedbtn.value
                 allbtn.value = false
                 pendingbtn.value = false
-              status.value = arg as String
+                liststatus.value = arg as String
                 //getPartiesList()
             }
-            MyDataIds.pendingbtn->{
-                pendingbtn.value =! pendingbtn.value
+
+            MyDataIds.pendingbtn -> {
+                pendingbtn.value = !pendingbtn.value
                 allbtn.value = false
                 visitedbtn.value = false
-             status.value = arg as String
-                pendingPartiesList()
+                liststatus.value = arg as String
+                //pendingPartiesList()
             }
         }
     }
@@ -82,21 +85,26 @@ class PartiesViewModel @Inject constructor(
         )
     }
 
-   private fun pendingPartiesList() {
+    private fun pendingPartiesList() {
         viewModelScope.launch {
             val partiesData = partiesData.value
             try {
-                val partiesresponse = repo.parties("Pending")
-                if (partiesresponse?.status == false){
-                    Log.d("jxdhdcd", "$partiesresponse")
-                    partiesList.clear()
-                    partiesList.addAll(partiesresponse.data)
+                val responce = repo.parties(partiesData)
+                if (responce != null) {
+                    withContext(Dispatchers.Main){
+                        if (liststatus.value.equals("Visited",true)){
+                            val visitedList= responce.filter { it.status.equals(liststatus.value,true) }
+                            partiesList.clear()
+                            partiesList.addAll(visitedList)
+                        }
+                    }
                 }
-            }catch (e:Exception){
-                Log.e("jxdhdcd","${e.message}")
+            } catch (e: Exception) {
+
             }
         }
     }
+
     private fun getPartiesList() {
         viewModelScope.launch {
             val partiesData = partiesData.value
@@ -109,8 +117,8 @@ class PartiesViewModel @Inject constructor(
                         partiesList.addAll(response.data)
                     }
                 }
-            }catch (e:Exception){
-                Log.e("jxdhdcd","${e.message}")
+            } catch (e: Exception) {
+                Log.e("jxdhdcd", "${e.message}")
             }
         }
     }
