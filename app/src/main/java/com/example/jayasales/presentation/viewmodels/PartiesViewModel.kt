@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewModelScope
 import com.debduttapanda.j3lib.InterCom
 import com.debduttapanda.j3lib.WirelessViewModel
@@ -86,6 +87,7 @@ class PartiesViewModel @Inject constructor(
             MyDataIds.SelectedTab to selectedTab,
             MyDataIds.partiesList to effectivePartiesList,
         )
+        setStatusBarColor(Color(0xFFFFEB56), false)
         pendingPartiesList()
     }
 

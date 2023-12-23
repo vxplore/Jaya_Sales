@@ -33,5 +33,11 @@ enum class MyDataIds {
     partiesList,
     SelectedTab,
     parties,
-    storeDetails
+    storeDetails,
+    selectedTransactionTab,
+    saleBtn,
+    paymentBtn,
+    storeDetailsList,
+    currentLatitude,
+    currentLongitude
 }

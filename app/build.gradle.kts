@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
+    //id ("com.google.gms.google-services")
 }
 
 android {
@@ -102,6 +103,8 @@ dependencies {
 
     debugImplementation("com.github.chuckerteam.chucker:library:4.0.0")
     releaseImplementation("com.github.chuckerteam.chucker:library-no-op:4.0.0")
+    implementation ("com.google.maps.android:maps-compose:4.3.0")
+    //implementation ("com.google.android.gms:play-services-location:21.0.1")
 }
 
 kapt {

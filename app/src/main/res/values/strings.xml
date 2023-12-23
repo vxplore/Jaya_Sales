@@ -24,4 +24,7 @@
     <string name="MarkVisit">Mark Visit</string>
     <string name="NewOrder">New Order</string>
     <string name="PaymentIn">Payment In</string>
+    <string name="Past_Transaction">Past Transaction</string>
+    <string name="View_all">View all</string>
+    <string name="mark_visit">Mark Visit</string>
 </resources>

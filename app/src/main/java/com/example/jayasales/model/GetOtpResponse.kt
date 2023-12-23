@@ -5,3 +5,4 @@ data class GetOtpResponse (
     val message: String,
     val otp: Long
 )
+

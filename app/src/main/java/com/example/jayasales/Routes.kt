@@ -10,4 +10,5 @@ object Routes {
     val selectRoute = Route("selectRoute")
     val parties = Route("parties")
     val storeDetails = Route("storeDetails")
+    val markVisit = Route("markVisit")
 }

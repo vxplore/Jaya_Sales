@@ -479,7 +479,7 @@ fun Visited(
                         .background(Color(0XFFD62B2B))
                 ) {
                     Text(
-                        text = it.store_name.first().toString(),
+                        text = it.store_name.first().uppercase().toString(),
                         fontSize = 14.sep,
                         fontWeight = FontWeight.Medium,
                         color = Color.White
