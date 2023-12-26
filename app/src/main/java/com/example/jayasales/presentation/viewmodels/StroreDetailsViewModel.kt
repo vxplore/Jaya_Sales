@@ -9,6 +9,7 @@ import com.debduttapanda.j3lib.WirelessViewModel
 import com.debduttapanda.j3lib.models.EventBusDescription
 import com.debduttapanda.j3lib.models.Route
 import com.example.jayasales.MyDataIds
+import com.example.jayasales.Routes
 import com.example.jayasales.model.StoreDataResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -43,6 +44,11 @@ class StoreDetailsViewModel @Inject constructor(
             }
             MyDataIds.paymentBtn->{
                 selectedTransactionTab.value = TransactionTab.Payments
+            }
+            MyDataIds.paymentIn->{
+                navigation {
+                    navigate(Routes.paymentIn.full)
+                }
             }
         }
     }

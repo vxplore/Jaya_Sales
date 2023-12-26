@@ -27,4 +27,9 @@
     <string name="Past_Transaction">Past Transaction</string>
     <string name="View_all">View all</string>
     <string name="mark_visit">Mark Visit</string>
+    <string name="edit">Edit</string>
+    <string name="Payment_received_successfully">Payment received successfully</string>
+    <string name="Product_Name">Product Name</string>
+    <string name="ArrowDropDown">ArrowDropDown</string>
+    <string name="Lot_No">Lot No.</string>
 </resources>

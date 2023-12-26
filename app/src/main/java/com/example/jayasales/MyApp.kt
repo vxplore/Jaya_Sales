@@ -9,6 +9,8 @@ import com.example.jayasales.presentation.screens.HomeScreen
 import com.example.jayasales.presentation.screens.LoginScreen
 import com.example.jayasales.presentation.screens.MarkVisitScreen
 import com.example.jayasales.presentation.screens.PartiesScreen
+import com.example.jayasales.presentation.screens.PaymentInScreen
+import com.example.jayasales.presentation.screens.ReturnRequestScreen
 import com.example.jayasales.presentation.screens.SelectRouteScreen
 import com.example.jayasales.presentation.screens.SplashScreen
 import com.example.jayasales.presentation.screens.StoreDetailsScreen
@@ -16,6 +18,8 @@ import com.example.jayasales.presentation.viewmodels.HomeViewModel
 import com.example.jayasales.presentation.viewmodels.LoginViewModel
 import com.example.jayasales.presentation.viewmodels.MarkVisitViewModel
 import com.example.jayasales.presentation.viewmodels.PartiesViewModel
+import com.example.jayasales.presentation.viewmodels.PaymentInViewModel
+import com.example.jayasales.presentation.viewmodels.ReturnRequestViewModel
 import com.example.jayasales.presentation.viewmodels.SelectRouteViewModel
 import com.example.jayasales.presentation.viewmodels.SplashViewModel
 import com.example.jayasales.presentation.viewmodels.StoreDetailsViewModel
@@ -69,6 +73,18 @@ fun MyApp() {
             wirelessViewModel = { hiltViewModel<MarkVisitViewModel>() }
         ) {
             MarkVisitScreen()
+        }
+        MyScreen(
+            navController, Routes.paymentIn,
+            wirelessViewModel = { hiltViewModel<PaymentInViewModel>() }
+        ) {
+            PaymentInScreen()
+        }
+        MyScreen(
+            navController, Routes.returnRequest,
+            wirelessViewModel = { hiltViewModel<ReturnRequestViewModel>() }
+        ) {
+            ReturnRequestScreen()
         }
     }
 }
