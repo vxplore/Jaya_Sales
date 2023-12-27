@@ -1,8 +1,13 @@
 package com.example.jayasales.repository
 
+import com.example.jayasales.model.Brand
+import com.example.jayasales.model.BrandDetail
+import com.example.jayasales.model.Category
+import com.example.jayasales.model.CategoryDetail
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
 import com.example.jayasales.model.PartiesDataResponse
+import com.example.jayasales.model.Product
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.RouteDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
@@ -23,6 +28,73 @@ class MockRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun allBrands(): List<Brand> {
+        return listOf(
+            Brand(
+                "1",
+                "JAYA",
+                listOf(
+                    Category("1", "Sweet"),
+                    Category("2", "Semi-Sweet")
+                )
+            ),
+            Brand(
+                "2",
+                "HERO",
+                listOf(
+                    Category("3", "Cracker"),
+                    Category("4", "Namkeen")
+                )
+            ),
+            Brand(
+                "3",
+                "JAGADHATRI",
+                listOf(
+                    Category("5", "Cream"),
+                )
+            ),
+        )
+    }
+
+    override suspend fun allProducts(): List<Product> {
+        return listOf(
+            Product(
+                1,
+                "Big Boss",
+                brandDetails = BrandDetail("1", "JAYA"),
+                categoryDetails = CategoryDetail("1", "Sweet"),
+                "Biscuit",
+                70f,
+                "50/PAC",
+                0,
+                50
+            ),
+            Product(
+                2,
+                "Chatpati",
+                brandDetails = BrandDetail("2", "HERO"),
+                categoryDetails = CategoryDetail("4", "Namkeen"),
+                "Biscuit",
+                70f,
+                "50/PAC",
+                0,
+                50
+            ),
+            Product(
+                3,
+                "Oreo",
+                brandDetails = BrandDetail("3", "JAGADHATRI"),
+                categoryDetails = CategoryDetail("5", "Cream"),
+                "Biscuit",
+                70f,
+                "50/PAC",
+                0,
+                50
+            )
+        )
+    }
+
+
     override suspend fun getOtp(email: String): GetOtpResponse? {
         val response = apiHelper.getOtp(email)
         return if (response.isSuccessful) {
@@ -34,36 +106,36 @@ class MockRepositoryImpl @Inject constructor(
 
     override suspend fun route(data: String): RouteDataResponse? {
         val response = apiHelper.route(data)
-        return if (response.isSuccessful){
+        return if (response.isSuccessful) {
             response.body()
-        }else{
+        } else {
             null
         }
     }
 
     override suspend fun searchRoute(query: String): SearchRouteDataResponse? {
         val response = apiHelper.searchRoute(query)
-        return if (response.isSuccessful){
+        return if (response.isSuccessful) {
             response.body()
-        }else{
+        } else {
             null
         }
     }
 
     override suspend fun parties(parties: String): PartiesDataResponse? {
         val response = apiHelper.parties(parties)
-        return if (response.isSuccessful){
+        return if (response.isSuccessful) {
             response.body()
-        }else{
+        } else {
             null
         }
     }
 
     override suspend fun searchParty(searchParty: String): PartiesDataResponse? {
         val response = apiHelper.searchParty(searchParty)
-        return if (response.isSuccessful){
+        return if (response.isSuccessful) {
             response.body()
-        }else{
+        } else {
             null
         }
     }

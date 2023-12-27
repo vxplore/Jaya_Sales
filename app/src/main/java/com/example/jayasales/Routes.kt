@@ -13,4 +13,6 @@ object Routes {
     val markVisit = Route("markVisit")
     val paymentIn = Route("paymentIn")
     val returnRequest = Route("returnRequest")
+    val newOrder = Route("newOrder")
+    val reviewCart = Route("reviewCart")
 }

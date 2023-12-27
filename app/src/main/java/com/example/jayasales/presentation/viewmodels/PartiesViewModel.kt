@@ -1,7 +1,6 @@
 package com.example.jayasales.presentation.viewmodels
 
 import android.os.Bundle
-import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -15,9 +14,7 @@ import com.example.jayasales.Routes
 import com.example.jayasales.model.PartiesDatum
 import com.example.jayasales.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 enum class PartiesTab{
@@ -34,7 +31,6 @@ class PartiesViewModel @Inject constructor(
     private val selectedTab = mutableStateOf(PartiesTab.All)
     private val effectivePartiesList = mutableStateListOf<PartiesDatum>()
     private val allPartiesList = mutableStateListOf<PartiesDatum>()
-    private val liststatus = mutableStateOf("")
     private val partiesData = mutableStateOf("parties-list")
     override fun eventBusDescription(): EventBusDescription? {
         return null
@@ -49,7 +45,9 @@ class PartiesViewModel @Inject constructor(
     override fun onNotification(id: Any?, arg: Any?) {
         when (id) {
             MyDataIds.back->{
-                popBackStack()
+                navigation {
+                    navigate(Routes.home.full)
+                }
             }
             MyDataIds.partiesSearch -> {
                 partiesSearch.value = arg as String
@@ -112,8 +110,7 @@ class PartiesViewModel @Inject constructor(
 
     private fun filter() {
         val query = partiesSearch.value
-        val tab = selectedTab.value
-        val tabString = when(tab){
+        val tabString = when(selectedTab.value){
             PartiesTab.All -> ""
             PartiesTab.Visited -> "Visited"
             PartiesTab.Pending -> "Pending"

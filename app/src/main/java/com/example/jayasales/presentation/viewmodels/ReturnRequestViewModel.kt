@@ -21,6 +21,7 @@ class ReturnRequestViewModel @Inject constructor(
     private val category = mutableStateListOf<String>()
     private val lot = mutableStateOf("")
     private val reason = mutableStateListOf<String>()
+    private val message = mutableStateOf("")
     override fun eventBusDescription(): EventBusDescription? {
         return null
     }
@@ -33,11 +34,17 @@ class ReturnRequestViewModel @Inject constructor(
 
     override fun onNotification(id: Any?, arg: Any?) {
         when(id){
+            MyDataIds.back->{
+                popBackStack()
+            }
             MyDataIds.product->{
                 product.value = arg as String
             }
             MyDataIds.lot->{
                 lot.value = arg as String
+            }
+            MyDataIds.message->{
+                message.value = arg as String
             }
         }
     }
@@ -51,6 +58,7 @@ class ReturnRequestViewModel @Inject constructor(
             MyDataIds.productCategory to category,
             MyDataIds.lot to lot,
             MyDataIds.reason to reason,
+            MyDataIds.message to message,
         )
         setStatusBarColor(Color(0xFFFFEB56), false)
         setSoftInputMode(SoftInputMode.adjustPan)

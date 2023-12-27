@@ -34,6 +34,11 @@ class HomeViewModel @Inject constructor(
             MyDataIds.logout->{
                 opendialog.value =! opendialog.value
             }
+            MyDataIds.returnRequest->{
+                navigation {
+                    navigate(Routes.returnRequest.full)
+                }
+            }
             MyDataIds.dismiss->{
                 opendialog.value =! opendialog.value
             }

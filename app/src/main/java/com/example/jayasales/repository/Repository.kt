@@ -1,8 +1,10 @@
 package com.example.jayasales.repository
 
+import com.example.jayasales.model.Brand
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
 import com.example.jayasales.model.PartiesDataResponse
+import com.example.jayasales.model.Product
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.RouteDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
@@ -17,6 +19,9 @@ interface Repository {
     suspend fun parties(parties:String) : PartiesDataResponse?
     suspend fun searchParty(searchParty:String) : PartiesDataResponse?
     fun setIsLoggedIn(done : Boolean)
+    suspend fun allBrands(): List<Brand>
+    suspend fun allProducts(): List<Product>
+
 
     fun getIsLoggedIn() : Boolean
 

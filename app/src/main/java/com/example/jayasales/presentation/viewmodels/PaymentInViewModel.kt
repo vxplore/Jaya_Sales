@@ -15,7 +15,7 @@ import com.example.jayasales.model.PaymentInList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-enum class PaymentModeTab{
+enum class PaymentModeTab {
     Cash,
     Cheque,
     Online
@@ -23,7 +23,7 @@ enum class PaymentModeTab{
 
 @HiltViewModel
 class PaymentInViewModel @Inject constructor(
-):WirelessViewModel(){
+) : WirelessViewModel() {
     private val comment = mutableStateOf("")
     private val paymentInList = mutableStateListOf<PaymentInList>()
     private val selectedPaymentMode = mutableStateOf(PaymentModeTab.Cash)
@@ -44,28 +44,35 @@ class PaymentInViewModel @Inject constructor(
             MyDataIds.back -> {
                 popBackStack()
             }
-            MyDataIds.comment->{
+
+            MyDataIds.comment -> {
                 comment.value = arg as String
             }
-            MyDataIds.cashbtn->{
+
+            MyDataIds.cashbtn -> {
                 selectedPaymentMode.value = PaymentModeTab.Cash
             }
-            MyDataIds.chequebtn->{
+
+            MyDataIds.chequebtn -> {
                 selectedPaymentMode.value = PaymentModeTab.Cheque
             }
-            MyDataIds.onlinebtn->{
+
+            MyDataIds.onlinebtn -> {
                 selectedPaymentMode.value = PaymentModeTab.Online
             }
-            MyDataIds.instruction->{
-                instruction.value= arg as String
+
+            MyDataIds.instruction -> {
+                instruction.value = arg as String
             }
-            MyDataIds.savebtn->{
-                paymentInDialog.value =! paymentInDialog.value
+
+            MyDataIds.savebtn -> {
+                paymentInDialog.value = !paymentInDialog.value
                 navigation {
                 }
             }
-            MyDataIds.paymentDone->{
-                paymentInDialog.value =! paymentInDialog.value
+
+            MyDataIds.paymentDone -> {
+                paymentInDialog.value = !paymentInDialog.value
                 navigation {
                     navigate(Routes.parties.full)
                 }
@@ -75,6 +82,7 @@ class PaymentInViewModel @Inject constructor(
 
     override fun onStartUp(route: Route?, arguments: Bundle?) {
     }
+
     init {
         mapData(
             MyDataIds.comment to comment,
@@ -86,9 +94,53 @@ class PaymentInViewModel @Inject constructor(
         setStatusBarColor(Color(0xFFFFEB56), false)
         setSoftInputMode(SoftInputMode.adjustPan)
 
-        paymentInList.addAll(listOf(PaymentInList("22","43343","Sep 10, 2023","43923.00 Due","12:40 Pm","10%")))
-        paymentInList.addAll(listOf(PaymentInList("23","43343","Sep 10, 2023","43923.00 Due","12:40 Pm","20%")))
-        paymentInList.addAll(listOf(PaymentInList("24","43343","Sep 10, 2023","43923.00 Due","12:40 Pm","00%")))
-        paymentInList.addAll(listOf(PaymentInList("25","43343","Sep 10, 2023","43923.00 Due","12:40 Pm","20%")))
+        paymentInList.addAll(
+            listOf(
+                PaymentInList(
+                    "22",
+                    "43343",
+                    "Sep 10, 2023",
+                    "43923.00 Due",
+                    "12:40 Pm",
+                    "10%"
+                )
+            )
+        )
+        paymentInList.addAll(
+            listOf(
+                PaymentInList(
+                    "23",
+                    "43343",
+                    "Sep 10, 2023",
+                    "43923.00 Due",
+                    "12:40 Pm",
+                    "20%"
+                )
+            )
+        )
+        paymentInList.addAll(
+            listOf(
+                PaymentInList(
+                    "24",
+                    "43343",
+                    "Sep 10, 2023",
+                    "43923.00 Due",
+                    "12:40 Pm",
+                    "00%"
+                )
+            )
+        )
+        paymentInList.addAll(
+            listOf(
+                PaymentInList(
+                    "25",
+                    "43343",
+                    "Sep 10, 2023",
+                    "43923.00 Due",
+                    "12:40 Pm",
+                    "20%"
+                )
+            )
+        )
     }
 }

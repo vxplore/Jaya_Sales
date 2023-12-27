@@ -1,8 +1,18 @@
 package com.example.jayasales.presentation.screens
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.OpenableColumns
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,14 +22,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
@@ -27,6 +51,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -44,20 +69,36 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.compose.rememberImagePainter
 import com.debduttapanda.j3lib.NotificationService
 import com.debduttapanda.j3lib.dep
+import com.debduttapanda.j3lib.depx
 import com.debduttapanda.j3lib.listState
+import com.debduttapanda.j3lib.notifier
 import com.debduttapanda.j3lib.rememberNotifier
 import com.debduttapanda.j3lib.sep
 import com.debduttapanda.j3lib.stringState
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
+import com.example.jayasales.model.SelectedFile
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -68,7 +109,8 @@ import java.util.Locale
 fun ReturnRequestScreen(
     notifier: NotificationService = rememberNotifier(),
     product: State<String> = stringState(key = MyDataIds.product),
-    lot: State<String> = stringState(key = MyDataIds.lot)
+    lot: State<String> = stringState(key = MyDataIds.lot),
+    message: State<String> = stringState(key = MyDataIds.message),
 ) {
     Scaffold(
         topBar = {
@@ -122,7 +164,7 @@ fun ReturnRequestScreen(
                 placeholder = {
                     Text(
                         stringResource(id = R.string.Product_Name),
-                        color = Color(0xFF959595),
+                        color = Color(0xFF666666),
                         fontSize = 14.sep
                     )
                 },
@@ -195,7 +237,7 @@ fun ReturnRequestScreen(
                     placeholder = {
                         Text(
                             stringResource(id = R.string.Lot_No),
-                            color = Color(0xFF959595),
+                            color = Color(0xFF666666),
                             fontSize = 14.sep
                         )
                     },
@@ -224,6 +266,68 @@ fun ReturnRequestScreen(
                     .fillMaxWidth()
             ) {
                 ReasonDropDown()
+            }
+            Spacer(modifier = Modifier.height(12.dep))
+            OutlinedTextField(
+                value = message.value,
+                onValueChange = {
+                    notifier.notify(MyDataIds.message, it)
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                ),
+                placeholder = {
+                    Text(
+                        stringResource(id = R.string.Message),
+                        color = Color(0xFF666666),
+                        fontSize = 14.sep
+                    )
+                },
+                modifier = Modifier
+                    .background(Color.White)
+                    .height(136.dep)
+                    .fillMaxWidth(),
+                textStyle = TextStyle(
+                    color = Color(0xFF222222),
+                    fontSize = 14.sep
+                ),
+                colors = TextFieldDefaults.colors(
+                    //focusedIndicatorColor = Color(0xFFEB3D34),
+                    unfocusedIndicatorColor = Color(0xFFB9B9B9),
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                ),
+            )
+            Spacer(modifier = Modifier.height(12.dep))
+            Text(
+                stringResource(id = R.string.Upload_Photo),
+                color = Color(0xFF666666),
+                fontSize = 14.sep
+            )
+            Spacer(modifier = Modifier.height(8.dep))
+            FilePickerScreen()
+        }
+        Box(
+            contentAlignment = Alignment.BottomCenter,
+            modifier = Modifier
+                .padding(horizontal = 24.dep)
+                .padding(bottom = 20.dep)
+                .fillMaxSize()
+        ) {
+            Button(
+                onClick = { notifier.notify(MyDataIds.signUpClick) },
+                modifier = Modifier
+                    .height(54.dep)
+                    .fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(Color(0xFFFFEB56)),
+                elevation = ButtonDefaults.buttonElevation(
+                    defaultElevation = 8.dep,
+                    pressedElevation = 10.dep
+                ),
+                shape = RoundedCornerShape(4.dep)
+            ) {
+                    Text(text = "Submit", fontSize = 18.sep, color = Color(0xFF222222))
             }
         }
     }
@@ -417,7 +521,6 @@ fun ReasonDropDown(
 fun ReturnDatePicker(
 ) {
     val calendar = Calendar.getInstance()
-    // set the initial date
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = calendar.timeInMillis)
     var showDatePicker by remember {
         mutableStateOf(false)
@@ -480,8 +583,120 @@ fun ReturnDatePicker(
             Icon(
                 imageVector = Icons.Default.DateRange,
                 contentDescription = "",
-                tint = Color(0xFFB9B9B9)
+                tint = Color(0xFF666666)
             )
         }
     }
+}
+
+val stroke = Stroke(
+    width = 2f,
+    pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+)
+
+@Composable
+fun FilePickerScreen(
+    notifier: NotificationService = rememberNotifier(),
+) {
+    var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
+    val selectedFileName = remember { mutableStateOf<String?>(null) }
+    var isPDFFile by remember { mutableStateOf(false) }
+    var selectedFiles by remember { mutableStateOf<MutableList<SelectedFile>>(mutableListOf()) }
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let {
+            selectedFileUri = it
+            isPDFFile = selectedFileName.value?.endsWith(".pdf", ignoreCase = true) == true
+            val selectedFile = SelectedFile(uri)
+            selectedFiles.add(selectedFile)
+        }
+    }
+    val openFileIntentLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            //.padding(start = 16.dp, top = 8.dp)
+            .height(93.dp)
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.small)
+            .clickable {
+                launcher.launch("*/*")
+                //notifier.notify(MyDataIds.onclickaddbtn)
+            }
+            .drawBehind {
+                drawRoundRect(
+                    color = Color.DarkGray,
+                    style = stroke,
+                    cornerRadius = CornerRadius(4.depx, 4.depx)
+                )
+            }
+    ) {
+        AsyncImage(
+            model = R.drawable.camera,
+            contentDescription = "File Icon",
+            modifier = Modifier
+                .height(24.dp)
+                .width(24.dp)
+        )
+
+        selectedFileUri?.let {
+            LazyRow(
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .background(Color(0xFFFBFBFB))
+                    .fillMaxWidth()
+            ) {
+                items(selectedFiles) { selectedFile ->
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .padding(start = 8.dp)
+                            .width(92.dp)
+                            .clickable {
+                                val openFileIntent = Intent(Intent.ACTION_VIEW)
+                                openFileIntent.data = selectedFile.uri
+                                openFileIntentLauncher.launch(openFileIntent)
+                            }
+                    ) {
+                        Row {
+                            LoadSelectedImage(selectedFile.uri)
+                            Image(
+                                painter = painterResource(id = R.drawable.cancel),
+                                contentDescription = "Cancel Icon",
+                                modifier = Modifier
+                                    .size(16.dp)
+                                    .clickable {
+                                        // Find the index of the selected file in the list
+                                        val indexToRemove = selectedFiles.indexOfFirst { it.uri == selectedFile.uri }
+
+                                        // Check if the index is valid before removing
+                                        if (indexToRemove != -1) {
+                                            selectedFiles.removeAt(indexToRemove)
+                                        }
+                                    }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@SuppressLint("SuspiciousIndentation")
+@Composable
+fun LoadSelectedImage(uri: Uri) {
+    val selectedImage = rememberImagePainter(data = uri)
+    Image(
+        painter = selectedImage,
+        contentDescription = "Selected Image",
+        modifier = Modifier
+            .height(64.dp)
+            .width(52.dp),
+        contentScale = ContentScale.Crop,
+    )
 }

@@ -32,4 +32,7 @@
     <string name="Product_Name">Product Name</string>
     <string name="ArrowDropDown">ArrowDropDown</string>
     <string name="Lot_No">Lot No.</string>
+    <string name="Message">Message</string>
+    <string name="Upload_Photo">Upload Photo</string>
+    <string name="order_placed">Order Placed successfully</string>
 </resources>
