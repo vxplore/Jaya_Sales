@@ -206,7 +206,7 @@ fun StoreDetailsScreen(
                         ) {
                             IconButton(
                                 onClick = {
-                                    //notifier.notify(MyDataIds.orders)
+                                    notifier.notify(MyDataIds.markVisit)
                                 },
                                 modifier = Modifier
                                     .width(72.dep)

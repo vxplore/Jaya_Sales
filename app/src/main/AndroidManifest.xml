@@ -5,9 +5,6 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-    <meta-data
-        android:name="com.google.android.geo.API_KEY"
-        android:value="AIzaSyBGIrAAiDNCfy3rIdFqmG7CSs9VeMhyvxI" />
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.CAMERA"/>
@@ -37,6 +34,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBViPlg553Up1GxXDzkyZHu7PoGNb7Rmxc" />
+
     </application>
+
 
 </manifest>

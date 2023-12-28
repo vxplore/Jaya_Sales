@@ -5,7 +5,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.debduttapanda.j3lib.MyScreen
+import com.example.jayasales.presentation.screens.AddNewStoreScreen
+import com.example.jayasales.presentation.screens.ContactInformationScreen
 import com.example.jayasales.presentation.screens.HomeScreen
+import com.example.jayasales.presentation.screens.ItemScreen
 import com.example.jayasales.presentation.screens.LoginScreen
 import com.example.jayasales.presentation.screens.MarkVisitScreen
 import com.example.jayasales.presentation.screens.NewOrdersPage
@@ -16,6 +19,8 @@ import com.example.jayasales.presentation.screens.ReviewCartScreen
 import com.example.jayasales.presentation.screens.SelectRouteScreen
 import com.example.jayasales.presentation.screens.SplashScreen
 import com.example.jayasales.presentation.screens.StoreDetailsScreen
+import com.example.jayasales.presentation.viewmodels.AddNewStoreViewModel
+import com.example.jayasales.presentation.viewmodels.ContactInformationViewModel
 import com.example.jayasales.presentation.viewmodels.HomeViewModel
 import com.example.jayasales.presentation.viewmodels.LoginViewModel
 import com.example.jayasales.presentation.viewmodels.MarkVisitViewModel
@@ -34,7 +39,7 @@ fun MyApp() {
     val navController = rememberNavController()
     NavHost(
         navController,
-        startDestination = Routes.reviewCart.full
+        startDestination = Routes.splash.full
     ) {
         MyScreen(
             navController, Routes.splash,
@@ -101,6 +106,24 @@ fun MyApp() {
             wirelessViewModel = { hiltViewModel<ReviewCartViewModel>() }
         ) {
             ReviewCartScreen()
+        }
+        MyScreen(
+            navController, Routes.items,
+            wirelessViewModel = { hiltViewModel<NewOrdersViewModel>() }
+        ) {
+            ItemScreen()
+        }
+        MyScreen(
+            navController, Routes.addNewStore,
+            wirelessViewModel = { hiltViewModel<AddNewStoreViewModel>() }
+        ) {
+            AddNewStoreScreen()
+        }
+        MyScreen(
+            navController, Routes.contactInformation,
+            wirelessViewModel = { hiltViewModel<ContactInformationViewModel>() }
+        ) {
+            ContactInformationScreen()
         }
     }
 }

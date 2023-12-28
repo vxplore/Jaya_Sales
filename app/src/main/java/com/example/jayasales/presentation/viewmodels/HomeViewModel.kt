@@ -58,6 +58,16 @@ class HomeViewModel @Inject constructor(
                     navigate(Routes.parties.full)
                 }
             }
+            MyDataIds.transactions->{
+                navigation {
+                    navigate(Routes.paymentIn.full)
+                }
+            }
+            MyDataIds.items->{
+                navigation {
+                    navigate(Routes.items.full)
+                }
+            }
         }
     }
 

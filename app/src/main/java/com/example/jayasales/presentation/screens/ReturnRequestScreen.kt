@@ -306,7 +306,11 @@ fun ReturnRequestScreen(
                 fontSize = 14.sep
             )
             Spacer(modifier = Modifier.height(8.dep))
-            FilePickerScreen()
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                FilePickerScreen()
+            }
         }
         Box(
             contentAlignment = Alignment.BottomCenter,
@@ -327,7 +331,7 @@ fun ReturnRequestScreen(
                 ),
                 shape = RoundedCornerShape(4.dep)
             ) {
-                    Text(text = "Submit", fontSize = 18.sep, color = Color(0xFF222222))
+                Text(text = "Submit", fontSize = 18.sep, color = Color(0xFF222222))
             }
         }
     }
@@ -619,12 +623,11 @@ fun FilePickerScreen(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             //.padding(start = 16.dp, top = 8.dp)
-            .height(93.dp)
-            .fillMaxWidth()
+            .height(64.dep)
+            .width(52.dep)
             .clip(MaterialTheme.shapes.small)
             .clickable {
                 launcher.launch("*/*")
-                //notifier.notify(MyDataIds.onclickaddbtn)
             }
             .drawBehind {
                 drawRoundRect(
@@ -641,45 +644,43 @@ fun FilePickerScreen(
                 .height(24.dp)
                 .width(24.dp)
         )
-
-        selectedFileUri?.let {
-            LazyRow(
-                modifier = Modifier
-                    .padding(start = 16.dp)
-                    .background(Color(0xFFFBFBFB))
-                    .fillMaxWidth()
-            ) {
-                items(selectedFiles) { selectedFile ->
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                            .padding(start = 8.dp)
-                            .width(92.dp)
-                            .clickable {
-                                val openFileIntent = Intent(Intent.ACTION_VIEW)
-                                openFileIntent.data = selectedFile.uri
-                                openFileIntentLauncher.launch(openFileIntent)
-                            }
-                    ) {
-                        Row {
-                            LoadSelectedImage(selectedFile.uri)
-                            Image(
-                                painter = painterResource(id = R.drawable.cancel),
-                                contentDescription = "Cancel Icon",
-                                modifier = Modifier
-                                    .size(16.dp)
-                                    .clickable {
-                                        // Find the index of the selected file in the list
-                                        val indexToRemove = selectedFiles.indexOfFirst { it.uri == selectedFile.uri }
-
-                                        // Check if the index is valid before removing
-                                        if (indexToRemove != -1) {
-                                            selectedFiles.removeAt(indexToRemove)
-                                        }
-                                    }
-                            )
+    }
+    selectedFileUri?.let {
+        LazyRow(
+            modifier = Modifier
+                .padding(start = 16.dp)
+                .background(Color(0xFFFBFBFB))
+                .fillMaxWidth()
+        ) {
+            items(selectedFiles) { selectedFile ->
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .width(92.dp)
+                        .clickable {
+                            val openFileIntent = Intent(Intent.ACTION_VIEW)
+                            openFileIntent.data = selectedFile.uri
+                            openFileIntentLauncher.launch(openFileIntent)
                         }
+                ) {
+                    Row {
+                        LoadSelectedImage(selectedFile.uri)
+                        Image(
+                            painter = painterResource(id = R.drawable.cancel),
+                            contentDescription = "Cancel Icon",
+                            modifier = Modifier
+                                .background(Color.White, CircleShape)
+                                .size(16.dep)
+                                .clickable {
+                                    val indexToRemove =
+                                        selectedFiles.indexOfFirst { it.uri == selectedFile.uri }
+                                    if (indexToRemove != -1) {
+                                        selectedFiles.removeAt(indexToRemove)
+                                    }
+                                }
+                        )
                     }
                 }
             }

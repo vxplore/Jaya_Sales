@@ -15,4 +15,7 @@ object Routes {
     val returnRequest = Route("returnRequest")
     val newOrder = Route("newOrder")
     val reviewCart = Route("reviewCart")
+    val items = Route("items")
+    val addNewStore = Route("addNewStore")
+    val contactInformation = Route("contactInformation")
 }

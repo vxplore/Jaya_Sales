@@ -73,6 +73,11 @@ class PartiesViewModel @Inject constructor(
                     navigate(Routes.storeDetails.full)
                 }
             }
+            MyDataIds.addStore->{
+                navigation {
+                    navigate(Routes.addNewStore.full)
+                }
+            }
         }
     }
 

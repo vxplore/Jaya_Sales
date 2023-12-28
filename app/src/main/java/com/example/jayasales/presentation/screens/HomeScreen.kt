@@ -438,7 +438,7 @@ fun HomeScreen(
                     ) {
                         IconButton(
                             onClick = {
-                                //notifier.notify(MyDataIds.orders)
+                                notifier.notify(MyDataIds.items)
                             },
                             modifier = Modifier
                                 .width(72.dep)
@@ -470,7 +470,7 @@ fun HomeScreen(
                     ) {
                         IconButton(
                             onClick = {
-                                //notifier.notify(MyDataIds.orders)
+                                notifier.notify(MyDataIds.transactions)
                             },
                             modifier = Modifier
                                 .width(72.dep)

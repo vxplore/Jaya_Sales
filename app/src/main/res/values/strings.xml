@@ -35,4 +35,25 @@
     <string name="Message">Message</string>
     <string name="Upload_Photo">Upload Photo</string>
     <string name="order_placed">Order Placed successfully</string>
+    <string name="Add_Store">Add New Store</string>
+    <string name="Store_Name">Store Name</string>
+    <string name="Store_name">Enter Store Name</string>
+    <string name="shop_image">Upload Shop Image</string>
+    <string name="City">City</string>
+    <string name="State">State</string>
+    <string name="Postal_Code">Postal Code</string>
+    <string name="postalCode">Enter Postal Code</string>
+    <string name="Address">Address</string>
+    <string name="EnterAddress">Enter Address</string>
+    <string name="addRoute">Add Route</string>
+    <string name="contact">CONTACT INFORMATION</string>
+    <string name="name">Name</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="PhoneNumber">Phone Number</string>
+    <string name="enter_phn">Enter Phone Number</string>
+    <string name="Email">Email Id</string>
+    <string name="EnterEmailId">Enter Email Id</string>
+    <string name="gst">GST (Optional)</string>
+    <string name="enterGst">Enter GST</string>
+    <string name="add_Store">Add new store Successfully</string>
 </resources>

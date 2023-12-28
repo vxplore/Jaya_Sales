@@ -55,6 +55,11 @@ class StoreDetailsViewModel @Inject constructor(
                     navigate(Routes.newOrder.full)
                 }
             }
+            MyDataIds.markVisit->{
+                navigation {
+                    navigate(Routes.markVisit.full)
+                }
+            }
         }
     }
 

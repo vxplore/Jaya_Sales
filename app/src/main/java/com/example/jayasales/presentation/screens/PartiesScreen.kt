@@ -104,6 +104,7 @@ fun PartiesScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
+                          notifier.notify(MyDataIds.addStore)
                 },
                 containerColor = Color.White,
                 shape = CircleShape,
