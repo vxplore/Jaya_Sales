@@ -96,4 +96,7 @@ enum class MyDataIds {
     addNewStore,
     addNow,
     backNow,
+    attencomments,
+    markAttendance,
+    timeSheet,
 }

@@ -18,4 +18,6 @@ object Routes {
     val items = Route("items")
     val addNewStore = Route("addNewStore")
     val contactInformation = Route("contactInformation")
+    val markAttendance = Route("markAttendance")
+    val timeSheet = Route("timeSheet")
 }

@@ -68,6 +68,11 @@ class HomeViewModel @Inject constructor(
                     navigate(Routes.items.full)
                 }
             }
+            MyDataIds.markAttendance->{
+                navigation {
+                    navigate(Routes.markAttendance.full)
+                }
+            }
         }
     }
 

@@ -154,7 +154,6 @@ fun MarkVisitScreen(
                     fontSize = 14.sep
                 ),
                 colors = TextFieldDefaults.colors(
-                    //focusedIndicatorColor = Color.White,
                     unfocusedIndicatorColor = Color(0xFFDDDDDD),
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
@@ -175,33 +174,10 @@ fun MarkVisitScreen(
             ) {
                 Text(text = "VISIT SHOP", fontSize = 16.sep, color = Color.White)
             }
-            Spacer(modifier = Modifier.height(16.dep))
-            Spacer(modifier = Modifier.height(20.dep))
-            Button(
-                onClick = { notifier.notify(MyDataIds.visitShop) },
-                modifier = Modifier
-                    .height(54.dep)
-                    .fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(Color(0xFF1FB574)),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 8.dep,
-                    pressedElevation = 10.dep
-                ),
-                shape = RoundedCornerShape(4.dep)
-            ) {
-                Text(text = "VISIT SHOP", fontSize = 16.sep, color = Color.White)
-            }
         }
     }
 }
 
-
-
-
-
-const val REQUEST_LOCATION_PERMISSION_CODE = 1
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GoogleMapSection(
     latitude: Double = 0.0,
