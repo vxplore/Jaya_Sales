@@ -1,5 +1,6 @@
 package com.example.jayasales.repository
 
+import com.example.jayasales.model.AddStoreDataResponse
 import com.example.jayasales.model.Brand
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
@@ -8,6 +9,7 @@ import com.example.jayasales.model.Product
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.RouteDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
+import java.io.File
 
 interface Repository {
 
@@ -32,5 +34,6 @@ interface Repository {
     fun removeUser()
 
     suspend fun resetPassword(recoverUsername: String, confirmPassword: String, otp: String) : ResetDataResponse?
+    suspend fun addCustomer(storeName:String, image: File, cityId:String, stateId:String, postalCode: Int, address:String, routeId:String, gpsLocation:String, contactName:String, contactNumber: Int, contactEmail:String, gst:String,) : AddStoreDataResponse?
 
 }

@@ -124,8 +124,6 @@ fun PaymentInScreen(
                         text = "Back to Parties",
                         fontSize = 14.sep,
                         color = Color.White,
-                        modifier = Modifier
-
                     )
                 }
             },
@@ -180,11 +178,6 @@ fun PaymentInScreen(
                 .fillMaxSize()
         ) {
             Spacer(modifier = Modifier.height(24.dep))
-            /*  Column(
-                modifier = Modifier
-                    .padding(bottom = 300.dep)
-                    .fillMaxSize()
-            ) {*/
             LazyColumn(
                 modifier = Modifier
                     .height(360.dep)
@@ -207,7 +200,6 @@ fun PaymentInScreen(
                             )
                             .clip(RoundedCornerShape(8.dep))
                             .clickable {
-                                //notifier.notify(MyDataIds.storeDetails)
                             },
                         colors = CardDefaults.cardColors(Color.White),
                         elevation = CardDefaults.cardElevation(
@@ -302,7 +294,6 @@ fun PaymentInScreen(
                                 )
                             }
                         }
-                        //Spacer(modifier = Modifier.height(8.dp))
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -360,7 +351,6 @@ fun PaymentInScreen(
                     }
                 }
             }
-            // }
             Spacer(modifier = Modifier.height(12.dep))
             Divider(
                 modifier = Modifier
@@ -431,7 +421,6 @@ fun PaymentInScreen(
                     .height(1.dep)
                     .fillMaxWidth()
             )
-            // Spacer(modifier = Modifier.height(12.dep))
             OutlinedTextField(
                 value = instruction.value,
                 onValueChange = {
@@ -488,7 +477,6 @@ fun PaymentInScreen(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        //.padding(vertical = 12.dep)
                         .height(68.dep)
                 ) {
                     Divider(

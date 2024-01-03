@@ -1,13 +1,9 @@
 package com.example.jayasales.presentation.screens
 
-import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.location.LocationRequest
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -31,7 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
@@ -43,12 +37,9 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -73,6 +64,8 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import kotlinx.coroutines.coroutineScope
+import java.util.concurrent.CancellationException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -126,7 +119,6 @@ fun MarkVisitScreen(
             ) {
                 GoogleMapSection()
                 //MapScreenWithMarker()
-
             }
             Spacer(modifier = Modifier.height(20.dep))
             OutlinedTextField(
@@ -183,18 +175,13 @@ fun GoogleMapSection(
     latitude: Double = 0.0,
     longitude: Double = 0.0,
 ) {
-    // Step 1: Add the required permissions to AndroidManifest.xml
-
-    // Step 2: Request runtime permissions
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
         onResult = { result ->
             val granted = result.entries.all { it.value == true }
-            // Handle the result, update state, etc.
         }
     )
-
     DisposableEffect(context) {
         launcher.launch(
             arrayOf(
@@ -204,8 +191,6 @@ fun GoogleMapSection(
         )
         onDispose { }
     }
-
-    // Step 3: Handle the result of the permission request
     val permissionState by remember {
         mutableStateOf(
             when {
@@ -213,6 +198,7 @@ fun GoogleMapSection(
                     context,
                     android.Manifest.permission.ACCESS_FINE_LOCATION
                 ) == PackageManager.PERMISSION_GRANTED -> PermissionState.Granted
+
                 else -> PermissionState.NotGranted
             }
         )
@@ -222,12 +208,12 @@ fun GoogleMapSection(
         PermissionState.Granted -> {
             MapContent(latitude, longitude)
         }
+
         PermissionState.NotGranted -> {
             Text("Location permission is required for this feature.")
         }
     }
 }
-
 
 enum class PermissionState {
     Granted,
@@ -251,20 +237,27 @@ fun MapContent(
     val currentLocationState = remember(currentLocation) {
         MarkerState(position = currentLocation)
     }
-
     val cameraPositionState = rememberCameraPositionState(currentLocation.toString()) {
         position = CameraPosition.fromLatLngZoom(currentLocation, 10f)
     }
-
     LaunchedEffect(currentLocation) {
-        cameraPositionState.animate(
-            update = CameraUpdateFactory.newCameraPosition(
-                CameraPosition(currentLocation, 15f, 0f, 0f)
-            ),
-            durationMs = 1000
-        )
+        try {
+            if (currentLocation != null) {
+                coroutineScope {
+                    cameraPositionState.animate(
+                        update = CameraUpdateFactory.newCameraPosition(
+                            CameraPosition(currentLocation, 15f, 0f, 0f)
+                        ),
+                        durationMs = 3000
+                    )
+                }
+            }
+        } catch (e: CancellationException) {
+            Log.e("MapContent", "Animation cancelled", e)
+        } catch (e: Exception) {
+            Log.e("MapContent", "Error animating camera position", e)
+        }
     }
-
     Box(
         modifier = Modifier
             .fillMaxWidth()

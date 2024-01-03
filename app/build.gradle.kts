@@ -109,6 +109,7 @@ dependencies {
     implementation ("com.google.android.gms:play-services-location:18.2.0")
 
     implementation ("com.google.accompanist:accompanist-permissions:0.31.3-beta")
+    implementation ("com.google.maps.android:maps-compose:1.1.0")
 }
 
 kapt {

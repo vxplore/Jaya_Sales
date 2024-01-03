@@ -38,10 +38,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,7 +50,6 @@ import androidx.compose.ui.text.font.FontWeight
 import com.debduttapanda.j3lib.NotificationService
 import com.debduttapanda.j3lib.dep
 import com.debduttapanda.j3lib.listState
-import com.debduttapanda.j3lib.rememberBoolState
 import com.debduttapanda.j3lib.rememberNotifier
 import com.debduttapanda.j3lib.rememberTState
 import com.debduttapanda.j3lib.sep
@@ -175,117 +170,118 @@ fun PartiesScreen(
                 verticalArrangement = Arrangement.spacedBy(20.dep)
             ) {
                 items(partiesList) {
-                    if (selectedTab.value ==  PartiesTab.Visited) {
-                        Visited(it)
-                    }else if (selectedTab.value ==  PartiesTab.Pending){
-                        Pending(it)
-                    }else{
-                        Card(
-                            modifier = Modifier
-                                .height(80.dep)
-                                .fillMaxWidth()
-                                .shadow(
-                                    2.dep,
-                                    RoundedCornerShape(4.dep),
-                                    clip = true,
-                                    DefaultShadowColor
-                                )
-                                .clip(RoundedCornerShape(4.dep))
-                                .clickable {
-                                           notifier.notify(MyDataIds.storeDetails)
-                                },
-                            colors = CardDefaults.cardColors(Color.White),
-                            elevation = CardDefaults.cardElevation(
-                                defaultElevation = 8.dep,
-                                focusedElevation = 10.dep,
-                            ),
-                            shape = RoundedCornerShape(4.dep),
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween,
+                    when (selectedTab.value) {
+                        PartiesTab.Visited -> {
+                            Visited(it)
+                        }
+                        PartiesTab.Pending -> {
+                            Pending(it)
+                        }
+                        else -> {
+                            Card(
                                 modifier = Modifier
-                                    .padding(start = 20.dep, end = 12.dep)
-                                    .fillMaxSize()
+                                    .height(80.dep)
+                                    .fillMaxWidth()
+                                    .shadow(
+                                        2.dep,
+                                        RoundedCornerShape(4.dep),
+                                        clip = true,
+                                        DefaultShadowColor
+                                    )
+                                    .clip(RoundedCornerShape(4.dep))
+                                    .clickable {
+                                        notifier.notify(MyDataIds.storeDetails)
+                                    },
+                                colors = CardDefaults.cardColors(Color.White),
+                                elevation = CardDefaults.cardElevation(
+                                    defaultElevation = 8.dep,
+                                    focusedElevation = 10.dep,
+                                ),
+                                shape = RoundedCornerShape(4.dep),
                             ) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    modifier = Modifier
+                                        .padding(start = 20.dep, end = 12.dep)
+                                        .fillMaxSize()
                                 ) {
-                                    IconButton(
-                                        onClick = { },
-                                        modifier = Modifier
-                                            .width(20.dep)
-                                            .height(20.dep)
-                                            .shadow(
-                                                4.dep,
-                                                shape = CircleShape,
-                                                clip = true
-                                            )
-                                            .background(Color(0XFFD62B2B))
-                                    ) {
-                                        Text(
-                                            text = it.store_name.first().toString(),
-                                            fontSize = 14.sep,
-                                            fontWeight = FontWeight.Medium,
-                                            color = Color.White
-                                        )
-                                    }
-                                    Column(
-                                        //horizontalAlignment = Alignment.CenterHorizontally
-                                        modifier = Modifier
-                                            .padding(start = 20.dep)
-                                    ) {
-                                        Text(
-                                            text = it.store_name,
-                                            fontSize = 14.sep,
-                                            fontWeight = FontWeight.Medium,
-                                            color = Color(0xFF222222)
-                                        )
-                                        Spacer(modifier = Modifier.height(8.dep))
-                                        Text(
-                                            text = it.uid,
-                                            fontSize = 10.sep,
-                                            //fontWeight = FontWeight.Medium,
-                                            color = Color(0xFF898989)
-                                        )
-                                    }
-                                }
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Text(
-                                        text = "₹${it.amount}",
-                                        fontSize = 14.sep,
-                                        fontWeight = FontWeight.Medium,
-                                        color = Color.Black
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dep))
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.Center,
-                                        modifier = Modifier
-
-                                            .background(
-                                                if (it.status == "Pending") {
-                                                    Color(0xFFF2F2F2)
-                                                } else {
-                                                    Color(0xFFF6D907)
-                                                }, RoundedCornerShape(12.dep)
+                                    ) {
+                                        IconButton(
+                                            onClick = { },
+                                            modifier = Modifier
+                                                .width(20.dep)
+                                                .height(20.dep)
+                                                .shadow(
+                                                    4.dep,
+                                                    shape = CircleShape,
+                                                    clip = true
+                                                )
+                                                .background(Color(0XFFD62B2B))
+                                        ) {
+                                            Text(
+                                                text = it.store_name.first().toString(),
+                                                fontSize = 14.sep,
+                                                fontWeight = FontWeight.Medium,
+                                                color = Color.White
                                             )
-                                            .wrapContentSize()
-                                            .padding(6.dep)
+                                        }
+                                        Column(
+                                            modifier = Modifier
+                                                .padding(start = 20.dep)
+                                        ) {
+                                            Text(
+                                                text = it.store_name,
+                                                fontSize = 14.sep,
+                                                fontWeight = FontWeight.Medium,
+                                                color = Color(0xFF222222)
+                                            )
+                                            Spacer(modifier = Modifier.height(8.dep))
+                                            Text(
+                                                text = it.uid,
+                                                fontSize = 10.sep,
+                                                color = Color(0xFF898989)
+                                            )
+                                        }
+                                    }
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         Text(
-                                            text = it.status,
-                                            fontSize = 12.sep,
-                                            //fontWeight = FontWeight.Medium,
-                                            color =
-                                            if (it.status == "Pending") {
-                                                Color(0xFF1FB574)
-                                            } else {
-                                                Color(0xFFFFA956)
-                                            }
+                                            text = "₹${it.amount}",
+                                            fontSize = 14.sep,
+                                            fontWeight = FontWeight.Medium,
+                                            color = Color.Black
                                         )
+                                        Spacer(modifier = Modifier.height(8.dep))
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Center,
+                                            modifier = Modifier
+
+                                                .background(
+                                                    if (it.status == "Pending") {
+                                                        Color(0xFFF2F2F2)
+                                                    } else {
+                                                        Color(0xFFF6D907)
+                                                    }, RoundedCornerShape(12.dep)
+                                                )
+                                                .wrapContentSize()
+                                                .padding(6.dep)
+                                        ) {
+                                            Text(
+                                                text = it.status,
+                                                fontSize = 12.sep,
+                                                color =
+                                                if (it.status == "Pending") {
+                                                    Color(0xFF1FB574)
+                                                } else {
+                                                    Color(0xFFFFA956)
+                                                }
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -300,7 +296,7 @@ fun PartiesScreen(
 @Composable
 fun PartiesSearchBox(
     notifier: NotificationService = rememberNotifier(),
-    partiesSearch: State<String> = stringState(key = MyDataIds.partiesSearch,)
+    partiesSearch: State<String> = stringState(key = MyDataIds.partiesSearch)
 )
 {
     OutlinedTextField(
@@ -388,7 +384,6 @@ fun Pending(
                     )
                 }
                 Column(
-                    //horizontalAlignment = Alignment.CenterHorizontally
                     modifier = Modifier
                         .padding(start = 20.dep)
                 ) {
@@ -402,7 +397,6 @@ fun Pending(
                     Text(
                         text = it.uid,
                         fontSize = 10.sep,
-                        //fontWeight = FontWeight.Medium,
                         color = Color(0xFF898989)
                     )
                 }
@@ -421,7 +415,6 @@ fun Pending(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
-
                         .background(
                             if (it.status == "Pending") {
                                 Color(0xFFF2F2F2)
@@ -435,7 +428,6 @@ fun Pending(
                     Text(
                         text = it.status,
                         fontSize = 12.sep,
-                        //fontWeight = FontWeight.Medium,
                         color =
                         if (it.status == "Pending") {
                             Color(0xFF1FB574)
@@ -498,14 +490,13 @@ fun Visited(
                         .background(Color(0XFFD62B2B))
                 ) {
                     Text(
-                        text = it.store_name.first().uppercase().toString(),
+                        text = it.store_name.first().uppercase(),
                         fontSize = 14.sep,
                         fontWeight = FontWeight.Medium,
                         color = Color.White
                     )
                 }
                 Column(
-                    //horizontalAlignment = Alignment.CenterHorizontally
                     modifier = Modifier
                         .padding(start = 20.dep)
                 ) {
@@ -519,7 +510,6 @@ fun Visited(
                     Text(
                         text = it.uid,
                         fontSize = 10.sep,
-                        //fontWeight = FontWeight.Medium,
                         color = Color(0xFF898989)
                     )
                 }
@@ -538,7 +528,6 @@ fun Visited(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
-
                         .background(
                             if (it.status == "Pending") {
                                 Color(0xFFF2F2F2)
@@ -552,7 +541,6 @@ fun Visited(
                     Text(
                         text = it.status,
                         fontSize = 12.sep,
-                        //fontWeight = FontWeight.Medium,
                         color =
                         if (it.status == "Pending") {
                             Color(0xFF1FB574)

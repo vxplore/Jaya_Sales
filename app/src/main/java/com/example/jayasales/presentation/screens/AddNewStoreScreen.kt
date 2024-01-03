@@ -58,10 +58,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -85,11 +82,11 @@ import com.example.jayasales.model.SelectedFile
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddNewStoreScreen(
-    notifier : NotificationService = rememberNotifier(),
-    storeName : State<String> = stringState(key = MyDataIds.storeName),
-    pin : State<String> = stringState(key = MyDataIds.pin),
-    address : State<String> = stringState(key = MyDataIds.address),
-){
+    notifier: NotificationService = rememberNotifier(),
+    storeName: State<String> = stringState(key = MyDataIds.storeName),
+    pin: State<String> = stringState(key = MyDataIds.pin),
+    address: State<String> = stringState(key = MyDataIds.address),
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -175,21 +172,21 @@ fun AddNewStoreScreen(
                 color = Color(0xFF222222)
             )
             Spacer(modifier = Modifier.height(8.dep))
-            Row (
+            Row(
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
                 ImagePickerScreen()
             }
             Spacer(modifier = Modifier.height(16.dep))
-            Row (
+            Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-            ){
-                Column (
+            ) {
+                Column(
                     modifier = Modifier
                         .weight(.5f)
-                ){
+                ) {
                     Text(
                         text = stringResource(id = R.string.City),
                         fontSize = 14.sep,
@@ -208,10 +205,10 @@ fun AddNewStoreScreen(
                     }
                 }
                 Spacer(modifier = Modifier.width(12.dep))
-                Column (
+                Column(
                     modifier = Modifier
                         .weight(.5f)
-                ){
+                ) {
                     Text(
                         text = stringResource(id = R.string.State),
                         fontSize = 14.sep,
@@ -326,16 +323,17 @@ fun AddNewStoreScreen(
                     .height(144.dep)
             ) {
                 GoogleMapSection()
-
             }
             Spacer(modifier = Modifier.height(20.dep))
+
             Button(
-                onClick = { notifier.notify(MyDataIds.visitShop) },
+                onClick = {
+                },
                 modifier = Modifier
                     .height(54.dep)
                     .fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(Color.White),
-                border = BorderStroke(1.dep,Color(0xFF1FB574)),
+                border = BorderStroke(1.dep, Color(0xFF1FB574)),
                 elevation = ButtonDefaults.buttonElevation(
                     defaultElevation = 8.dep,
                     pressedElevation = 10.dep
@@ -363,16 +361,13 @@ fun AddNewStoreScreen(
     }
 }
 
-
 @Composable
 fun ImagePickerScreen(
-    notifier: NotificationService = rememberNotifier(),
 ) {
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
     val selectedFileName = remember { mutableStateOf<String?>(null) }
     var isPDFFile by remember { mutableStateOf(false) }
     var selectedFiles by remember { mutableStateOf<MutableList<SelectedFile>>(mutableListOf()) }
-    val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let {
             selectedFileUri = it
@@ -388,9 +383,8 @@ fun ImagePickerScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            //.padding(start = 16.dp, top = 8.dp)
-            .height(64.dep)
-            .width(52.dep)
+            .height(64.dp)
+            .width(52.dp)
             .clip(MaterialTheme.shapes.small)
             .clickable {
                 launcher.launch("*/*")
@@ -438,13 +432,9 @@ fun ImagePickerScreen(
                             contentDescription = "Cancel Icon",
                             modifier = Modifier
                                 .background(Color.White, CircleShape)
-                                .size(16.dep)
+                                .size(16.dp)
                                 .clickable {
-                                    val indexToRemove =
-                                        selectedFiles.indexOfFirst { it.uri == selectedFile.uri }
-                                    if (indexToRemove != -1) {
-                                        selectedFiles.removeAt(indexToRemove)
-                                    }
+                                    selectedFiles.remove(selectedFile)
                                 }
                         )
                     }

@@ -1,5 +1,7 @@
 package com.example.jayasales.repository
 
+import android.annotation.SuppressLint
+import com.example.jayasales.model.AddStoreDataResponse
 import com.example.jayasales.model.Brand
 import com.example.jayasales.model.BrandDetail
 import com.example.jayasales.model.Category
@@ -12,6 +14,7 @@ import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.RouteDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
 import com.example.jayasales.repository.preference.PrefRepository
+import java.io.File
 import javax.inject.Inject
 
 
@@ -149,6 +152,28 @@ class MockRepositoryImpl @Inject constructor(
         return if (response.isSuccessful) {
             response.body()
         } else {
+            null
+        }
+    }
+    @SuppressLint("SuspiciousIndentation")
+    override suspend fun addCustomer(
+        storeName: String,
+        image: File,
+        cityId: String,
+        stateId: String,
+        postalCode: Int,
+        address: String,
+        routeId: String,
+        gpsLocation: String,
+        contactName: String,
+        contactNumber: Int,
+        contactEmail: String,
+        gst: String
+    ): AddStoreDataResponse? {
+      val response = apiHelper.addCustomer(storeName, image, cityId, stateId, postalCode, address, routeId, gpsLocation, contactName, contactNumber, contactEmail, gst)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
             null
         }
     }

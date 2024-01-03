@@ -94,18 +94,18 @@ import java.util.Date
 @Composable
 fun MarkAttendanceScreen(
     notifier: NotificationService = rememberNotifier(),
-    attencomments : State<String> = stringState(key = MyDataIds.attencomments)
+    attencomments: State<String> = stringState(key = MyDataIds.attencomments)
 ) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                        Text(
-                            text = "Mark Attendance",
-                            fontSize = 20.sep,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF2B2B2B)
-                        )
+                    Text(
+                        text = "Mark Attendance",
+                        fontSize = 20.sep,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF2B2B2B)
+                    )
                 },
                 navigationIcon = {
                     IconButton(
@@ -131,12 +131,9 @@ fun MarkAttendanceScreen(
     {
         var isInButtonSelected by remember { mutableStateOf(false) }
         var areButtonsEnabled by remember { mutableStateOf(true) }
-
-
         var isCheckInSelected by remember { mutableStateOf(true) }
         var currentInTime by remember { mutableStateOf<Date?>(null) }
         var currentOutTime by remember { mutableStateOf<Date?>(null) }
-
 
         val checkTimeIn = if (!isInButtonSelected) {
             currentInTime?.let {
@@ -162,7 +159,6 @@ fun MarkAttendanceScreen(
                 .padding(horizontal = 20.dep)
                 .fillMaxSize(),
         ) {
-            //PlaceOrderDialog(placeOrder.value)
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -179,12 +175,12 @@ fun MarkAttendanceScreen(
                 val currentDate = remember {
                     LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
                 }
-                Row (
+                Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                ){
+                ) {
                     Text(
                         text = currentDate,
                         fontSize = 18.sep,
@@ -192,19 +188,19 @@ fun MarkAttendanceScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dep))
-                Row (
+                Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                ){
-                    Row (
+                ) {
+                    Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
                         modifier = Modifier
                             .background(Color(0xFFD6D6D6), RoundedCornerShape(4.dep))
                             .height(52.dep)
                             .weight(.5f)
-                    ){
+                    ) {
                         Text(
                             text = checkTimeIn,
                             fontSize = 12.sep,
@@ -212,14 +208,14 @@ fun MarkAttendanceScreen(
                         )
                     }
                     Spacer(modifier = Modifier.width(12.dep))
-                    Row (
+                    Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
                         modifier = Modifier
                             .background(Color(0xFFD6D6D6), RoundedCornerShape(4.dep))
                             .height(52.dep)
                             .weight(.5f)
-                    ){
+                    ) {
                         Text(
                             text = checkTimeOut,
                             fontSize = 12.sep,
@@ -275,33 +271,27 @@ fun MarkAttendanceScreen(
                         isCheckInSelected = !isCheckInSelected
                     },
                     colors = ButtonDefaults.buttonColors(
-                        if (isCheckInSelected){
+                        if (isCheckInSelected) {
                             Color(0xFF1FB574)
-                        }else{
+                        } else {
                             Color(0xFFFF4155)
                         }
                     ),
                     shape = RoundedCornerShape(24.dep),
                     modifier = Modifier
                         .padding(horizontal = 100.dp)
-                        /*.background(
-                            if (isCheckInSelected) checkInColor else checkOutColor,
-                            RoundedCornerShape(24.dp)
-                        )*/
                         .fillMaxWidth()
                 ) {
                     Text(if (isCheckInSelected) "Check In" else "Check Out", color = Color.White)
                 }
-
-
             }
             Box(
                 contentAlignment = Alignment.BottomCenter,
                 modifier = Modifier
                     .padding(bottom = 40.dep)
                     .fillMaxSize()
-            ){
-                Row (
+            ) {
+                Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
@@ -311,8 +301,7 @@ fun MarkAttendanceScreen(
                         .clickable {
                             notifier.notify(MyDataIds.timeSheet)
                         }
-
-                ){
+                ) {
                     Icon(
                         imageVector = Icons.Outlined.DateRange,
                         contentDescription = "DateRange",
@@ -324,8 +313,6 @@ fun MarkAttendanceScreen(
                         "View Timesheets",
                         color = Color(0xFF222222),
                         fontSize = 12.sep,
-                        modifier = Modifier
-
                     )
                     Icon(
                         imageVector = Icons.Default.ArrowForwardIos,
@@ -361,21 +348,18 @@ fun AttendanceGoogleMapSection(
         )
         onDispose { }
     }
-
-    // Step 3: Handle the result of the permission request
     val permissionState by remember {
         mutableStateOf(
-            when {
+            when (PackageManager.PERMISSION_GRANTED) {
                 ContextCompat.checkSelfPermission(
                     context,
                     Manifest.permission.ACCESS_FINE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED -> AttendancePermissionState.Granted
+                ) -> AttendancePermissionState.Granted
 
                 else -> AttendancePermissionState.NotGranted
             }
         )
     }
-
     when (permissionState) {
         AttendancePermissionState.Granted -> {
             AttendanceMapContent(latitude, longitude)
@@ -405,15 +389,12 @@ fun AttendanceMapContent(
             LatLng(latitude, longitude)
         }
     }
-
     val currentLocationState = remember(currentLocation) {
         MarkerState(position = currentLocation)
     }
-
     val cameraPositionState = rememberCameraPositionState(currentLocation.toString()) {
         position = CameraPosition.fromLatLngZoom(currentLocation, 10f)
     }
-
     LaunchedEffect(currentLocation) {
         cameraPositionState.animate(
             update = CameraUpdateFactory.newCameraPosition(
@@ -422,7 +403,6 @@ fun AttendanceMapContent(
             durationMs = 1000
         )
     }
-
     Box(
         modifier = Modifier
             .fillMaxWidth()

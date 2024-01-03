@@ -11,17 +11,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -194,7 +191,6 @@ fun ContactInformationScreen(
                     fontSize = 14.sep
                 ),
                 colors = TextFieldDefaults.colors(
-                    //focusedIndicatorColor = Color(0xFFEB3D34),
                     unfocusedIndicatorColor = Color(0xFFDDDDDD),
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
@@ -231,7 +227,6 @@ fun ContactInformationScreen(
                     fontSize = 14.sep
                 ),
                 colors = TextFieldDefaults.colors(
-                    //focusedIndicatorColor = Color(0xFFEB3D34),
                     unfocusedIndicatorColor = Color(0xFFDDDDDD),
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
@@ -268,7 +263,6 @@ fun ContactInformationScreen(
                     fontSize = 14.sep
                 ),
                 colors = TextFieldDefaults.colors(
-                    //focusedIndicatorColor = Color(0xFFEB3D34),
                     unfocusedIndicatorColor = Color(0xFFDDDDDD),
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
@@ -305,7 +299,6 @@ fun ContactInformationScreen(
                     fontSize = 14.sep
                 ),
                 colors = TextFieldDefaults.colors(
-                    //focusedIndicatorColor = Color(0xFFEB3D34),
                     unfocusedIndicatorColor = Color(0xFFDDDDDD),
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
@@ -327,7 +320,6 @@ fun ContactInformationScreen(
                 Button(
                     onClick = { notifier.notify(MyDataIds.backNow) },
                     modifier = Modifier
-
                         .fillMaxWidth()
                         .weight(.5f),
                     colors = ButtonDefaults.buttonColors(Color(0xFF222222)),
@@ -352,7 +344,7 @@ fun ContactInformationScreen(
                     ),
                     shape = RoundedCornerShape(4.dep)
                 ) {
-                    Text(text = "ADD NOW", fontSize = 16.sep, color = Color(0xFF222222))
+                    Text(text = "ADD NOW", fontSize = 18.sep, color = Color(0xFF222222))
                 }
             }
         }

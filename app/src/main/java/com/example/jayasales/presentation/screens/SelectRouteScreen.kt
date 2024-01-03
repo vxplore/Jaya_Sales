@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Search
@@ -48,6 +49,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import com.debduttapanda.j3lib.NotificationService
 import com.debduttapanda.j3lib.dep
@@ -110,11 +112,9 @@ fun SelectRouteScreen(
             SearchBox()
             Spacer(modifier = Modifier.height(20.dep))
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-            {
-                items(routeList) {
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(routeList) { item ->
                     Spacer(modifier = Modifier.height(8.dep))
                     Card(
                         modifier = Modifier
@@ -125,12 +125,11 @@ fun SelectRouteScreen(
                             defaultElevation = 8.dep
                         ),
                         shape = RoundedCornerShape(4.dep)
-                    )
-                    {
+                    ) {
                         Row(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(horizontal = 20.dep, /*vertical = 20.dep*/),
+                                .padding(horizontal = 20.dep),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
@@ -148,7 +147,7 @@ fun SelectRouteScreen(
                                         .background(Color(0XFFD62B2B))
                                 ) {
                                     Text(
-                                        text = it.name.first().toString(),
+                                        text = item.name.first().toString(),
                                         fontSize = 14.sep,
                                         fontWeight = FontWeight.Medium,
                                         color = Color.White
@@ -156,16 +155,20 @@ fun SelectRouteScreen(
                                 }
                                 Spacer(modifier = Modifier.width(24.dep))
                                 Text(
-                                    text = it.name,
+                                    text = item.name,
                                     fontSize = 15.sep,
                                     color = Color.Black,
                                     fontWeight = FontWeight.Medium
                                 )
                             }
                             RadioButton(
-                                selected = isSelected,
+                                selected = item.isSelected,
                                 onClick = {
-                                    isSelected = !isSelected
+                                    val updatedList = routeList.mapIndexed { index, listItem ->
+                                        listItem.copy(isSelected = (index == routeList.indexOf(item)))
+                                    }
+                                    routeList.clear()
+                                    routeList.addAll(updatedList)
                                 },
                                 colors = RadioButtonDefaults.colors(
                                     selectedColor = Color(0XFFD62B2B),
@@ -195,6 +198,7 @@ fun SearchBox(
         onValueChange = {
             notifier.notify(MyDataIds.routeSearch, it)
         },
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
         placeholder = {
             Text(
                 text = stringResource(id = R.string.searchParties),

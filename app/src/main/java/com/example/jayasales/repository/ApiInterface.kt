@@ -1,5 +1,6 @@
 package com.example.jayasales.repository
 
+import com.example.jayasales.model.AddStoreDataResponse
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
 import com.example.jayasales.model.PartiesDataResponse
@@ -12,6 +13,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
+import java.io.File
 
 interface ApiInterface {
     @FormUrlEncoded
@@ -33,6 +35,23 @@ interface ApiInterface {
         @Field("otp") otp: String,
         @Field("new_password") confirmPassword: String,
     ): Response<ResetDataResponse>
+
+    @FormUrlEncoded
+    @POST("change-password")
+    suspend fun addCustomer(
+        @Field("store-name") storeName: String,
+        @Field("image") image: File,
+        @Field("city_id") cityId: String,
+        @Field("state_id") stateId: String,
+        @Field("postal_code") postalCode: Int,
+        @Field("address") address: String,
+        @Field("route_id") routeId: String,
+        @Field("gps_location") gpsLocation: String,
+        @Field("contact_name") contactName: String,
+        @Field("contact_number") contactNumber: Int,
+        @Field("contact_email") contactEmail: String,
+        @Field("gst") gst: String,
+    ): Response<AddStoreDataResponse>
     @GET("routes-lists")
     suspend fun route(
         @Query("routes-lists") data : String,

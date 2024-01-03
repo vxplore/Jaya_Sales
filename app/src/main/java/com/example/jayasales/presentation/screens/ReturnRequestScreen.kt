@@ -195,7 +195,6 @@ fun ReturnRequestScreen(
                         .border(1.dep, Color(0xFFB9B9B9), RoundedCornerShape(5.dep))
                         .height(54.dep)
                         .weight(.5f)
-                    //.fillMaxWidth()
                 ) {
                     BrandDropDown()
                 }
@@ -207,7 +206,6 @@ fun ReturnRequestScreen(
                         .border(1.dep, Color(0xFFB9B9B9), RoundedCornerShape(5.dep))
                         .height(54.dep)
                         .weight(.5f)
-                    //.fillMaxWidth()
                 ) {
                     BrandCategoryDropDown()
                 }
@@ -249,7 +247,6 @@ fun ReturnRequestScreen(
                         fontSize = 14.sep
                     ),
                     colors = TextFieldDefaults.colors(
-                        //focusedIndicatorColor = Color(0xFFEB3D34),
                         unfocusedIndicatorColor = Color(0xFFB9B9B9),
                         focusedContainerColor = Color.White,
                         unfocusedContainerColor = Color.White,
@@ -293,7 +290,6 @@ fun ReturnRequestScreen(
                     fontSize = 14.sep
                 ),
                 colors = TextFieldDefaults.colors(
-                    //focusedIndicatorColor = Color(0xFFEB3D34),
                     unfocusedIndicatorColor = Color(0xFFB9B9B9),
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
@@ -561,7 +557,6 @@ fun ReturnDatePicker(
     }
     val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)
     val date = formatter.format(Date(selectedDate))
-    //if (date != formatter.format(Date())) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -577,7 +572,6 @@ fun ReturnDatePicker(
             color = Color(0xFF222222),
             fontSize = 14.sep,
             modifier = Modifier
-            //.border(1.5.dep,MaterialTheme.colorScheme.surface)
         )
         IconButton(
             onClick = {
@@ -599,9 +593,7 @@ val stroke = Stroke(
 )
 
 @Composable
-fun FilePickerScreen(
-    notifier: NotificationService = rememberNotifier(),
-) {
+fun FilePickerScreen() {
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
     val selectedFileName = remember { mutableStateOf<String?>(null) }
     var isPDFFile by remember { mutableStateOf(false) }
@@ -622,7 +614,6 @@ fun FilePickerScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            //.padding(start = 16.dp, top = 8.dp)
             .height(64.dep)
             .width(52.dep)
             .clip(MaterialTheme.shapes.small)

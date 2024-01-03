@@ -127,7 +127,6 @@ fun ItemScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-
             ) {
                 Spacer(modifier = Modifier.height(12.dep))
                 ScrollableTabRow(
@@ -193,7 +192,6 @@ fun ItemScreen(
                         }
                     }
                     Spacer(modifier = Modifier.height(24.dep))
-
                     LazyColumn(
                         modifier = Modifier
                             .padding(bottom = 80.dep)
@@ -210,7 +208,6 @@ fun ItemScreen(
                         }
                     }
                 }
-
             }
         }
     }

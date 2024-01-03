@@ -294,7 +294,6 @@ fun StoreDetailsScreen(
                                 color = Color(0xFF222222)
                             )
                         }
-
                     }
                     Spacer(modifier = Modifier.height(20.dep))
                     Divider(
@@ -343,7 +342,6 @@ fun StoreDetailsScreen(
                             )
                         }
                         Spacer(modifier = Modifier.width(12.dep))
-
                         OutlinedButton(
                             onClick = { notifier.notify(MyDataIds.paymentBtn, "Payments") },
                             colors = if (selectedTransactionTab.value == TransactionTab.Payments) ButtonDefaults.buttonColors(
@@ -379,7 +377,6 @@ fun StoreDetailsScreen(
                                         )
                                         .clip(RoundedCornerShape(8.dep))
                                         .clickable {
-                                            //notifier.notify(MyDataIds.storeDetails)
                                         },
                                     colors = CardDefaults.cardColors(Color.White),
                                     elevation = CardDefaults.cardElevation(
@@ -398,7 +395,6 @@ fun StoreDetailsScreen(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.SpaceBetween,
                                             modifier = Modifier
-                                                //.padding(top = 8.dep)
                                                 .fillMaxWidth()
                                         ) {
                                             Text(
@@ -549,7 +545,6 @@ fun StoreDetailsScreen(
                                         )
                                         .clip(RoundedCornerShape(8.dep))
                                         .clickable {
-                                            //notifier.notify(MyDataIds.storeDetails)
                                         },
                                     colors = CardDefaults.cardColors(Color.White),
                                     elevation = CardDefaults.cardElevation(
@@ -569,7 +564,6 @@ fun StoreDetailsScreen(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.SpaceBetween,
                                             modifier = Modifier
-                                                //.padding(top = 8.dep)
                                                 .fillMaxWidth()
                                         ) {
                                             Text(

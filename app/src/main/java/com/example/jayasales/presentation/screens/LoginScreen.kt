@@ -89,7 +89,6 @@ fun LoginScreen(
             .background(Color(0xFFD62B2B)),
         contentAlignment = Alignment.TopCenter
     ) {
-        //Spacer(modifier = Modifier.height(60.dep))
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -117,7 +116,6 @@ fun LoginScreen(
                         fontFamily = openSans,
                         fontWeight = FontWeight.ExtraBold,
                         color = Color(0XFFFFEB56),
-                        //modifier = Modifier.padding(top = 20.dep)
                     )
                 }
                 Spacer(modifier = Modifier.height(8.dep))
@@ -271,7 +269,11 @@ fun LoginScreen(
                         color = Color.White
                     )
                 } else {
-                    Text(text = "Sign In", fontSize = 18.sep, color = Color(0xFF222222))
+                    Text(
+                        text = "Sign In",
+                        fontSize = 18.sep,
+                        color = Color(0xFF222222)
+                    )
                 }
             }
         }
@@ -302,7 +304,6 @@ private fun RecoverPasswordDialog(
     loading: State<Boolean> = rememberBoolState(id = MyDataIds.loading),
     notifier: NotificationService = rememberNotifier()
 ) {
-
     if (appearDialog) {
         Dialog(onDismissRequest = { notifier.notify(MyDataIds.onDismissDialog) }) {
             RecoverPasswordCustomDialogUi(userName, otpValue, password, confirmPassword)
@@ -322,8 +323,6 @@ private fun RecoverPasswordCustomDialogUi(
     var showOtpField by remember { mutableStateOf(false) }
     var verifyButtonVisible by remember { mutableStateOf(true) }
     var otpverifyButtonVisible by remember { mutableStateOf(true) }
-
-
     Box(
         Modifier
             .fillMaxWidth()
@@ -342,7 +341,6 @@ private fun RecoverPasswordCustomDialogUi(
                 fontSize = 25.sep,
                 fontWeight = FontWeight.Bold
             )
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -399,9 +397,7 @@ private fun RecoverPasswordCustomDialogUi(
                     }
                 }
             }
-
             Spacer(modifier = Modifier.height(15.dep))
-
             if (showOtpField) {
                 Column(
                     modifier = Modifier
@@ -411,7 +407,6 @@ private fun RecoverPasswordCustomDialogUi(
                     OtpField(otpValue = otpValue)
                 }
             }
-
             Spacer(modifier = Modifier.height(15.dep))
 
             if (otpValue.length == 4) {
@@ -494,7 +489,6 @@ private fun RecoverPasswordCustomDialogUi(
         }
     }
 }
-
 
 @Composable
 private fun OtpField(

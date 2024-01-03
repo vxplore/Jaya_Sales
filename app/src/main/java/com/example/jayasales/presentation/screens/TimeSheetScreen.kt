@@ -1,7 +1,6 @@
 package com.example.jayasales.presentation.screens
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,11 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material3.Card
@@ -33,13 +30,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -54,8 +46,8 @@ import com.example.jayasales.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimeSheetScreen(
-    notifier : NotificationService  = rememberNotifier()
-){
+    notifier: NotificationService = rememberNotifier()
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -99,15 +91,14 @@ fun TimeSheetScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-
             ) {
                 Spacer(modifier = Modifier.height(16.dep))
-                Row (
+                Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                ){
+                ) {
                     Icon(
                         imageVector = Icons.Outlined.DateRange,
                         contentDescription = "DateRange",
@@ -119,19 +110,17 @@ fun TimeSheetScreen(
                         "View Timesheets",
                         color = Color(0xFFD62B2B),
                         fontSize = 16.sep,
-                        modifier = Modifier
-
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dep))
                 Divider()
                 Spacer(modifier = Modifier.height(16.dep))
-                Row (
+                Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(horizontal = 20.dep)
                         .fillMaxWidth()
-                ){
+                ) {
                     Text(
                         text = "Date",
                         fontSize = 12.sep,
@@ -179,48 +168,47 @@ fun TimeSheetScreen(
                     verticalArrangement = Arrangement.spacedBy(20.dep)
                 ) {
                     items(count = 10) {
-                        Row (
+                        Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .fillMaxWidth()
-                        ){
-                                Card(
+                        ) {
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(.25f),
+                                colors = CardDefaults.cardColors(Color(0XFFF5F5F5)),
+                                elevation = CardDefaults.cardElevation(
+                                    defaultElevation = 4.dep
+                                ),
+                                border = BorderStroke(1.dep, color = Color(0XFFECECEC)),
+                                shape = RoundedCornerShape(8.dep),
+                            ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center,
                                     modifier = Modifier
-                                        //.width(64.dep)
-                                        .fillMaxWidth()
-                                        .weight(.25f),
-                                    colors = CardDefaults.cardColors(Color(0XFFF5F5F5)),
-                                    elevation = CardDefaults.cardElevation(
-                                        defaultElevation = 4.dep
-                                    ),
-                                    border = BorderStroke(1.dep, color = Color(0XFFECECEC)),
-                                    shape = RoundedCornerShape(8.dep),
-                                ){
-                                    Column(
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.Center,
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(8.dep),
-                                    ) {
-                                        Text(
-                                            text = "14",
-                                            fontSize = 12.sep,
-                                            fontWeight = FontWeight.Bold,
-                                            modifier = Modifier,
-                                            textAlign = TextAlign.Center
-                                        )
-                                        Text(
-                                            text = "Sat",
-                                            fontSize = 12.sep,
-                                            fontWeight = FontWeight.Bold,
-                                            modifier = Modifier,
-                                            textAlign = TextAlign.Center
-                                        )
-                                    }
+                                        .fillMaxSize()
+                                        .padding(8.dep),
+                                ) {
+                                    Text(
+                                        text = "14",
+                                        fontSize = 12.sep,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier,
+                                        textAlign = TextAlign.Center
+                                    )
+                                    Text(
+                                        text = "Sat",
+                                        fontSize = 12.sep,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier,
+                                        textAlign = TextAlign.Center
+                                    )
                                 }
+                            }
                             Spacer(modifier = Modifier.width(12.dep))
-                            Row (
+                            Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
                                     .weight(.25f)
@@ -237,8 +225,6 @@ fun TimeSheetScreen(
                                     "14:01",
                                     color = Color(0xFF222222),
                                     fontSize = 12.sep,
-                                    modifier = Modifier
-
                                 )
                                 Icon(
                                     imageVector = Icons.Default.LocationOn,
@@ -249,7 +235,7 @@ fun TimeSheetScreen(
                                 )
                             }
                             Spacer(modifier = Modifier.width(12.dep))
-                            Row (
+                            Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
                                     .weight(.25f)
@@ -259,7 +245,6 @@ fun TimeSheetScreen(
                                     contentDescription = "DateRange",
                                     tint = Color(0xFFD62B2B),
                                     modifier = Modifier
-                                        //.padding(top = 4.dep)
                                         .size(8.dep)
                                 )
                                 Text(

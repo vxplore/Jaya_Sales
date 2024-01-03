@@ -17,7 +17,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-enum class PartiesTab{
+enum class PartiesTab {
     All,
     Visited,
     Pending
@@ -44,11 +44,12 @@ class PartiesViewModel @Inject constructor(
 
     override fun onNotification(id: Any?, arg: Any?) {
         when (id) {
-            MyDataIds.back->{
+            MyDataIds.back -> {
                 navigation {
                     navigate(Routes.home.full)
                 }
             }
+
             MyDataIds.partiesSearch -> {
                 partiesSearch.value = arg as String
                 filter()
@@ -68,12 +69,14 @@ class PartiesViewModel @Inject constructor(
                 selectedTab.value = PartiesTab.Pending
                 filter()
             }
-            MyDataIds.storeDetails->{
+
+            MyDataIds.storeDetails -> {
                 navigation {
                     navigate(Routes.storeDetails.full)
                 }
             }
-            MyDataIds.addStore->{
+
+            MyDataIds.addStore -> {
                 navigation {
                     navigate(Routes.addNewStore.full)
                 }
@@ -108,14 +111,13 @@ class PartiesViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
-                // Handle exceptions if needed
             }
         }
     }
 
     private fun filter() {
         val query = partiesSearch.value
-        val tabString = when(selectedTab.value){
+        val tabString = when (selectedTab.value) {
             PartiesTab.All -> ""
             PartiesTab.Visited -> "Visited"
             PartiesTab.Pending -> "Pending"

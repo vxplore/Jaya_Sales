@@ -1,6 +1,5 @@
 package com.example.jayasales.presentation.screens
 
-
 import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -71,7 +70,6 @@ import com.debduttapanda.j3lib.stringState
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -115,8 +113,6 @@ fun ReviewCartScreen(
                         text = "Back to Parties",
                         fontSize = 14.sep,
                         color = Color.White,
-                        modifier = Modifier
-
                     )
                 }
             },
@@ -152,7 +148,6 @@ fun ReviewCartScreen(
                             fontWeight = FontWeight.Medium
                         )
                     }
-
                 },
                 navigationIcon = {
                     IconButton(
@@ -181,7 +176,6 @@ fun ReviewCartScreen(
                 .padding(it)
                 .fillMaxSize(),
         ) {
-            //PlaceOrderDialog(placeOrder.value)
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -194,7 +188,6 @@ fun ReviewCartScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-
                     Text(
                         text = "Items",
                         fontSize = 16.sep,
@@ -204,12 +197,6 @@ fun ReviewCartScreen(
                         onClick = {
                             notifier.notify(MyDataIds.addItem)
                         },
-                        modifier = Modifier
-                            //.padding(16.dep)
-                           /* .background(
-                                color = Color(0xFFD62B2B),
-                                shape = RoundedCornerShape(4.dep)
-                            )*/
                     ) {
                         Text(
                             text = "+ Add item",
@@ -220,13 +207,10 @@ fun ReviewCartScreen(
                     }
 
                 }
-                //Spacer(modifier = Modifier.height(10.dep))
                 LazyColumn(
                     modifier = Modifier
-                        //.padding(bottom = 200.dep)
                         .fillMaxWidth()
-                        .heightIn(max = 300.dep)
-                    ,
+                        .heightIn(max = 300.dep),
                 ) {
                     items(5) {
                         Divider(
@@ -235,7 +219,6 @@ fun ReviewCartScreen(
                         )
                         Spacer(modifier = Modifier.height(5.dep))
                         AddedProductToCartList()
-                        //Spacer(modifier = Modifier.height(5.dep))
                         Divider(
                             modifier = Modifier.height(0.3.dep),
                             color = Color(0XFFADA9A9)
@@ -296,7 +279,6 @@ fun ReviewCartScreen(
                     modifier = Modifier.height(0.3.dep),
                     color = Color(0XFFADA9A9)
                 )
-
             }
             Box(
                 modifier = Modifier
@@ -422,7 +404,6 @@ fun AddedProductToCartList(){
     Row(modifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = 30.dep),
-        //.padding(vertical = 10.dep),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ){
@@ -432,7 +413,6 @@ fun AddedProductToCartList(){
                 fontSize = 14.sep)
             Spacer(modifier = Modifier.height(10.dep))
             Text(text = "₹100/pcs", fontSize = 12.sep, fontWeight = FontWeight.Medium)
-            //Spacer(modifier = Modifier.height(10.dep))
             TextButton(
                 onClick = {
                 },

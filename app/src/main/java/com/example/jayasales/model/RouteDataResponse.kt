@@ -8,5 +8,6 @@ data class RouteDataResponse (
 
 data class Datum (
     val uid: String,
-    val name: String
+    val name: String,
+    var isSelected: Boolean = false
 )

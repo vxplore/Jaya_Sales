@@ -78,11 +78,12 @@ class SelectRouteViewModel @Inject constructor(
             try {
                 val response = repo.searchRoute(queryText)
                 if (response?.status == true) {
+                    Log.d("hhn","$response")
                     routeList.clear()
                     routeList.addAll(response.data)
                 }
             } catch (e: Exception) {
-                Log.e("jxdhdcd", "${e.message}")
+                Log.e("hhn", "${e.message}")
             }
         }
     }

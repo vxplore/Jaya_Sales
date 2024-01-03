@@ -441,7 +441,6 @@ fun SearchField(
         trailingIcon = {
             IconButton(
                 onClick = {
-
                 }
             ) {
                 Icon(

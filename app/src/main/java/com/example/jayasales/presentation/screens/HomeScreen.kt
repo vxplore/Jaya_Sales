@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -42,7 +41,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -58,10 +56,7 @@ import androidx.compose.ui.unit.dp
 import com.debduttapanda.j3lib.NotificationService
 import com.debduttapanda.j3lib.boolState
 import com.debduttapanda.j3lib.dep
-import com.debduttapanda.j3lib.rememberBoolState
-import com.debduttapanda.j3lib.rememberIntState
 import com.debduttapanda.j3lib.rememberNotifier
-import com.debduttapanda.j3lib.rememberTState
 import com.debduttapanda.j3lib.sep
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
@@ -77,11 +72,16 @@ fun HomeScreen(
     val scope = rememberCoroutineScope()
     ModalNavigationDrawer(
         drawerContent = {
-            ModalDrawerSheet {
+            ModalDrawerSheet(
+                drawerShape = RoundedCornerShape(0.dep),
+                modifier = Modifier
+                    .padding(end = 68.dep)
+                    .fillMaxWidth()
+            ) {
                 Spacer(modifier = Modifier.height(28.dep))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(31.dep)
+                    horizontalArrangement = Arrangement.spacedBy(20.dep)
                 ) {
                     Box(
                         modifier = Modifier
@@ -92,8 +92,8 @@ fun HomeScreen(
                             contentDescription ="",
                             modifier = Modifier
                                 .size(
-                                    width = 76.dep,
-                                    height = 76.dep
+                                    width = 64.dep,
+                                    height = 64.dep
                                 )
                                 .shadow(2.dep, shape = CircleShape)
                         )
@@ -102,38 +102,53 @@ fun HomeScreen(
                             shape = CircleShape,
                             modifier = Modifier
                                 .align(Alignment.BottomEnd)
-                                .clickable {
-
-                                },
+                                .size(20.dep),
                             elevation = CardDefaults.cardElevation(
                                 defaultElevation = 8.dep
                             )
                         ) {
-                            Icon(
-                                imageVector = Icons.Filled.Edit,
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .padding(5.dep)
-                                    .size(width = 15.dep, height = 15.dep),
-                                tint = Color.Red
-                            )
+                            IconButton(
+                                onClick = {
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Edit,
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .padding(5.dep)
+                                        .size(width = 12.dep, height = 12.dep),
+                                    tint = Color.Red
+                                )
+                            }
                         }
                     }
-                    Column(horizontalAlignment = Alignment.Start) {
-                        Text(text = "Rakesh Roshan", fontSize = 20.sep, color = Color.Black)
-                        Spacer(modifier = Modifier.height(5.dep))
+                    Column(
+                        horizontalAlignment = Alignment.Start
+                    )
+                    {
+                        Text(
+                            text = "Rakesh Roshan",
+                            fontSize = 18.sep,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFF222222)
+                        )
+                        Spacer(modifier = Modifier.height(2.dep))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(3.dep)
+                            horizontalArrangement = Arrangement.spacedBy(2.dep)
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.LocationOn,
                                 contentDescription ="",
-                                tint = Color.Red,
-                                modifier = Modifier.size(width = 16.dep, height = 24.dep)
+                                tint = Color(0xFFD62B2B),
+                                modifier = Modifier.size(width = 16.dep, height = 20.dep)
                             )
-                            Text(text = "Belur Howrah India", fontSize = 13.sep, color = Color.DarkGray)
+                            Text(
+                                text = "Belur Howrah India",
+                                fontSize = 12.sep,
+                                color = Color.DarkGray
+                            )
                         }
                     }
                 }
@@ -144,9 +159,8 @@ fun HomeScreen(
                         .padding(horizontal = 20.dep)
                         .background(color = Color.LightGray)
                 )
-                Spacer(modifier = Modifier.height(28.dep))
+                Spacer(modifier = Modifier.height(20.dep))
                 Row(
-                    //horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .height(40.dep)
@@ -164,12 +178,11 @@ fun HomeScreen(
                     Spacer(Modifier.width(8.dep))
                     Text(
                         text = stringResource(id = R.string.Return),
-                        modifier = Modifier
-                        //.padding(start = 16.dp)
+                        fontSize = 14.sep,
+                        color = Color(0xFF222222)
                     )
                 }
                 Row(
-                    //horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .height(40.dep)
@@ -187,8 +200,8 @@ fun HomeScreen(
                     Spacer(Modifier.width(8.dep))
                     Text(
                         text = "Logout",
-                        modifier = Modifier
-                        //.padding(start = 16.dp)
+                        fontSize = 14.sep,
+                        color = Color(0xFF222222)
                     )
                 }
             }
@@ -275,7 +288,6 @@ fun HomeScreen(
                             onClick = {
                             },
                             modifier = Modifier
-                                // .padding(start = 16.dep)
                                 .height(36.dep)
                                 .width(40.dep)
                         ) {
@@ -293,7 +305,6 @@ fun HomeScreen(
             Column(
                 modifier = Modifier
                     .padding(it)
-                    //.padding(bottom = 16.dep)
                     .fillMaxSize()
             ) {
                 Row(
@@ -353,15 +364,12 @@ fun HomeScreen(
                             fontWeight = FontWeight.Bold,
                             color = Color.White,
                             modifier = Modifier
-                            //.padding(paddingValues = PaddingValues(start = 64.dep))
                         )
                         Text(
                             text = stringResource(id = R.string.payments),
                             fontSize = 16.sep,
-                            //fontWeight = FontWeight.Bold,
                             color = Color.White,
                             modifier = Modifier
-                            //.padding(paddingValues = PaddingValues(start = 64.dep))
                         )
                     }
                     Spacer(modifier = Modifier.width(16.dep))
@@ -379,15 +387,12 @@ fun HomeScreen(
                             fontWeight = FontWeight.Bold,
                             color = Color.White,
                             modifier = Modifier
-                            //.padding(paddingValues = PaddingValues(start = 64.dep))
                         )
                         Text(
                             text = stringResource(id = R.string.sales),
                             fontSize = 16.sep,
-                            //fontWeight = FontWeight.Bold,
                             color = Color.White,
                             modifier = Modifier
-                            //.padding(paddingValues = PaddingValues(start = 64.dep))
                         )
                     }
                 }
