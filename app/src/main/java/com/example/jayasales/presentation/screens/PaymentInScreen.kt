@@ -121,7 +121,7 @@ fun PaymentInScreen(
                     shape = RoundedCornerShape(4.dep)
                 ) {
                     Text(
-                        text = "Back to Parties",
+                        text = stringResource(id = R.string.Back_Parties),
                         fontSize = 14.sep,
                         color = Color.White,
                     )
@@ -145,7 +145,7 @@ fun PaymentInScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Payment In",
+                        text = stringResource(id = R.string.Payment_In),
                         fontSize = 20.sep,
                         fontWeight = FontWeight.Bold,
                     )
@@ -263,20 +263,20 @@ fun PaymentInScreen(
                                 horizontalArrangement = Arrangement.Center,
                                 modifier = Modifier
                                     .background(
-                                        if (paymentItem.paymentDone =="00%") {
+                                        if (paymentItem.paymentDone == "00%") {
                                             Color(0xFFFFEAEA)
-                                        }else{
+                                        } else {
                                             Color(0xFFFFFDEB)
-                                             },
+                                        },
                                         RoundedCornerShape(12.dep)
                                     )
                                     .border(
                                         .5.dep,
-                                        if (paymentItem.paymentDone =="00%") {
+                                        if (paymentItem.paymentDone == "00%") {
                                             Color(0xFFD62B2B)
-                                        }else{
+                                        } else {
                                             Color(0xFFFAC800)
-                                             },
+                                        },
                                         RoundedCornerShape(12.dep)
                                     )
                                     .padding(horizontal = 12.dep)
@@ -360,7 +360,7 @@ fun PaymentInScreen(
             )
             Spacer(modifier = Modifier.height(8.dep))
             Text(
-                text = "Past Transaction",
+                text = stringResource(id = R.string.Past_Transaction),
                 fontSize = 16.sep,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
@@ -443,7 +443,7 @@ fun PaymentInScreen(
                 },
                 placeholder = {
                     Text(
-                        "Any Instructions ?",
+                        stringResource(id = R.string.Any_Instructions),
                         color = Color(0xFF222222),
                         fontSize = 14.sep
                     )
@@ -497,7 +497,7 @@ fun PaymentInScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "Amount",
+                                text = stringResource(id = R.string.Amount),
                                 fontSize = 12.sep,
                                 textAlign = TextAlign.Center,
                                 color = Color(0xFF222222)
@@ -525,7 +525,11 @@ fun PaymentInScreen(
                             ),
                             shape = RoundedCornerShape(4.dep)
                         ) {
-                            Text(text = "Save", fontSize = 16.sep, color = Color(0xFF222222))
+                            Text(
+                                text = stringResource(id = R.string.Save),
+                                fontSize = 16.sep,
+                                color = Color(0xFF222222)
+                            )
                         }
                     }
                 }

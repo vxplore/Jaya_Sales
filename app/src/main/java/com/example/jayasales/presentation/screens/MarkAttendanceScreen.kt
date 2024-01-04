@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.Animatable
 import java.text.SimpleDateFormat
 import java.util.*
 import androidx.compose.foundation.background
@@ -28,20 +27,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.outlined.DateRange
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Button import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
@@ -59,7 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -83,7 +76,6 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import java.sql.Time
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
@@ -152,7 +144,6 @@ fun MarkAttendanceScreen(
         } else {
             "Check Out: ---:---"
         }
-
         Box(
             modifier = Modifier
                 .padding(it)
@@ -169,7 +160,7 @@ fun MarkAttendanceScreen(
                         .fillMaxWidth()
                         .height(200.dep)
                 ) {
-                    AttendanceGoogleMapSection()
+                    GoogleMapSection()
                 }
                 Spacer(modifier = Modifier.height(24.dep))
                 val currentDate = remember {
@@ -310,7 +301,7 @@ fun MarkAttendanceScreen(
                             .size(16.dep)
                     )
                     Text(
-                        "View Timesheets",
+                        stringResource(id = R.string.Timesheets),
                         color = Color(0xFF222222),
                         fontSize = 12.sep,
                     )
@@ -364,7 +355,6 @@ fun AttendanceGoogleMapSection(
         AttendancePermissionState.Granted -> {
             AttendanceMapContent(latitude, longitude)
         }
-
         AttendancePermissionState.NotGranted -> {
             Text("Location permission is required for this feature.")
         }

@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.debduttapanda.j3lib.NotificationService
@@ -53,7 +54,7 @@ fun TimeSheetScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Timesheet",
+                        text = stringResource(id = R.string.Timesheet),
                         fontSize = 20.sep,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier
@@ -107,7 +108,7 @@ fun TimeSheetScreen(
                             .size(20.dep)
                     )
                     Text(
-                        "View Timesheets",
+                        stringResource(id = R.string.View_Timesheets),
                         color = Color(0xFFD62B2B),
                         fontSize = 16.sep,
                     )
@@ -122,7 +123,7 @@ fun TimeSheetScreen(
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = "Date",
+                        text = stringResource(id = R.string.Date),
                         fontSize = 12.sep,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier
@@ -131,7 +132,7 @@ fun TimeSheetScreen(
                     )
                     Spacer(modifier = Modifier.width(16.dep))
                     Text(
-                        text = "Check In",
+                        text = stringResource(id = R.string.Check_In),
                         fontSize = 12.sep,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier
@@ -140,7 +141,7 @@ fun TimeSheetScreen(
                     )
                     Spacer(modifier = Modifier.width(16.dep))
                     Text(
-                        text = "Checkout",
+                        text = stringResource(id = R.string.Checkout),
                         fontSize = 12.sep,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier
@@ -149,7 +150,7 @@ fun TimeSheetScreen(
                     )
                     Spacer(modifier = Modifier.width(16.dep))
                     Text(
-                        text = "Working hr",
+                        text = stringResource(id = R.string.Working_hr),
                         fontSize = 12.sep,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier
@@ -167,7 +168,7 @@ fun TimeSheetScreen(
                     contentPadding = PaddingValues(vertical = 10.dep),
                     verticalArrangement = Arrangement.spacedBy(20.dep)
                 ) {
-                    items(count = 10) {
+                    items(count = 10000000) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier

@@ -4,11 +4,9 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,9 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -40,7 +36,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -48,7 +43,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
@@ -58,9 +52,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import com.debduttapanda.j3lib.NotificationService
 import com.debduttapanda.j3lib.boolState
 import com.debduttapanda.j3lib.dep
@@ -110,7 +102,7 @@ fun ReviewCartScreen(
                     shape = RoundedCornerShape(4.dep)
                 ) {
                     Text(
-                        text = "Back to Parties",
+                        text = stringResource(id = R.string.Back_Parties),
                         fontSize = 14.sep,
                         color = Color.White,
                     )
@@ -138,7 +130,7 @@ fun ReviewCartScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ){
                         Text(
-                            text = "Review Cart",
+                            text = stringResource(id = R.string.Review_Cart),
                             fontSize = 20.sep,
                             fontWeight = FontWeight.Bold
                         )
@@ -159,7 +151,7 @@ fun ReviewCartScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBackIosNew,
-                            contentDescription = "hamburger",
+                            contentDescription = "ArrowBackIosNew",
                             tint = Color.Black
                         )
                     }
@@ -189,7 +181,7 @@ fun ReviewCartScreen(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Items",
+                        text = stringResource(id = R.string.Items),
                         fontSize = 16.sep,
                         fontWeight = FontWeight.Medium
                     )
@@ -199,7 +191,7 @@ fun ReviewCartScreen(
                         },
                     ) {
                         Text(
-                            text = "+ Add item",
+                            text = stringResource(id = R.string.Add_item),
                             fontSize = 14.sep,
                             fontWeight = FontWeight.Medium,
                             color = Color(0xFFD62B2B),
@@ -255,7 +247,7 @@ fun ReviewCartScreen(
                         },
                         placeholder = {
                             Text(
-                                "Any Instructions ?",
+                                stringResource(id = R.string.Any_Instructions),
                                 color = Color(0xFF222222),
                                 fontSize = 14.sep
                             )
@@ -320,7 +312,7 @@ fun ReviewCartScreen(
                             modifier = Modifier
                         ) {
                             Text(
-                                text = "Place Order",
+                                text = stringResource(id = R.string.Place_Order),
                                 fontSize = 14.sep,
                                 fontWeight = FontWeight.Medium,
                                 color = Color.Black
@@ -340,7 +332,7 @@ fun PaymentDetails() {
         .padding(horizontal = 20.dep)
     ) {
         Text(
-            text = "Payment Details",
+            text = stringResource(id = R.string.Payment_Details),
             fontWeight = FontWeight.Bold,
             fontSize = 16.sep
         )
@@ -354,22 +346,22 @@ fun PaymentDetails() {
         ){
             Column(horizontalAlignment = Alignment.Start) {
                 Text(
-                    text = "Taxable Amount",
+                    text = stringResource(id = R.string.Taxable_Amount),
                     fontSize = 12.sep
                 )
                 Spacer(modifier = Modifier.height(10.dep))
                 Text(
-                    text = "CGST",
+                    text = stringResource(id = R.string.CGST),
                     fontSize = 12.sep
                 )
                 Spacer(modifier = Modifier.height(10.dep))
                 Text(
-                    text = "SGST",
+                    text = stringResource(id = R.string.SGST),
                     fontSize = 12.sep
                 )
                 Spacer(modifier = Modifier.height(10.dep))
                 Text(
-                    text = "Total",
+                    text = stringResource(id = R.string.Total),
                     fontSize = 14.sep,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -418,7 +410,7 @@ fun AddedProductToCartList(){
                 },
                 modifier = Modifier
             ) {
-                Text(text = "REMOVE",
+                Text(text = stringResource(id = R.string.REMOVE),
                     fontSize = 10.sep,
                     color = Color(0xFF222222)
                 )

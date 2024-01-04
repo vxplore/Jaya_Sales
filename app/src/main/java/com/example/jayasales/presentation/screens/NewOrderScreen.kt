@@ -1,6 +1,5 @@
 package com.example.jayasales.presentation.screens
 
-
 import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -56,6 +55,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.debduttapanda.j3lib.NotificationService
@@ -88,7 +88,7 @@ fun NewOrdersPage(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "New Order",
+                        text = stringResource(id = R.string.New_Order),
                         fontSize = 20.sep,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier
@@ -106,7 +106,7 @@ fun NewOrdersPage(
                     ) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBackIosNew,
-                            contentDescription = "hamburger",
+                            contentDescription = "ArrowBackIosNew",
                             tint = Color.Black
                         )
                     }
@@ -137,7 +137,6 @@ fun NewOrdersPage(
                     edgePadding = 0.dep,
                     modifier = Modifier
                         .fillMaxWidth(),
-                    //.padding(top = 10.dep),
                     indicator = { tabPosition ->
                         if (selectedTabIndex.value > -1) {
                             TabRowDefaults.Indicator(
@@ -177,7 +176,7 @@ fun NewOrdersPage(
                     SearchField()
                     Spacer(modifier = Modifier.height(20.dep))
                     Text(
-                        text = "Categories",
+                        text = stringResource(id = R.string.Categories),
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sep
                     )
@@ -198,7 +197,6 @@ fun NewOrdersPage(
                         modifier = Modifier
                             .padding(bottom = 80.dep)
                             .fillMaxSize(),
-                        //.heightIn(max = 450.dep)
                     ) {
                         items(productData) {
                             ProductList(
@@ -211,7 +209,6 @@ fun NewOrdersPage(
                         }
                     }
                 }
-
             }
         }
         Box(
@@ -265,7 +262,7 @@ fun BottomUI(
                     shape = RoundedCornerShape(2.dep)
                 ) {
                     Text(
-                        text = "View Cart",
+                        text = stringResource(id = R.string.View_Cart),
                         fontSize = 14.sep,
                         fontWeight = FontWeight.Medium,
                         color = Color.Black,
@@ -432,7 +429,7 @@ fun SearchField(
         },
         placeholder = {
             Text(
-                text = "Search Product",
+                text = stringResource(id = R.string.Search_Product),
                 color = Color(0XFF898989),
                 fontSize = 16.sep
             )

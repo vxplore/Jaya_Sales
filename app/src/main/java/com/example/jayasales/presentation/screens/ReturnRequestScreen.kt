@@ -1,18 +1,14 @@
 package com.example.jayasales.presentation.screens
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.provider.OpenableColumns
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,13 +20,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -40,10 +31,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
@@ -74,7 +62,6 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -84,7 +71,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
@@ -92,7 +78,6 @@ import com.debduttapanda.j3lib.NotificationService
 import com.debduttapanda.j3lib.dep
 import com.debduttapanda.j3lib.depx
 import com.debduttapanda.j3lib.listState
-import com.debduttapanda.j3lib.notifier
 import com.debduttapanda.j3lib.rememberNotifier
 import com.debduttapanda.j3lib.sep
 import com.debduttapanda.j3lib.stringState
@@ -117,7 +102,7 @@ fun ReturnRequestScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Return Request",
+                        text = stringResource(id = R.string. Return_Request),
                         fontSize = 20.sep,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF2B2B2B),
@@ -176,7 +161,6 @@ fun ReturnRequestScreen(
                     fontSize = 14.sep
                 ),
                 colors = TextFieldDefaults.colors(
-                    //focusedIndicatorColor = Color(0xFFEB3D34),
                     unfocusedIndicatorColor = Color(0xFFB9B9B9),
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
@@ -327,7 +311,11 @@ fun ReturnRequestScreen(
                 ),
                 shape = RoundedCornerShape(4.dep)
             ) {
-                Text(text = "Submit", fontSize = 18.sep, color = Color(0xFF222222))
+                Text(
+                    text = stringResource(id = R.string.Submit),
+                    fontSize = 18.sep,
+                    color = Color(0xFF222222)
+                )
             }
         }
     }
@@ -593,7 +581,8 @@ val stroke = Stroke(
 )
 
 @Composable
-fun FilePickerScreen() {
+fun FilePickerScreen()
+{
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
     val selectedFileName = remember { mutableStateOf<String?>(null) }
     var isPDFFile by remember { mutableStateOf(false) }

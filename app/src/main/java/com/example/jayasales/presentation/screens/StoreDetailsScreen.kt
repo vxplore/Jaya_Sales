@@ -62,7 +62,6 @@ import com.debduttapanda.j3lib.sep
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
 import com.example.jayasales.model.StoreDataResponse
-import com.example.jayasales.presentation.viewmodels.PartiesTab
 import com.example.jayasales.presentation.viewmodels.TransactionTab
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -177,7 +176,7 @@ fun StoreDetailsScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Edit,
-                        contentDescription = "",
+                        contentDescription = "Edit",
                         tint = Color.White
                     )
                 }
@@ -337,7 +336,7 @@ fun StoreDetailsScreen(
                             border = BorderStroke(0.dep, Color.Transparent)
                         ) {
                             Text(
-                                text = "Sales",
+                                text = stringResource(id = R.string.Sales),
                                 color = if (selectedTransactionTab.value == TransactionTab.Sales) Color.White else Color.Black
                             )
                         }
@@ -567,7 +566,7 @@ fun StoreDetailsScreen(
                                                 .fillMaxWidth()
                                         ) {
                                             Text(
-                                                text = "Payment",
+                                                text = stringResource(id = R.string.Payment),
                                                 fontSize = 14.sep,
                                                 textAlign = TextAlign.Center,
                                                 fontWeight = FontWeight.SemiBold,

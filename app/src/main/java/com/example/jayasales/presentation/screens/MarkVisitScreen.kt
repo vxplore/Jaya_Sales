@@ -133,7 +133,7 @@ fun MarkVisitScreen(
                 ),
                 placeholder = {
                     Text(
-                        "Comments",
+                        stringResource(id = R.string.Comments),
                         color = Color(0xFF666666),
                         fontSize = 14.sep
                     )
@@ -164,7 +164,7 @@ fun MarkVisitScreen(
                 ),
                 shape = RoundedCornerShape(4.dep)
             ) {
-                Text(text = "VISIT SHOP", fontSize = 16.sep, color = Color.White)
+                Text(text = stringResource(id = R.string.VISIT_SHOP), fontSize = 16.sep, color = Color.White)
             }
         }
     }
@@ -179,7 +179,7 @@ fun GoogleMapSection(
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
         onResult = { result ->
-            val granted = result.entries.all { it.value == true }
+            val granted = result.entries.all { it.value }
         }
     )
     DisposableEffect(context) {
@@ -226,38 +226,15 @@ fun MapContent(
     latitude: Double,
     longitude: Double
 ) {
-    val notifier = rememberNotifier()
-    val context = LocalContext.current
-    val currentLocation by remember(latitude, longitude) {
-        derivedStateOf {
-            LatLng(latitude, longitude)
-        }
+    val currentLocationState = remember { MarkerState(position = LatLng(latitude, longitude)) }
+
+    val cameraPositionState = rememberCameraPositionState("default") {
+        CameraPosition.Builder()
+            .target(LatLng(latitude, longitude))
+            .zoom(15f)
+            .build()
     }
 
-    val currentLocationState = remember(currentLocation) {
-        MarkerState(position = currentLocation)
-    }
-    val cameraPositionState = rememberCameraPositionState(currentLocation.toString()) {
-        position = CameraPosition.fromLatLngZoom(currentLocation, 10f)
-    }
-    LaunchedEffect(currentLocation) {
-        try {
-            if (currentLocation != null) {
-                coroutineScope {
-                    cameraPositionState.animate(
-                        update = CameraUpdateFactory.newCameraPosition(
-                            CameraPosition(currentLocation, 15f, 0f, 0f)
-                        ),
-                        durationMs = 3000
-                    )
-                }
-            }
-        } catch (e: CancellationException) {
-            Log.e("MapContent", "Animation cancelled", e)
-        } catch (e: Exception) {
-            Log.e("MapContent", "Error animating camera position", e)
-        }
-    }
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -296,6 +273,3 @@ fun MapContent(
         }
     }
 }
-
-
-

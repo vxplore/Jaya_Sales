@@ -2,7 +2,10 @@ package com.example.jayasales.presentation.screens
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Bundle
+import android.view.ViewGroup
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -46,6 +49,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,6 +63,8 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -66,6 +72,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.app.ActivityCompat
 import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import com.debduttapanda.j3lib.NotificationService
@@ -78,6 +86,12 @@ import com.debduttapanda.j3lib.stringState
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
 import com.example.jayasales.model.SelectedFile
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -159,7 +173,6 @@ fun AddNewStoreScreen(
                     fontSize = 14.sep
                 ),
                 colors = TextFieldDefaults.colors(
-                    //focusedIndicatorColor = Color(0xFFEB3D34),
                     unfocusedIndicatorColor = Color(0xFFDDDDDD),
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
@@ -323,9 +336,9 @@ fun AddNewStoreScreen(
                     .height(144.dep)
             ) {
                 GoogleMapSection()
+                //GoogleMapSection2()
             }
             Spacer(modifier = Modifier.height(20.dep))
-
             Button(
                 onClick = {
                 },
@@ -340,7 +353,11 @@ fun AddNewStoreScreen(
                 ),
                 shape = RoundedCornerShape(4.dep)
             ) {
-                Text(text = "GET LOCATION", fontSize = 16.sep, color = Color(0xFF1FB574))
+                Text(
+                    text = stringResource(id = R.string.GET_LOCATION),
+                    fontSize = 16.sep,
+                    color = Color(0xFF1FB574)
+                )
             }
             Spacer(modifier = Modifier.height(16.dep))
             Button(
@@ -355,7 +372,11 @@ fun AddNewStoreScreen(
                 ),
                 shape = RoundedCornerShape(4.dep)
             ) {
-                Text(text = "NEXT", fontSize = 16.sep, color = Color(0xFF222222))
+                Text(
+                    text = stringResource(id = R.string.NEXT),
+                    fontSize = 16.sep,
+                    color = Color(0xFF222222)
+                )
             }
         }
     }
@@ -633,4 +654,71 @@ fun RouteDropDown(
             }
         }
     }
+}
+
+@Composable
+fun GoogleMapSection2() {
+    var mapView: MapView? by remember { mutableStateOf(null) }
+    var googleMap: GoogleMap? by remember { mutableStateOf(null) }
+    var isMapReady by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val density = LocalDensity.current.density
+    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+    DisposableEffect(context) {
+        mapView = MapView(context).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        }
+        mapView?.onCreate(Bundle())
+        mapView?.getMapAsync { map ->
+            googleMap = map
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                googleMap?.isMyLocationEnabled = true
+                fusedLocationClient.lastLocation
+                    .addOnSuccessListener { location ->
+                        location?.let {
+                            val currentLatLng = LatLng(it.latitude, it.longitude)
+                            googleMap?.addMarker(
+                                MarkerOptions().position(currentLatLng).title("Current Location")
+                            )
+                            googleMap?.moveCamera(
+                                CameraUpdateFactory.newLatLngZoom(
+                                    currentLatLng,
+                                    15f
+                                )
+                            )
+                            isMapReady = true
+                        }
+                    }
+            }
+        }
+        onDispose {
+            mapView?.onPause()
+            mapView?.onDestroy()
+        }
+    }
+    AndroidView(
+        factory = { context ->
+            mapView?.let {
+                it.onResume()
+                it
+            } ?: MapView(context).apply {
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                onCreate(Bundle())
+            }
+        },
+        update = { view ->
+            if (isMapReady) {
+            }
+        }
+    )
 }

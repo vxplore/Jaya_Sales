@@ -270,7 +270,7 @@ fun LoginScreen(
                     )
                 } else {
                     Text(
-                        text = "Sign In",
+                        text = stringResource(id = R.string.Sign_In),
                         fontSize = 18.sep,
                         color = Color(0xFF222222)
                     )
@@ -334,9 +334,9 @@ private fun RecoverPasswordCustomDialogUi(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Recover Password",
+                text = stringResource(id = R.string.Recover_Password),
                 modifier = Modifier
-                    .height(45.dep)
+                    //.height(45.dep)
                     .align(Alignment.Start),
                 fontSize = 25.sep,
                 fontWeight = FontWeight.Bold
@@ -347,10 +347,8 @@ private fun RecoverPasswordCustomDialogUi(
                     .padding(horizontal = 32.5.dep)
             ) {
                 Text(
-                    text = "EMAIL OR USERNAME",
-                    modifier = Modifier
-                        .width(152.dep)
-                        .height(16.dep),
+                    text = stringResource(id = R.string.USERNAME),
+                    modifier = Modifier,
                     fontSize = 14.sep,
                     color = Color(0xF13E495E)
                 )
@@ -419,8 +417,7 @@ private fun RecoverPasswordCustomDialogUi(
                         Text(
                             text = "PASSWORD",
                             modifier = Modifier
-                                .width(152.dep)
-                                .height(16.dep),
+                                ,
                             fontSize = 14.sep,
                             color = Color(0xF13E495E)
                         )
@@ -443,8 +440,7 @@ private fun RecoverPasswordCustomDialogUi(
                         Text(
                             text = "CONFIRM PASSWORD",
                             modifier = Modifier
-                                .width(152.dep)
-                                .height(16.dep),
+                               ,
                             fontSize = 14.sep,
                             color = Color(0xF13E495E)
                         )

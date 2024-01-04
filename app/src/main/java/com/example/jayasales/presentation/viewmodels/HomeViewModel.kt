@@ -82,7 +82,7 @@ class HomeViewModel @Inject constructor(
         mapData(
             MyDataIds.opendialog to opendialog,
         )
-        setStatusBarColor(Color(0xFFFFEB56), false)
+        setStatusBarColor(Color(0xFFFFEB56), true)
     }
     private fun doLogOut() {
         repo.setIsLoggedIn(false)

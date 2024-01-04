@@ -329,7 +329,7 @@ fun ContactInformationScreen(
                     ),
                     shape = RoundedCornerShape(4.dep)
                 ) {
-                    Text(text = "BACK", fontSize = 18.sep, color = Color.White)
+                    Text(text = stringResource(id = R.string.BACK), fontSize = 18.sep, color = Color.White)
                 }
                 Spacer(modifier = Modifier.width(12.dep))
                 Button(
@@ -344,7 +344,7 @@ fun ContactInformationScreen(
                     ),
                     shape = RoundedCornerShape(4.dep)
                 ) {
-                    Text(text = "ADD NOW", fontSize = 18.sep, color = Color(0xFF222222))
+                    Text(text = stringResource(id =R.string.ADD_NOW ), fontSize = 18.sep, color = Color(0xFF222222))
                 }
             }
         }

@@ -23,6 +23,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JayaSales"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCI3Bid-N3pbvpxjAbRFlKu2wu2zWE8AcI" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -34,9 +37,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBViPlg553Up1GxXDzkyZHu7PoGNb7Rmxc" />
+
 
     </application>
 

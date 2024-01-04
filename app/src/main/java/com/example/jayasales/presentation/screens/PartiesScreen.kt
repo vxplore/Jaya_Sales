@@ -58,6 +58,7 @@ import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
 import com.example.jayasales.model.PartiesDatum
 import com.example.jayasales.presentation.viewmodels.PartiesTab
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -306,7 +307,7 @@ fun PartiesSearchBox(
         },
         placeholder = {
             Text(
-                text = "Search Route",
+                text = stringResource(id = R.string.Search_Route),
                 color = Color(0XFF898989),
                 fontSize = 16.sep
             )
@@ -319,7 +320,7 @@ fun PartiesSearchBox(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Search,
-                    contentDescription = "",
+                    contentDescription = "Search",
                     tint = Color(0XFF898989)
                 )
             }
@@ -490,7 +491,7 @@ fun Visited(
                         .background(Color(0XFFD62B2B))
                 ) {
                     Text(
-                        text = it.store_name.first().uppercase(),
+                        text = it.store_name.first().uppercase(Locale.ENGLISH),
                         fontSize = 14.sep,
                         fontWeight = FontWeight.Medium,
                         color = Color.White
