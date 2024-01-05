@@ -197,7 +197,6 @@ fun ReviewCartScreen(
                             color = Color(0xFFD62B2B),
                         )
                     }
-
                 }
                 LazyColumn(
                     modifier = Modifier

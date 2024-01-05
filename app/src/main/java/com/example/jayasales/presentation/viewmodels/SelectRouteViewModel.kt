@@ -19,11 +19,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SelectRouteViewModel @Inject constructor(
-    private val repo:Repository
-):WirelessViewModel(){
+    private val repo: Repository
+) : WirelessViewModel() {
     private val routeSearch = mutableStateOf("")
     private val routeList = mutableStateListOf<Datum>()
     private val data = mutableStateOf("routes-lists")
+    private val isSearchResultEmpty = mutableStateOf(false)
+
     override fun eventBusDescription(): EventBusDescription? {
         return null
     }
@@ -35,11 +37,12 @@ class SelectRouteViewModel @Inject constructor(
     }
 
     override fun onNotification(id: Any?, arg: Any?) {
-        when(id){
-            MyDataIds.back->{
-               popBackStack()
+        when (id) {
+            MyDataIds.back -> {
+                popBackStack()
             }
-            MyDataIds.routeSearch->{
+
+            MyDataIds.routeSearch -> {
                 routeSearch.value = arg as String
                 searchRoute()
             }
@@ -48,26 +51,31 @@ class SelectRouteViewModel @Inject constructor(
 
     override fun onStartUp(route: Route?, arguments: Bundle?) {
     }
+
     init {
         mapData(
             MyDataIds.routeSearch to routeSearch,
             MyDataIds.routeList to routeList,
+            MyDataIds.isSearchResultEmpty to isSearchResultEmpty
         )
-        setStatusBarColor(Color(0xFFFFEB56), false)
+        setStatusBarColor(Color(0xFFFFEB56), true)
         routeDetail()
     }
+
     private fun routeDetail() {
-        val data=data.value
+        val data = data.value
         viewModelScope.launch {
             try {
                 val response = repo.route(data)
-                if (response?.status == true){
+                if (response?.status == true) {
                     Log.d("jxdhdcd", "$response")
                     routeList.clear()
                     routeList.addAll(response.data)
+                    isSearchResultEmpty.value = routeList.isEmpty()
+                    //filter()
                 }
-            }catch (e:Exception){
-                Log.e("jxdhdcd","${e.message}")
+            } catch (e: Exception) {
+                Log.e("jxdhdcd", "${e.message}")
             }
         }
     }
@@ -78,12 +86,17 @@ class SelectRouteViewModel @Inject constructor(
             try {
                 val response = repo.searchRoute(queryText)
                 if (response?.status == true) {
-                    Log.d("hhn","$response")
+                    Log.d("hhn", "$response")
                     routeList.clear()
                     routeList.addAll(response.data)
+                } else {
+                    // Clear routeList if the response is not successful or data is empty
+                    routeList.clear()
                 }
             } catch (e: Exception) {
                 Log.e("hhn", "${e.message}")
+                // Clear routeList in case of an exception
+                routeList.clear()
             }
         }
     }

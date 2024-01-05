@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MarkAttendanceViewModel @Inject constructor(
-):WirelessViewModel(){
+) : WirelessViewModel() {
     private val attencomments = mutableStateOf("")
     override fun eventBusDescription(): EventBusDescription? {
         return null
@@ -27,27 +27,30 @@ class MarkAttendanceViewModel @Inject constructor(
     }
 
     override fun onNotification(id: Any?, arg: Any?) {
-       when(id){
-           MyDataIds.back->{
-               popBackStack()
-           }
-           MyDataIds.attencomments->{
-               attencomments.value = arg as String
-           }
-           MyDataIds.timeSheet->{
-               navigation {
-                   navigate(Routes.timeSheet.full)
-               }
-           }
-       }
+        when (id) {
+            MyDataIds.back -> {
+                popBackStack()
+            }
+
+            MyDataIds.attencomments -> {
+                attencomments.value = arg as String
+            }
+
+            MyDataIds.timeSheet -> {
+                navigation {
+                    navigate(Routes.timeSheet.full)
+                }
+            }
+        }
     }
 
     override fun onStartUp(route: Route?, arguments: Bundle?) {
     }
+
     init {
         mapData(
             MyDataIds.attencomments to attencomments,
         )
-        setStatusBarColor(Color(0xFFFFEB56),false)
+        setStatusBarColor(Color(0xFFFFEB56), true)
     }
 }

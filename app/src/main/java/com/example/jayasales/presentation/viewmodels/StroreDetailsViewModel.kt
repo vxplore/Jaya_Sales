@@ -13,14 +13,15 @@ import com.example.jayasales.Routes
 import com.example.jayasales.model.StoreDataResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-enum class TransactionTab{
+
+enum class TransactionTab {
     Sales,
     Payments
 }
 
 @HiltViewModel
 class StoreDetailsViewModel @Inject constructor(
-):WirelessViewModel(){
+) : WirelessViewModel() {
     private val selectedTransactionTab = mutableStateOf(TransactionTab.Sales)
     private val storeDetailsList = mutableStateListOf<StoreDataResponse>()
     override fun eventBusDescription(): EventBusDescription? {
@@ -35,27 +36,32 @@ class StoreDetailsViewModel @Inject constructor(
     }
 
     override fun onNotification(id: Any?, arg: Any?) {
-        when(id){
-            MyDataIds.back->{
+        when (id) {
+            MyDataIds.back -> {
                 popBackStack()
             }
-            MyDataIds.saleBtn->{
+
+            MyDataIds.saleBtn -> {
                 selectedTransactionTab.value = TransactionTab.Sales
             }
-            MyDataIds.paymentBtn->{
+
+            MyDataIds.paymentBtn -> {
                 selectedTransactionTab.value = TransactionTab.Payments
             }
-            MyDataIds.paymentIn->{
+
+            MyDataIds.paymentIn -> {
                 navigation {
                     navigate(Routes.paymentIn.full)
                 }
             }
-            MyDataIds.newOrders->{
+
+            MyDataIds.newOrders -> {
                 navigation {
                     navigate(Routes.newOrder.full)
                 }
             }
-            MyDataIds.markVisit->{
+
+            MyDataIds.markVisit -> {
                 navigation {
                     navigate(Routes.markVisit.full)
                 }
@@ -72,10 +78,49 @@ class StoreDetailsViewModel @Inject constructor(
             MyDataIds.selectedTransactionTab to selectedTransactionTab,
             MyDataIds.storeDetailsList to storeDetailsList,
         )
-        setStatusBarColor(Color(0xFFFFEB56), false)
-        storeDetailsList.addAll(listOf(StoreDataResponse("32","Order Placed","Ram Krishna Store","September 10, 2023","12:40 Pm","43923","Paid","Cash")))
-        storeDetailsList.addAll(listOf(StoreDataResponse("32","Order Placed","Ram Krishna Store","September 10, 2023","12:40 Pm","43923","₹43923 Due","Cash")))
-        storeDetailsList.addAll(listOf(StoreDataResponse("32","Order Placed","Ram Krishna Store","September 10, 2023","12:40 Pm","43923","Paid","Cheque")))
+        setStatusBarColor(Color(0xFFFFEB56), true)
+        storeDetailsList.addAll(
+            listOf(
+                StoreDataResponse(
+                    "32",
+                    "Order Placed",
+                    "Ram Krishna Store",
+                    "September 10, 2023",
+                    "12:40 Pm",
+                    "43923",
+                    "Paid",
+                    "Cash"
+                )
+            )
+        )
+        storeDetailsList.addAll(
+            listOf(
+                StoreDataResponse(
+                    "32",
+                    "Order Placed",
+                    "Ram Krishna Store",
+                    "September 10, 2023",
+                    "12:40 Pm",
+                    "43923",
+                    "₹43923 Due",
+                    "Cash"
+                )
+            )
+        )
+        storeDetailsList.addAll(
+            listOf(
+                StoreDataResponse(
+                    "32",
+                    "Order Placed",
+                    "Ram Krishna Store",
+                    "September 10, 2023",
+                    "12:40 Pm",
+                    "43923",
+                    "Paid",
+                    "Cheque"
+                )
+            )
+        )
 
     }
 }

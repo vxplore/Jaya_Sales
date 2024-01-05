@@ -19,8 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val repo : Repository
-): WirelessViewModel(){
+    private val repo: Repository
+) : WirelessViewModel() {
     private val versionName = mutableStateOf("")
     override fun eventBusDescription(): EventBusDescription? {
         return null
@@ -37,27 +37,29 @@ class SplashViewModel @Inject constructor(
 
     override fun onStartUp(route: Route?, arguments: Bundle?) {
     }
+
     init {
         mapData(
             MyDataIds.versionName to versionName,
         )
-        setStatusBarColor(Color(0xFFFFEB56), false)
+        setStatusBarColor(Color(0xFFFFEB56), true)
         versionName.value = BuildConfig.VERSION_NAME
         viewModelScope.launch {
             delay(3000)
             goToProperLogin()
         }
     }
-    private fun goToProperLogin(){
-        if(repo.getIsLoggedIn()){
+
+    private fun goToProperLogin() {
+        if (repo.getIsLoggedIn()) {
             navigation {
-                navigate(Routes.home.full){
+                navigate(Routes.home.full) {
                     popUpTo(Routes.splash.full)
                 }
             }
-        }else{
+        } else {
             navigation {
-                navigate(Routes.login.full){
+                navigate(Routes.login.full) {
                     popUpTo(Routes.splash.full)
                 }
             }

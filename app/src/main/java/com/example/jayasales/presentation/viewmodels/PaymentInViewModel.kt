@@ -91,7 +91,7 @@ class PaymentInViewModel @Inject constructor(
             MyDataIds.instruction to instruction,
             MyDataIds.paymentInDialog to paymentInDialog,
         )
-        setStatusBarColor(Color(0xFFFFEB56), false)
+        setStatusBarColor(Color(0xFFFFEB56), true)
         setSoftInputMode(SoftInputMode.adjustPan)
 
         paymentInList.addAll(

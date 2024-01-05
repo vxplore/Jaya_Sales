@@ -1,5 +1,10 @@
 package com.example.jayasales.presentation.screens
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,9 +29,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -38,7 +40,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -49,10 +50,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.DefaultShadowColor
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.core.content.PermissionChecker
+import androidx.core.content.PermissionChecker.checkSelfPermission
 import com.debduttapanda.j3lib.NotificationService
 import com.debduttapanda.j3lib.dep
 import com.debduttapanda.j3lib.listState
@@ -141,43 +145,34 @@ fun StoreDetailsScreen(
                         color = Color(0xFF222222)
                     )
                 }
+                val context = LocalContext.current
+                val requestPermissionLauncher =
+                    rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+                        if (isGranted) {
+                            makePhoneCall(context)
+                        }
+                    }
                 IconButton(
-                    onClick = { },
+                    onClick = {
+                        if (checkSelfPermission(
+                                context,
+                                android.Manifest.permission.CALL_PHONE
+                            ) == PermissionChecker.PERMISSION_GRANTED
+                        ) {
+                            makePhoneCall(context)
+                        } else {
+                            requestPermissionLauncher.launch(android.Manifest.permission.CALL_PHONE)
+                        }
+                    },
                     modifier = Modifier
-                        .width(20.dep)
-                        .height(20.dep)
+                        .padding(end = 20.dep)
+                        .size(20.dep)
                         .background(Color(0xFF222222), CircleShape)
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.Call,
-                        contentDescription = "",
+                        imageVector = Icons.Default.Call,
+                        contentDescription = "Call",
                         tint = Color.White,
-                    )
-                }
-                IconButton(
-                    onClick = { },
-                    modifier = Modifier
-                        .width(20.dep)
-                        .height(20.dep)
-                        .background(Color(0xFF222222), CircleShape)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.LocationOn,
-                        contentDescription = "",
-                        tint = Color.White
-                    )
-                }
-                IconButton(
-                    onClick = { },
-                    modifier = Modifier
-                        .width(20.dep)
-                        .height(20.dep)
-                        .background(Color(0xFF222222), CircleShape)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Edit,
-                        contentDescription = "Edit",
-                        tint = Color.White
                     )
                 }
             }
@@ -203,15 +198,18 @@ fun StoreDetailsScreen(
                             modifier = Modifier
                                 .weight(.25f)
                         ) {
-                            IconButton(
-                                onClick = {
-                                    notifier.notify(MyDataIds.markVisit)
-                                },
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
                                 modifier = Modifier
                                     .width(72.dep)
                                     .height(72.dep)
-                                    .shadow(4.dep, shape = RoundedCornerShape(50.dep), clip = true)
-                                    .background(Color.White)
+                                    .shadow(4.dep, shape = CircleShape, clip = true)
+                                    .background(Color.White, CircleShape)
+                                    .clickable {
+                                        notifier.notify(MyDataIds.markVisit)
+                                    }
+                                    .clip(CircleShape)
                             ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.mark),
@@ -235,15 +233,18 @@ fun StoreDetailsScreen(
                             modifier = Modifier
                                 .weight(.25f)
                         ) {
-                            IconButton(
-                                onClick = {
-                                    notifier.notify(MyDataIds.newOrders)
-                                },
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
                                 modifier = Modifier
                                     .width(72.dep)
                                     .height(72.dep)
-                                    .shadow(4.dep, shape = RoundedCornerShape(50.dep), clip = true)
-                                    .background(Color.White)
+                                    .shadow(4.dep, shape = CircleShape, clip = true)
+                                    .background(Color.White, CircleShape)
+                                    .clickable {
+                                        notifier.notify(MyDataIds.newOrders)
+                                    }
+                                    .clip(CircleShape)
                             ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.new_order),
@@ -267,15 +268,18 @@ fun StoreDetailsScreen(
                             modifier = Modifier
                                 .weight(.25f)
                         ) {
-                            IconButton(
-                                onClick = {
-                                    notifier.notify(MyDataIds.paymentIn)
-                                },
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
                                 modifier = Modifier
                                     .width(72.dep)
                                     .height(72.dep)
-                                    .shadow(4.dep, shape = RoundedCornerShape(50.dep), clip = true)
-                                    .background(Color.White)
+                                    .shadow(4.dep, shape = CircleShape, clip = true)
+                                    .background(Color.White, CircleShape)
+                                    .clickable {
+                                        notifier.notify(MyDataIds.paymentIn)
+                                    }
+                                    .clip(CircleShape)
                             ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.payment),
@@ -311,15 +315,6 @@ fun StoreDetailsScreen(
                             fontWeight = FontWeight.ExtraBold,
                             color = Color(0xFF222222)
                         )
-                        TextButton(
-                            onClick = { },
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.View_all),
-                                fontSize = 13.sep,
-                                color = Color(0xFFF22E4F)
-                            )
-                        }
                     }
                     Spacer(modifier = Modifier.height(24.dep))
                     Row(
@@ -374,9 +369,7 @@ fun StoreDetailsScreen(
                                             clip = true,
                                             DefaultShadowColor
                                         )
-                                        .clip(RoundedCornerShape(8.dep))
-                                        .clickable {
-                                        },
+                                        .clip(RoundedCornerShape(8.dep)),
                                     colors = CardDefaults.cardColors(Color.White),
                                     elevation = CardDefaults.cardElevation(
                                         defaultElevation = 8.dep,
@@ -530,8 +523,7 @@ fun StoreDetailsScreen(
                                         }
                                     }
                                 }
-                            }
-                            else {
+                            } else {
                                 Card(
                                     modifier = Modifier
                                         .height(84.dep)
@@ -653,4 +645,13 @@ fun StoreDetailsScreen(
             }
         }
     }
+}
+
+private fun makePhoneCall(context: Context) {
+    val phoneNumber = "tel:" + "1221122112"
+    val callIntent = Intent(
+        Intent.ACTION_CALL,
+        Uri.parse(phoneNumber)
+    )
+    context.startActivity(callIntent)
 }

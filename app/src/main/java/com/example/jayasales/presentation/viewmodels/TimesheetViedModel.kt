@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TimesheetViedModel @Inject constructor(
-):WirelessViewModel(){
+) : WirelessViewModel() {
     override fun eventBusDescription(): EventBusDescription? {
         return null
     }
@@ -24,8 +24,8 @@ class TimesheetViedModel @Inject constructor(
     }
 
     override fun onNotification(id: Any?, arg: Any?) {
-        when(id){
-            MyDataIds.back->{
+        when (id) {
+            MyDataIds.back -> {
                 popBackStack()
             }
         }
@@ -33,9 +33,10 @@ class TimesheetViedModel @Inject constructor(
 
     override fun onStartUp(route: Route?, arguments: Bundle?) {
     }
+
     init {
         mapData()
 
-        setStatusBarColor(Color(0xFFFFEB56), false)
+        setStatusBarColor(Color(0xFFFFEB56), true)
     }
 }

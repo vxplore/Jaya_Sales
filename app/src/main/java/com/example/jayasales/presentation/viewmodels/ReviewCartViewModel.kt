@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ReviewCartViewModel @Inject constructor(
-):WirelessViewModel(){
+) : WirelessViewModel() {
     private val reviewInstruction = mutableStateOf("")
     private val reviewCartDialog = mutableStateOf(false)
     override fun eventBusDescription(): EventBusDescription? {
@@ -29,31 +29,36 @@ class ReviewCartViewModel @Inject constructor(
     }
 
     override fun onNotification(id: Any?, arg: Any?) {
-        when(id){
-            MyDataIds.back->{
+        when (id) {
+            MyDataIds.back -> {
                 popBackStack()
             }
-            MyDataIds.reviewInstruction->{
+
+            MyDataIds.reviewInstruction -> {
                 reviewInstruction.value = arg as String
             }
-            MyDataIds.placeOrder->{
-                reviewCartDialog.value =! reviewCartDialog.value
+
+            MyDataIds.placeOrder -> {
+                reviewCartDialog.value = !reviewCartDialog.value
             }
-            MyDataIds.orderPlaced->{
+
+            MyDataIds.orderPlaced -> {
                 navigation {
                     navigate(Routes.parties.full)
                 }
             }
         }
     }
+
     override fun onStartUp(route: Route?, arguments: Bundle?) {
     }
+
     init {
         mapData(
             MyDataIds.reviewInstruction to reviewInstruction,
             MyDataIds.reviewCartDialog to reviewCartDialog,
         )
-        setStatusBarColor(Color(0xFFFFEB56), false)
+        setStatusBarColor(Color(0xFFFFEB56), true)
         setSoftInputMode(SoftInputMode.adjustPan)
     }
 }

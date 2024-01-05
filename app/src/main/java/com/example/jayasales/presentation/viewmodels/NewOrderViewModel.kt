@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewModelScope
 import com.debduttapanda.j3lib.InterCom
 import com.debduttapanda.j3lib.WirelessViewModel
@@ -29,7 +30,6 @@ import javax.inject.Inject
 class NewOrdersViewModel @Inject constructor(
     private val repository: Repository
 ) : WirelessViewModel() {
-
     private val brands = mutableStateListOf<Brand>()
     private val categories = mutableStateListOf<Category>()
     private val selectedBrandTabId = mutableIntStateOf(-1)
@@ -46,7 +46,6 @@ class NewOrdersViewModel @Inject constructor(
     }
 
     override fun onBack() {
-
     }
 
     override fun onNotification(id: Any?, arg: Any?) {
@@ -110,6 +109,7 @@ class NewOrdersViewModel @Inject constructor(
     init {
         setup()
         fetchBrands()
+        setStatusBarColor(Color(0xFFFFEB56), true)
     }
 
     private fun fetchBrands() {

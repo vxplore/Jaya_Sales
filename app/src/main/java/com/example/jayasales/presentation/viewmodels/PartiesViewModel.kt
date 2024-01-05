@@ -93,7 +93,7 @@ class PartiesViewModel @Inject constructor(
             MyDataIds.SelectedTab to selectedTab,
             MyDataIds.partiesList to effectivePartiesList,
         )
-        setStatusBarColor(Color(0xFFFFEB56), false)
+        setStatusBarColor(Color(0xFFFFEB56), true)
         pendingPartiesList()
     }
 

@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ReturnRequestViewModel @Inject constructor(
-):WirelessViewModel(){
+) : WirelessViewModel() {
     private val product = mutableStateOf("")
     private val brandName = mutableStateListOf<String>()
     private val category = mutableStateListOf<String>()
@@ -33,17 +33,20 @@ class ReturnRequestViewModel @Inject constructor(
     }
 
     override fun onNotification(id: Any?, arg: Any?) {
-        when(id){
-            MyDataIds.back->{
+        when (id) {
+            MyDataIds.back -> {
                 popBackStack()
             }
-            MyDataIds.product->{
+
+            MyDataIds.product -> {
                 product.value = arg as String
             }
-            MyDataIds.lot->{
+
+            MyDataIds.lot -> {
                 lot.value = arg as String
             }
-            MyDataIds.message->{
+
+            MyDataIds.message -> {
                 message.value = arg as String
             }
         }
@@ -51,6 +54,7 @@ class ReturnRequestViewModel @Inject constructor(
 
     override fun onStartUp(route: Route?, arguments: Bundle?) {
     }
+
     init {
         mapData(
             MyDataIds.product to product,
@@ -60,7 +64,7 @@ class ReturnRequestViewModel @Inject constructor(
             MyDataIds.reason to reason,
             MyDataIds.message to message,
         )
-        setStatusBarColor(Color(0xFFFFEB56), false)
+        setStatusBarColor(Color(0xFFFFEB56), true)
         setSoftInputMode(SoftInputMode.adjustPan)
 
         brandName.addAll(listOf("Jaya"))

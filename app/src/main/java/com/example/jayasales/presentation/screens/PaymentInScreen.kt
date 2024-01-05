@@ -15,9 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.width import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -59,13 +57,11 @@ import androidx.compose.ui.graphics.DefaultShadowColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import com.debduttapanda.j3lib.NotificationService
 import com.debduttapanda.j3lib.boolState
 import com.debduttapanda.j3lib.dep
@@ -78,7 +74,6 @@ import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
 import com.example.jayasales.model.PaymentInList
 import com.example.jayasales.presentation.viewmodels.PaymentModeTab
-import com.example.jayasales.presentation.viewmodels.TransactionTab
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -331,7 +326,7 @@ fun PaymentInScreen(
                                 modifier = Modifier
                                     .padding(bottom = 12.dep, top = 8.dep)
                                     .border(.5.dep, Color(0xFFDDDDDD))
-                                    .width(72.dep),
+                                    .width(80.dep),
                                 keyboardOptions = KeyboardOptions(
                                     keyboardType = KeyboardType.Number,
                                     imeAction = ImeAction.Done
@@ -339,6 +334,13 @@ fun PaymentInScreen(
                                 textStyle = MaterialTheme.typography.bodyMedium.copy(
                                     fontSize = 11.sep
                                 ),
+                                placeholder = {
+                                    Text(
+                                        stringResource(id = R.string.amount),
+                                        color = Color.LightGray,
+                                        fontSize = 11.sep
+                                    )
+                                },
                                 singleLine = true,
                                 colors = TextFieldDefaults.colors(
                                     focusedContainerColor = Color.White,
@@ -481,11 +483,9 @@ fun PaymentInScreen(
                 ) {
                     Divider(
                         modifier = Modifier
-                            .background(Color(0xFF00000059))
                             .fillMaxWidth(),
                         thickness = 2.dep
                     )
-
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,

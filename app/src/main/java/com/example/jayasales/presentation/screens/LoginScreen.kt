@@ -165,7 +165,6 @@ fun LoginScreen(
                 )
             }
             Spacer(modifier = Modifier.height(24.dep))
-
             Text(
                 text = stringResource(id = R.string.username),
                 modifier = Modifier,
@@ -301,7 +300,6 @@ private fun RecoverPasswordDialog(
     otpValue: String,
     password: String,
     confirmPassword: String,
-    loading: State<Boolean> = rememberBoolState(id = MyDataIds.loading),
     notifier: NotificationService = rememberNotifier()
 ) {
     if (appearDialog) {
@@ -322,7 +320,6 @@ private fun RecoverPasswordCustomDialogUi(
 ) {
     var showOtpField by remember { mutableStateOf(false) }
     var verifyButtonVisible by remember { mutableStateOf(true) }
-    var otpverifyButtonVisible by remember { mutableStateOf(true) }
     Box(
         Modifier
             .fillMaxWidth()
@@ -336,7 +333,6 @@ private fun RecoverPasswordCustomDialogUi(
             Text(
                 text = stringResource(id = R.string.Recover_Password),
                 modifier = Modifier
-                    //.height(45.dep)
                     .align(Alignment.Start),
                 fontSize = 25.sep,
                 fontWeight = FontWeight.Bold

@@ -336,7 +336,6 @@ fun AddNewStoreScreen(
                     .height(144.dep)
             ) {
                 GoogleMapSection()
-                //GoogleMapSection2()
             }
             Spacer(modifier = Modifier.height(20.dep))
             Button(
@@ -654,71 +653,4 @@ fun RouteDropDown(
             }
         }
     }
-}
-
-@Composable
-fun GoogleMapSection2() {
-    var mapView: MapView? by remember { mutableStateOf(null) }
-    var googleMap: GoogleMap? by remember { mutableStateOf(null) }
-    var isMapReady by remember { mutableStateOf(false) }
-    val context = LocalContext.current
-    val density = LocalDensity.current.density
-    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-    DisposableEffect(context) {
-        mapView = MapView(context).apply {
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-        }
-        mapView?.onCreate(Bundle())
-        mapView?.getMapAsync { map ->
-            googleMap = map
-            if (ActivityCompat.checkSelfPermission(
-                    context,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                googleMap?.isMyLocationEnabled = true
-                fusedLocationClient.lastLocation
-                    .addOnSuccessListener { location ->
-                        location?.let {
-                            val currentLatLng = LatLng(it.latitude, it.longitude)
-                            googleMap?.addMarker(
-                                MarkerOptions().position(currentLatLng).title("Current Location")
-                            )
-                            googleMap?.moveCamera(
-                                CameraUpdateFactory.newLatLngZoom(
-                                    currentLatLng,
-                                    15f
-                                )
-                            )
-                            isMapReady = true
-                        }
-                    }
-            }
-        }
-        onDispose {
-            mapView?.onPause()
-            mapView?.onDestroy()
-        }
-    }
-    AndroidView(
-        factory = { context ->
-            mapView?.let {
-                it.onResume()
-                it
-            } ?: MapView(context).apply {
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-                onCreate(Bundle())
-            }
-        },
-        update = { view ->
-            if (isMapReady) {
-            }
-        }
-    )
 }

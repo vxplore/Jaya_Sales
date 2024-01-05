@@ -95,8 +95,6 @@ fun SelectRouteScreen(
         }
     )
     {
-        var isSelected by remember { mutableStateOf(false) }
-
         Column(
             modifier = Modifier
                 .padding(it)

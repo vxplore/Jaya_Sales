@@ -99,4 +99,5 @@ enum class MyDataIds {
     attencomments,
     markAttendance,
     timeSheet,
+    isSearchResultEmpty,
 }

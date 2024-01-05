@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddNewStoreViewModel @Inject constructor(
-):WirelessViewModel(){
+) : WirelessViewModel() {
     private val storeName = mutableStateOf("")
     private val pin = mutableStateOf("")
     private val address = mutableStateOf("")
@@ -33,20 +33,24 @@ class AddNewStoreViewModel @Inject constructor(
     }
 
     override fun onNotification(id: Any?, arg: Any?) {
-        when(id){
-            MyDataIds.back->{
+        when (id) {
+            MyDataIds.back -> {
                 popBackStack()
             }
-            MyDataIds.storeName->{
+
+            MyDataIds.storeName -> {
                 storeName.value = arg as String
             }
-            MyDataIds.pin->{
+
+            MyDataIds.pin -> {
                 pin.value = arg as String
             }
-            MyDataIds.address->{
+
+            MyDataIds.address -> {
                 address.value = arg as String
             }
-            MyDataIds.contactInformation->{
+
+            MyDataIds.contactInformation -> {
                 navigation {
                     navigate(Routes.contactInformation.full)
                 }
@@ -56,6 +60,7 @@ class AddNewStoreViewModel @Inject constructor(
 
     override fun onStartUp(route: Route?, arguments: Bundle?) {
     }
+
     init {
         mapData(
             MyDataIds.storeName to storeName,
@@ -65,7 +70,7 @@ class AddNewStoreViewModel @Inject constructor(
             MyDataIds.address to address,
             MyDataIds.addRoute to addRoute
         )
-        setStatusBarColor(Color(0xFFFFEB56), false)
+        setStatusBarColor(Color(0xFFFFEB56), true)
 
         city.addAll(listOf("Arambagh"))
         city.addAll(listOf("Kolkata"))

@@ -93,7 +93,7 @@ fun MarkAttendanceScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Mark Attendance",
+                        text = stringResource(id = R.string.Mark_Attendance),
                         fontSize = 20.sep,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF2B2B2B)
@@ -122,7 +122,6 @@ fun MarkAttendanceScreen(
     )
     {
         var isInButtonSelected by remember { mutableStateOf(false) }
-        var areButtonsEnabled by remember { mutableStateOf(true) }
         var isCheckInSelected by remember { mutableStateOf(true) }
         var currentInTime by remember { mutableStateOf<Date?>(null) }
         var currentOutTime by remember { mutableStateOf<Date?>(null) }
@@ -227,7 +226,7 @@ fun MarkAttendanceScreen(
                     ),
                     placeholder = {
                         Text(
-                            "Comments",
+                            stringResource(id = R.string.Comments),
                             color = Color(0xFF666666),
                             fontSize = 14.sep
                         )
@@ -318,116 +317,3 @@ fun MarkAttendanceScreen(
     }
 }
 
-@Composable
-fun AttendanceGoogleMapSection(
-    latitude: Double = 0.0,
-    longitude: Double = 0.0,
-) {
-    val context = LocalContext.current
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions(),
-        onResult = { result ->
-        }
-    )
-
-    DisposableEffect(context) {
-        launcher.launch(
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-        )
-        onDispose { }
-    }
-    val permissionState by remember {
-        mutableStateOf(
-            when (PackageManager.PERMISSION_GRANTED) {
-                ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) -> AttendancePermissionState.Granted
-
-                else -> AttendancePermissionState.NotGranted
-            }
-        )
-    }
-    when (permissionState) {
-        AttendancePermissionState.Granted -> {
-            AttendanceMapContent(latitude, longitude)
-        }
-        AttendancePermissionState.NotGranted -> {
-            Text("Location permission is required for this feature.")
-        }
-    }
-}
-
-enum class AttendancePermissionState {
-    Granted,
-    NotGranted
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AttendanceMapContent(
-    latitude: Double,
-    longitude: Double
-) {
-    val notifier = rememberNotifier()
-    val context = LocalContext.current
-    val currentLocation by remember(latitude, longitude) {
-        derivedStateOf {
-            LatLng(latitude, longitude)
-        }
-    }
-    val currentLocationState = remember(currentLocation) {
-        MarkerState(position = currentLocation)
-    }
-    val cameraPositionState = rememberCameraPositionState(currentLocation.toString()) {
-        position = CameraPosition.fromLatLngZoom(currentLocation, 10f)
-    }
-    LaunchedEffect(currentLocation) {
-        cameraPositionState.animate(
-            update = CameraUpdateFactory.newCameraPosition(
-                CameraPosition(currentLocation, 15f, 0f, 0f)
-            ),
-            durationMs = 1000
-        )
-    }
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
-    ) {
-        Card(
-            onClick = { },
-            modifier = Modifier
-                .fillMaxSize(),
-            shape = RoundedCornerShape(4.dp)
-        ) {
-            GoogleMap(
-                modifier = Modifier.fillMaxSize(),
-                cameraPositionState = cameraPositionState,
-                properties = MapProperties(
-                    isIndoorEnabled = true,
-                    isBuildingEnabled = true,
-                    isMyLocationEnabled = true,
-                    mapType = MapType.NORMAL
-                ),
-                uiSettings = MapUiSettings(
-                    scrollGesturesEnabled = true,
-                    zoomGesturesEnabled = true,
-                    zoomControlsEnabled = true,
-                    mapToolbarEnabled = true,
-                    indoorLevelPickerEnabled = true,
-                    tiltGesturesEnabled = true,
-                    myLocationButtonEnabled = true,
-                    scrollGesturesEnabledDuringRotateOrZoom = true
-                )
-            ) {
-                Marker(
-                    state = currentLocationState,
-                )
-            }
-        }
-    }
-}

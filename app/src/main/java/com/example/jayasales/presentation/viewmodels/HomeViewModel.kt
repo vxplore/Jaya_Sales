@@ -15,9 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repo : Repository
+    private val repo: Repository
 ) : WirelessViewModel() {
-    private val logoutAlert = mutableStateOf(false)
     private val opendialog = mutableStateOf(false)
     override fun eventBusDescription(): EventBusDescription? {
         return null
@@ -31,44 +30,52 @@ class HomeViewModel @Inject constructor(
 
     override fun onNotification(id: Any?, arg: Any?) {
         when (id) {
-            MyDataIds.logout->{
-                opendialog.value =! opendialog.value
+            MyDataIds.logout -> {
+                opendialog.value = !opendialog.value
             }
-            MyDataIds.returnRequest->{
+
+            MyDataIds.returnRequest -> {
                 navigation {
                     navigate(Routes.returnRequest.full)
                 }
             }
-            MyDataIds.dismiss->{
-                opendialog.value =! opendialog.value
+
+            MyDataIds.dismiss -> {
+                opendialog.value = !opendialog.value
             }
-            MyDataIds.Confirm->{
-                opendialog.value =! opendialog.value
-               doLogOut()
+
+            MyDataIds.Confirm -> {
+                opendialog.value = !opendialog.value
+                doLogOut()
             }
-            MyDataIds.route->{
+
+            MyDataIds.route -> {
                 navigation {
                     navigate(
                         Routes.selectRoute.full
                     )
                 }
             }
-            MyDataIds.parties->{
+
+            MyDataIds.parties -> {
                 navigation {
                     navigate(Routes.parties.full)
                 }
             }
-            MyDataIds.transactions->{
+
+            MyDataIds.transactions -> {
                 navigation {
                     navigate(Routes.paymentIn.full)
                 }
             }
-            MyDataIds.items->{
+
+            MyDataIds.items -> {
                 navigation {
                     navigate(Routes.items.full)
                 }
             }
-            MyDataIds.markAttendance->{
+
+            MyDataIds.markAttendance -> {
                 navigation {
                     navigate(Routes.markAttendance.full)
                 }
@@ -78,17 +85,19 @@ class HomeViewModel @Inject constructor(
 
     override fun onStartUp(route: Route?, arguments: Bundle?) {
     }
+
     init {
         mapData(
             MyDataIds.opendialog to opendialog,
         )
         setStatusBarColor(Color(0xFFFFEB56), true)
     }
+
     private fun doLogOut() {
         repo.setIsLoggedIn(false)
         repo.removeUser()
         navigation {
-            navigate(Routes.login.full){
+            navigate(Routes.login.full) {
                 popUpTo(Routes.home.full)
             }
         }

@@ -95,4 +95,12 @@
     <string name="Check_In">Check In</string>
     <string name="Checkout">Checkout</string>
     <string name="Working_hr">Working hr</string>
+    <string name="amount">₹Amount</string>
+    <string name="Logout">Logout</string>
+    <string name="Login">Login</string>
+    <string name="SureLogOut">Are you sure to logout</string>
+    <string name="Confirm">Confirm</string>
+    <string name="Dismiss">Dismiss</string>
+    <string name="Have_Question">Have Question ? Message us on\n987-654-3210</string>
+    <string name="Mark_Attendance">Mark Attendance</string>
 </resources>

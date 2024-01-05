@@ -1,6 +1,5 @@
 package com.example.jayasales.presentation.screens
 
-
 import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -50,8 +49,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.debduttapanda.j3lib.NotificationService
@@ -75,7 +76,6 @@ fun ItemScreen(
     brandTabItem: List<Brand> = listState(key = MyDataIds.brands),
     selectedTabIndex: State<Int> = intState(key = MyDataIds.brandChange),
     categoryList: List<Category> = listState(key = MyDataIds.categories),
-    noOfItem: State<Int> = intState(key = MyDataIds.noOfItem),
     selectedCategoryId: State<String> = stringState(key = MyDataIds.selectedCategoryId),
     productData: List<Product> = listState(key = MyDataIds.filterProductData)
 ) {
@@ -171,7 +171,7 @@ fun ItemScreen(
                     ItemSearchField()
                     Spacer(modifier = Modifier.height(20.dep))
                     Text(
-                        text = "Categories",
+                        text = stringResource(id = R.string.Categories),
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sep
                     )
@@ -277,46 +277,76 @@ fun ItemProductList(
                 ) {
                     Row(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 10.dep),
+                            .fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "-",
-                            fontSize = 16.sep,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.clickable {
-                                if (quantity > 0) {
-                                    quantity--
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .weight(.33f)
+                                .clickable {
+                                    if (quantity > 0) {
+                                        quantity--
+                                        onQuantityChange(quantity)
+                                    }
+                                }
+                                .clip(RoundedCornerShape(0.dep))
+                        ) {
+                            Text(
+                                text = "-",
+                                fontSize = 16.sep,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier
+                            )
+                        }
+                        Divider(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .width(0.3.dep),
+                            color = Color(0XFFA91F1A)
+                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .weight(.33f)
+                        ) {
+                            Text(
+                                text = quantity.toString(),
+                                fontSize = 16.sep,
+                                fontWeight = FontWeight.Normal
+                            )
+                        }
+                        Divider(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .width(0.3.dep),
+                            color = Color(0XFFA91F1A)
+                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .weight(.33f)
+                                .clickable {
+                                    quantity++
                                     onQuantityChange(quantity)
                                 }
-                            }
-                        )
-                        Divider(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .width(0.3.dep),
-                            color = Color(0XFFA91F1A)
-                        )
-                        Text(
-                            text = quantity.toString(),
-                            fontSize = 16.sep,
-                            fontWeight = FontWeight.Normal
-                        )
-                        Divider(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .width(0.3.dep),
-                            color = Color(0XFFA91F1A)
-                        )
-                        Text(text = "+",
-                            fontSize = 16.sep,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.clickable {
-                                quantity++
-                                onQuantityChange(quantity)
-                            }
-                        )
+                                .clip(RoundedCornerShape(0.dep))
+                        ) {
+                            Text(
+                                text = "+",
+                                fontSize = 16.sep,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier
+
+                            )
+                        }
                     }
                 }
             }

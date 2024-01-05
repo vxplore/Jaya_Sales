@@ -1,7 +1,6 @@
 package com.example.jayasales.presentation.screens
 
 import android.content.pm.PackageManager
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -31,9 +30,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,7 +51,6 @@ import com.debduttapanda.j3lib.sep
 import com.debduttapanda.j3lib.stringState
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -64,8 +60,6 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import kotlinx.coroutines.coroutineScope
-import java.util.concurrent.CancellationException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -118,7 +112,6 @@ fun MarkVisitScreen(
                     .height(236.dep)
             ) {
                 GoogleMapSection()
-                //MapScreenWithMarker()
             }
             Spacer(modifier = Modifier.height(20.dep))
             OutlinedTextField(
@@ -179,7 +172,6 @@ fun GoogleMapSection(
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
         onResult = { result ->
-            val granted = result.entries.all { it.value }
         }
     )
     DisposableEffect(context) {
@@ -227,14 +219,12 @@ fun MapContent(
     longitude: Double
 ) {
     val currentLocationState = remember { MarkerState(position = LatLng(latitude, longitude)) }
-
     val cameraPositionState = rememberCameraPositionState("default") {
         CameraPosition.Builder()
             .target(LatLng(latitude, longitude))
             .zoom(15f)
             .build()
     }
-
     Box(
         modifier = Modifier
             .fillMaxWidth()

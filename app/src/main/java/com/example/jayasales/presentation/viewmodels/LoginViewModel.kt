@@ -40,11 +40,9 @@ class LoginViewModel @Inject constructor(
     }
 
     override fun interCom(message: InterCom) {
-
     }
 
     override fun onBack() {
-
     }
 
     override fun onNotification(id: Any?, arg: Any?) {
@@ -103,7 +101,6 @@ class LoginViewModel @Inject constructor(
     override fun onStartUp(route: Route?, arguments: Bundle?) {
     }
 
-
     private fun onClickedSignIn() {
         if (!username.value.matches("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})\$".toRegex())) {
             toast("Enter valid email")
@@ -113,10 +110,6 @@ class LoginViewModel @Inject constructor(
             toast("Please provide password")
             return
         }
-        /*  if (password.value.length <= 5) {
-              toast("password should be greater than 5")
-              return
-          }*/
         userLogin()
     }
 
@@ -133,10 +126,6 @@ class LoginViewModel @Inject constructor(
             toast("Please provide email")
             return
         }
-        /*  if (otpInput.value != "1111") {
-              toast("Enter valid otp 1111")
-              return
-          }*/
         if (recoverPassword.value.isNullOrEmpty()) {
             toast("Please provide password")
             return
@@ -158,7 +147,6 @@ class LoginViewModel @Inject constructor(
 
     init {
         setUp()
-
     }
 
     private fun setUp() {
@@ -174,7 +162,7 @@ class LoginViewModel @Inject constructor(
             MyDataIds.loading to loading,
             MyDataIds.recoverLoading to recoverLoading,
         )
-        setStatusBarColor(Color(0xFFD62B2B), false)
+        setStatusBarColor(Color(0xFFD62B2B), true)
         setSoftInputMode(SoftInputMode.adjustPan)
     }
 
@@ -193,11 +181,6 @@ class LoginViewModel @Inject constructor(
                             repo.saveUser(response)
                             navigation {
                                 navigate(Routes.home.full)
-                                //
-                                // loading.value = !loading.value
-                                /* {
-                                     popUpTo(Routes.login.full)
-                                 }*/
                             }
                         }
                     } else {
@@ -233,7 +216,6 @@ class LoginViewModel @Inject constructor(
 
     private fun resetPassword() {
         viewModelScope.launch {
-            // try {
             val response =
                 repo.resetPassword(
                     recoverUsername.value,
@@ -241,7 +223,7 @@ class LoginViewModel @Inject constructor(
                     confirmPassword.value,
                 )
             Log.d("dbbdk", response.toString())
-            if (response?.status==true) {
+            if (response?.status == true) {
                 withContext(Dispatchers.Main) {
                     recoverPasswordDialog.value = false
                     username.value = recoverUsername.value
@@ -249,11 +231,7 @@ class LoginViewModel @Inject constructor(
                     clearRecoverInputField()
                 }
             } else {
-                //toast("Invalid OTP")
             }
-            /*   } catch (e: Exception) {
-                   Log.d("dbbdk", e.message.toString())
-               }*/
         }
     }
 

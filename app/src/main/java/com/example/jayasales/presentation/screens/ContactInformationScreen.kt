@@ -93,7 +93,7 @@ fun ContactInformationScreen(
                     shape = RoundedCornerShape(4.dep)
                 ) {
                     Text(
-                        text = "Back to Parties",
+                        text = stringResource(id = R.string.Back_Parties),
                         fontSize = 14.sep,
                         color = Color.White,
                         modifier = Modifier

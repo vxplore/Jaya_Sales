@@ -46,6 +46,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -86,10 +87,10 @@ fun HomeScreen(
                     Box(
                         modifier = Modifier
                             .padding(start = 20.dep)
-                    ){
+                    ) {
                         Image(
                             painter = painterResource(id = R.drawable.person),
-                            contentDescription ="",
+                            contentDescription = "",
                             modifier = Modifier
                                 .size(
                                     width = 64.dep,
@@ -140,7 +141,7 @@ fun HomeScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.LocationOn,
-                                contentDescription ="",
+                                contentDescription = "",
                                 tint = Color(0xFFD62B2B),
                                 modifier = Modifier.size(width = 16.dep, height = 20.dep)
                             )
@@ -199,7 +200,7 @@ fun HomeScreen(
                     )
                     Spacer(Modifier.width(8.dep))
                     Text(
-                        text = "Logout",
+                        text = stringResource(id = R.string.Logout),
                         fontSize = 14.sep,
                         color = Color(0xFF222222)
                     )
@@ -246,7 +247,6 @@ fun HomeScreen(
                         contentDescription = "",
                         tint = Color(0xFFB81B1B),
                         modifier = Modifier
-                            //.padding(start = 16.dp)
                             .size(24.dep)
                     )
                 }
@@ -262,7 +262,6 @@ fun HomeScreen(
                             painter = painterResource(id = R.drawable.jayasales),
                             contentDescription = stringResource(id = R.string.logo),
                             modifier = Modifier
-                                //.padding(end = 35.dep)
                                 .height(60.dp)
                                 .width(100.dp),
                         )
@@ -409,19 +408,22 @@ fun HomeScreen(
                         modifier = Modifier
                             .weight(.25f)
                     ) {
-                        IconButton(
-                            onClick = {
-                                notifier.notify(MyDataIds.parties)
-                            },
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
                             modifier = Modifier
                                 .width(72.dep)
                                 .height(72.dep)
-                                .shadow(4.dep, shape = RoundedCornerShape(50.dep), clip = true)
-                                .background(Color.White)
+                                .shadow(4.dep, shape = CircleShape, clip = true)
+                                .background(Color.White, CircleShape)
+                                .clickable {
+                                    notifier.notify(MyDataIds.parties)
+                                }
+                                .clip(CircleShape)
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.parties),
-                                contentDescription = "",
+                                contentDescription = "parties",
                                 modifier = Modifier
                                     .width(40.dep)
                                     .height(32.dep)
@@ -441,15 +443,18 @@ fun HomeScreen(
                         modifier = Modifier
                             .weight(.25f)
                     ) {
-                        IconButton(
-                            onClick = {
-                                notifier.notify(MyDataIds.items)
-                            },
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
                             modifier = Modifier
                                 .width(72.dep)
                                 .height(72.dep)
-                                .shadow(4.dep, shape = RoundedCornerShape(50.dep), clip = true)
-                                .background(Color.White)
+                                .shadow(4.dep, shape = CircleShape, clip = true)
+                                .background(Color.White, CircleShape)
+                                .clickable {
+                                    notifier.notify(MyDataIds.items)
+                                }
+                                .clip(CircleShape)
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.items),
@@ -473,15 +478,18 @@ fun HomeScreen(
                         modifier = Modifier
                             .weight(.25f)
                     ) {
-                        IconButton(
-                            onClick = {
-                                notifier.notify(MyDataIds.transactions)
-                            },
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
                             modifier = Modifier
                                 .width(72.dep)
                                 .height(72.dep)
-                                .shadow(4.dep, shape = RoundedCornerShape(50.dep), clip = true)
-                                .background(Color.White)
+                                .shadow(4.dep, shape = CircleShape, clip = true)
+                                .background(Color.White, CircleShape)
+                                .clickable {
+                                    notifier.notify(MyDataIds.transactions)
+                                }
+                                .clip(CircleShape)
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.transactions),
@@ -505,15 +513,18 @@ fun HomeScreen(
                         modifier = Modifier
                             .weight(.25f)
                     ) {
-                        IconButton(
-                            onClick = {
-                                notifier.notify(MyDataIds.markAttendance)
-                            },
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
                             modifier = Modifier
                                 .width(72.dep)
                                 .height(72.dep)
-                                .shadow(4.dep, shape = RoundedCornerShape(50.dep), clip = true)
-                                .background(Color.White)
+                                .shadow(4.dep, shape = CircleShape, clip = true)
+                                .background(Color.White, CircleShape)
+                                .clickable {
+                                    notifier.notify(MyDataIds.markAttendance)
+                                }
+                                .clip(CircleShape)
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.attendance),
@@ -540,7 +551,7 @@ fun HomeScreen(
                     .fillMaxSize()
             ) {
                 Text(
-                    text = "Have Question ? Message us on\n987-654-3210",
+                    text =  stringResource(id = R.string.Have_Question),
                     fontSize = 12.sep,
                     textAlign = TextAlign.Center,
                     color = Color(0xFFC7C7C7)

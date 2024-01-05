@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ContactInformationViewModel @Inject constructor(
-):WirelessViewModel(){
+) : WirelessViewModel() {
     private val name = mutableStateOf("")
     private val phnNo = mutableStateOf("")
     private val email = mutableStateOf("")
@@ -31,31 +31,38 @@ class ContactInformationViewModel @Inject constructor(
     }
 
     override fun onNotification(id: Any?, arg: Any?) {
-        when(id){
-            MyDataIds.back->{
+        when (id) {
+            MyDataIds.back -> {
                 popBackStack()
             }
-            MyDataIds.c_name->{
+
+            MyDataIds.c_name -> {
                 name.value = arg as String
             }
-            MyDataIds.phnNo->{
+
+            MyDataIds.phnNo -> {
                 phnNo.value = arg as String
             }
-            MyDataIds.email->{
+
+            MyDataIds.email -> {
                 email.value = arg as String
             }
-            MyDataIds.gst->{
+
+            MyDataIds.gst -> {
                 gst.value = arg as String
             }
-            MyDataIds.addNow->{
-                storeDialog.value =! storeDialog.value
+
+            MyDataIds.addNow -> {
+                storeDialog.value = !storeDialog.value
             }
-            MyDataIds.backNow->{
-               navigation {
-                   navigate(Routes.addNewStore.full)
-               }
+
+            MyDataIds.backNow -> {
+                navigation {
+                    navigate(Routes.addNewStore.full)
+                }
             }
-            MyDataIds.addNewStore->{
+
+            MyDataIds.addNewStore -> {
                 navigation {
                     navigate(Routes.parties.full)
                 }
@@ -65,6 +72,7 @@ class ContactInformationViewModel @Inject constructor(
 
     override fun onStartUp(route: Route?, arguments: Bundle?) {
     }
+
     init {
         mapData(
             MyDataIds.c_name to name,
@@ -74,6 +82,6 @@ class ContactInformationViewModel @Inject constructor(
             MyDataIds.storeDialog to storeDialog,
         )
 
-        setStatusBarColor(Color(0xFFFFEB56), false)
+        setStatusBarColor(Color(0xFFFFEB56), true)
     }
 }
