@@ -63,10 +63,10 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PartiesScreen(
-    notifier:NotificationService = rememberNotifier(),
+    notifier: NotificationService = rememberNotifier(),
     selectedTab: State<PartiesTab> = rememberTState(id = MyDataIds.SelectedTab),
     partiesList: SnapshotStateList<PartiesDatum> = listState(key = MyDataIds.partiesList)
-){
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -100,7 +100,7 @@ fun PartiesScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                          notifier.notify(MyDataIds.addStore)
+                    notifier.notify(MyDataIds.addStore)
                 },
                 containerColor = Color.White,
                 shape = CircleShape,
@@ -132,34 +132,43 @@ fun PartiesScreen(
             ) {
                 OutlinedButton(
                     onClick = { notifier.notify(MyDataIds.allbtn) },
-                    colors = if (selectedTab.value ==  PartiesTab.All) ButtonDefaults.buttonColors(Color(0XFF1FB574))
+                    colors = if (selectedTab.value == PartiesTab.All) ButtonDefaults.buttonColors(
+                        Color(0XFF1FB574)
+                    )
                     else ButtonDefaults.buttonColors(Color(0XFFF3FBF8)),
                     border = BorderStroke(0.dep, Color.Transparent)
                 ) {
                     Text(
                         text = "All",
-                        color = if (selectedTab.value ==  PartiesTab.All) Color.White else Color.Black
+                        color = if (selectedTab.value == PartiesTab.All) Color.White else Color.Black
                     )
                 }
                 OutlinedButton(
                     onClick = { notifier.notify(MyDataIds.visitedbtn, "Visited") },
-                    colors = if (selectedTab.value ==  PartiesTab.Visited) ButtonDefaults.buttonColors(Color(0XFF1FB574))
+                    colors = if (selectedTab.value == PartiesTab.Visited) ButtonDefaults.buttonColors(
+                        Color(0XFF1FB574)
+                    )
                     else ButtonDefaults.buttonColors(Color(0XFFF3FBF8)),
                     border = BorderStroke(0.dep, Color.Transparent)
                 )
                 {
-                    Text(text = "Visited", color = if (selectedTab.value ==  PartiesTab.Visited) Color.White else Color.Black)
+                    Text(
+                        text = "Visited",
+                        color = if (selectedTab.value == PartiesTab.Visited) Color.White else Color.Black
+                    )
                 }
                 OutlinedButton(
                     onClick = { notifier.notify(MyDataIds.pendingbtn, "Pending") },
-                    colors = if (selectedTab.value ==  PartiesTab.Pending) ButtonDefaults.buttonColors(Color(0XFF1FB574))
+                    colors = if (selectedTab.value == PartiesTab.Pending) ButtonDefaults.buttonColors(
+                        Color(0XFF1FB574)
+                    )
                     else ButtonDefaults.buttonColors(Color(0XFFF3FBF8)),
                     border = BorderStroke(0.dep, Color.Transparent)
                 )
                 {
                     Text(
                         text = "Pending",
-                        color = if (selectedTab.value ==  PartiesTab.All) Color.Black else Color.Black
+                        color = if (selectedTab.value == PartiesTab.All) Color.Black else Color.Black
                     )
                 }
             }
@@ -175,9 +184,11 @@ fun PartiesScreen(
                         PartiesTab.Visited -> {
                             Visited(it)
                         }
+
                         PartiesTab.Pending -> {
                             Pending(it)
                         }
+
                         else -> {
                             Card(
                                 modifier = Modifier
@@ -261,7 +272,6 @@ fun PartiesScreen(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.Center,
                                             modifier = Modifier
-
                                                 .background(
                                                     if (it.status == "Pending") {
                                                         Color(0xFFF2F2F2)
@@ -298,8 +308,7 @@ fun PartiesScreen(
 fun PartiesSearchBox(
     notifier: NotificationService = rememberNotifier(),
     partiesSearch: State<String> = stringState(key = MyDataIds.partiesSearch)
-)
-{
+) {
     OutlinedTextField(
         value = partiesSearch.value,
         onValueChange = {
@@ -331,9 +340,9 @@ fun PartiesSearchBox(
 
 @Composable
 fun Pending(
-    it:PartiesDatum,
-    notifier:NotificationService = rememberNotifier(),
-){
+    it: PartiesDatum,
+    notifier: NotificationService = rememberNotifier(),
+) {
     Card(
         modifier = Modifier
             .height(80.dep)
@@ -445,8 +454,8 @@ fun Pending(
 @Composable
 fun Visited(
     it: PartiesDatum,
-    notifier:NotificationService = rememberNotifier(),
-){
+    notifier: NotificationService = rememberNotifier(),
+) {
     Card(
         modifier = Modifier
             .height(80.dep)

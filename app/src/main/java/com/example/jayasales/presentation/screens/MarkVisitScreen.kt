@@ -200,7 +200,6 @@ fun GoogleMapSection(
         PermissionState.Granted -> {
             MapContent(latitude, longitude)
         }
-
         PermissionState.NotGranted -> {
             Text("Location permission is required for this feature.")
         }

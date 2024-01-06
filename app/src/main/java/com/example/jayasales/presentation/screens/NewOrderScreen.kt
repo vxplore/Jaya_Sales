@@ -159,7 +159,8 @@ fun NewOrdersPage(
                                     fontWeight = FontWeight.Medium
                                 )
                             },
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier
+                                .weight(1f),
                             selectedContentColor = Color.Red,
                             unselectedContentColor = Color.Black
                         )
@@ -190,7 +191,6 @@ fun NewOrdersPage(
                         }
                     }
                     Spacer(modifier = Modifier.height(24.dep))
-
                     LazyColumn(
                         modifier = Modifier
                             .padding(bottom = 80.dep)
@@ -385,7 +385,6 @@ fun ProductList(
                                 fontWeight = FontWeight.Normal
                             )
                         }
-
                         Divider(
                             modifier = Modifier
                                 .fillMaxHeight()
@@ -407,11 +406,8 @@ fun ProductList(
                             Text(text = "+",
                                 fontSize = 16.sep,
                                 fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-
                             )
                         }
-
                     }
                 }
             }

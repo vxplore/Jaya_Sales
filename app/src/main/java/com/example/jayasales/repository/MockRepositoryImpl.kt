@@ -198,5 +198,4 @@ class MockRepositoryImpl @Inject constructor(
     override fun removeUser() {
         myPref.deleteUserId()
     }
-
 }

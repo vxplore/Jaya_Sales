@@ -268,9 +268,12 @@ fun HomeScreen(
                     },
                     navigationIcon = {
                         IconButton(
-                            onClick = { scope.launch { drawerState.open() } },
+                            onClick = {
+                                scope.launch {
+                                    drawerState.open()
+                                }
+                            },
                             modifier = Modifier
-
                                 .height(20.dep)
                                 .width(32.dep)
                         ) {
@@ -551,7 +554,7 @@ fun HomeScreen(
                     .fillMaxSize()
             ) {
                 Text(
-                    text =  stringResource(id = R.string.Have_Question),
+                    text = stringResource(id = R.string.Have_Question),
                     fontSize = 12.sep,
                     textAlign = TextAlign.Center,
                     color = Color(0xFFC7C7C7)

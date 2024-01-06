@@ -95,14 +95,12 @@ fun ItemScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            notifier.notify(
-                                MyDataIds.back
-                            )
+                            notifier.notify(MyDataIds.back)
                         }
                     ) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBackIosNew,
-                            contentDescription = "hamburger",
+                            contentDescription = "ArrowBackIosNew",
                             tint = Color.Black
                         )
                     }
@@ -343,8 +341,6 @@ fun ItemProductList(
                                 text = "+",
                                 fontSize = 16.sep,
                                 fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-
                             )
                         }
                     }
@@ -374,7 +370,8 @@ fun ItemCategoryTabItemUi(
         Text(
             text = it.name,
             fontSize = 12.sep,
-            color = if (it.id == selectedCategoryId) Color.White
+            color = if (it.id == selectedCategoryId)
+                Color.White
             else Color.Black
         )
     }

@@ -15,7 +15,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -103,7 +104,7 @@ fun PaymentInScreen(
                 Button(
                     onClick = {
                         notifier.notify(MyDataIds.paymentDone)
-                              },
+                    },
                     modifier = Modifier
                         .padding(horizontal = 52.dep)
                         .height(44.dep)
@@ -148,11 +149,9 @@ fun PaymentInScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            notifier.notify(
-                                MyDataIds.back
-                            )
+                            notifier.notify(MyDataIds.back)
                         }
-                    ) {
+                    ){
                         Icon(
                             imageVector = Icons.Filled.ArrowBackIosNew,
                             contentDescription = "ArrowBackIosNew",
@@ -281,9 +280,9 @@ fun PaymentInScreen(
                                     text = paymentItem.transaction_status,
                                     fontSize = 11.sep,
                                     textAlign = TextAlign.Center,
-                                    color = if (paymentItem.paymentDone =="00%") {
+                                    color = if (paymentItem.paymentDone == "00%") {
                                         Color(0xFFD62B2B)
-                                    }else{
+                                    } else {
                                         Color(0xFFFAC800)
                                     },
                                 )
@@ -514,7 +513,7 @@ fun PaymentInScreen(
                         Button(
                             onClick = {
                                 notifier.notify(MyDataIds.savebtn)
-                                      },
+                            },
                             modifier = Modifier
                                 .height(44.dep)
                                 .width(160.dep),
