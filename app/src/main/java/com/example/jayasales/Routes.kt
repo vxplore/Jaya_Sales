@@ -20,4 +20,5 @@ object Routes {
     val contactInformation = Route("contactInformation")
     val markAttendance = Route("markAttendance")
     val timeSheet = Route("timeSheet")
+    val notification = Route("notification")
 }

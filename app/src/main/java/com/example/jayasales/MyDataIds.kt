@@ -100,4 +100,6 @@ enum class MyDataIds {
     markAttendance,
     timeSheet,
     isSearchResultEmpty,
+    notificationList,
+    notification,
 }

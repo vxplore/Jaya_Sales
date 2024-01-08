@@ -288,6 +288,7 @@ fun HomeScreen(
                     actions = {
                         IconButton(
                             onClick = {
+                                      notifier.notify(MyDataIds.notification)
                             },
                             modifier = Modifier
                                 .height(36.dep)
