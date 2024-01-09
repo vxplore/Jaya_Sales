@@ -64,11 +64,6 @@ class LoginViewModel @Inject constructor(
 
             MyDataIds.signUpClick -> {
                 onClickedSignIn()
-                val logDtls = arg as Data
-                viewModelScope.launch {
-                    repo.setLogUId(logDtls.name)
-                    Log.d("dfhj","${logDtls.name}")
-                }
             }
 
             MyDataIds.recoverPasswordClick -> {
@@ -185,6 +180,7 @@ class LoginViewModel @Inject constructor(
                         viewModelScope.launch {
                             delay(3000)
                             repo.setIsLoggedIn(true)
+                            repo.setLogUId(response.data.name)
                             repo.saveUser(response)
                             navigation {
                                 navigate(Routes.home.full)
