@@ -41,6 +41,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -59,6 +60,7 @@ import com.debduttapanda.j3lib.boolState
 import com.debduttapanda.j3lib.dep
 import com.debduttapanda.j3lib.rememberNotifier
 import com.debduttapanda.j3lib.sep
+import com.debduttapanda.j3lib.stringState
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
 import kotlinx.coroutines.launch
@@ -68,6 +70,7 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     notifier: NotificationService = rememberNotifier(),
     openLogoutDialog: Boolean = boolState(key = MyDataIds.opendialog).value,
+    nameState : State<String> = stringState(key = MyDataIds.nameState),
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -128,7 +131,7 @@ fun HomeScreen(
                     )
                     {
                         Text(
-                            text = "Rakesh Roshan",
+                            text = nameState.value,
                             fontSize = 18.sep,
                             fontWeight = FontWeight.SemiBold,
                             color = Color(0xFF222222)

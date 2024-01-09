@@ -9,6 +9,7 @@ import com.example.jayasales.model.Product
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.RouteDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
+import com.example.jayasales.model.StoreDetailsDataResponse
 import java.io.File
 
 interface Repository {
@@ -18,7 +19,8 @@ interface Repository {
     suspend fun getOtp(email: String) : GetOtpResponse?
     suspend fun route(data:String) : RouteDataResponse?
     suspend fun searchRoute(query:String) : SearchRouteDataResponse?
-    suspend fun parties(parties:String) : PartiesDataResponse?
+    suspend fun parties(userId:String,routeId: String,searchText : String) : PartiesDataResponse?
+    suspend fun storeDetails(storeId : String, userId: String) : StoreDetailsDataResponse?
     suspend fun searchParty(searchParty:String) : PartiesDataResponse?
     fun setIsLoggedIn(done : Boolean)
     suspend fun allBrands(): List<Brand>
@@ -30,6 +32,11 @@ interface Repository {
     fun saveUser(userId: LoginDataResponse?)
 
     fun getUserId() : String?
+    fun getUId() : String?
+    fun setUId(UId: String?)
+
+    fun getLogUId() : String?
+    fun setLogUId(logUId: String?)
 
     fun removeUser()
 

@@ -9,9 +9,7 @@ data class PartiesDataResponse (
 data class PartiesDatum (
     val uid: String,
     val store_name: String,
-    val route_id: String,
-    val gps_location: String,
-    val amount: String,
+    val amount: Long,
     val status: String,
-    val visited_date_time: String? = null
+    val visited_date_time: String
 )

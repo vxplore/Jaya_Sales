@@ -202,7 +202,7 @@ fun PartiesScreen(
                                     )
                                     .clip(RoundedCornerShape(4.dep))
                                     .clickable {
-                                        notifier.notify(MyDataIds.storeDetails)
+                                        notifier.notify(MyDataIds.storeDetails,it)
                                     },
                                 colors = CardDefaults.cardColors(Color.White),
                                 elevation = CardDefaults.cardElevation(
@@ -273,7 +273,7 @@ fun PartiesScreen(
                                             horizontalArrangement = Arrangement.Center,
                                             modifier = Modifier
                                                 .background(
-                                                    if (it.status == "Pending") {
+                                                    if (it.status == "pending") {
                                                         Color(0xFFF2F2F2)
                                                     } else {
                                                         Color(0xFFF6D907)
@@ -286,7 +286,7 @@ fun PartiesScreen(
                                                 text = it.status,
                                                 fontSize = 12.sep,
                                                 color =
-                                                if (it.status == "Pending") {
+                                                if (it.status == "pending") {
                                                     Color(0xFF1FB574)
                                                 } else {
                                                     Color(0xFFFFA956)

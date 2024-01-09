@@ -1,8 +1,10 @@
 package com.example.jayasales.presentation.viewmodels
 
 import android.os.Bundle
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.viewModelScope
 import com.debduttapanda.j3lib.InterCom
 import com.debduttapanda.j3lib.WirelessViewModel
 import com.debduttapanda.j3lib.models.EventBusDescription
@@ -11,6 +13,7 @@ import com.example.jayasales.MyDataIds
 import com.example.jayasales.Routes
 import com.example.jayasales.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,6 +21,7 @@ class HomeViewModel @Inject constructor(
     private val repo: Repository
 ) : WirelessViewModel() {
     private val opendialog = mutableStateOf(false)
+    private val nameState = mutableStateOf("")
     override fun eventBusDescription(): EventBusDescription? {
         return null
     }
@@ -94,8 +98,14 @@ class HomeViewModel @Inject constructor(
     init {
         mapData(
             MyDataIds.opendialog to opendialog,
+            MyDataIds.nameState to nameState,
         )
         setStatusBarColor(Color(0xFFFFEB56), true)
+
+        viewModelScope.launch {
+            Log.d("hnvfn","${repo.getLogUId()}")
+            nameState.value = repo.getLogUId()!!
+        }
     }
 
     private fun doLogOut() {

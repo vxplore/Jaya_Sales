@@ -345,7 +345,7 @@ fun ProductList(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row (
+                        Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center,
                             modifier = Modifier
@@ -354,7 +354,7 @@ fun ProductList(
                                 .clickable {
                                     if (quantity > 0) {
                                         quantity--
-                                        onQuantityChange(quantity)
+                                        onQuantityChange(-1)
                                     }
                                 }
                                 .clip(RoundedCornerShape(0.dep))
@@ -391,7 +391,7 @@ fun ProductList(
                                 .width(0.3.dep),
                             color = Color(0XFFA91F1A)
                         )
-                        Row (
+                        Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center,
                             modifier = Modifier
@@ -399,7 +399,7 @@ fun ProductList(
                                 .weight(.33f)
                                 .clickable {
                                     quantity++
-                                    onQuantityChange(quantity)
+                                    onQuantityChange(1)
                                 }
                                 .clip(RoundedCornerShape(0.dep))
                         ){

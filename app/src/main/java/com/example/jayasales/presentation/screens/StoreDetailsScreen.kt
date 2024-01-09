@@ -3,12 +3,12 @@ package com.example.jayasales.presentation.screens
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,15 +23,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,7 +46,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.DefaultShadowColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -63,9 +59,10 @@ import com.debduttapanda.j3lib.listState
 import com.debduttapanda.j3lib.rememberNotifier
 import com.debduttapanda.j3lib.rememberTState
 import com.debduttapanda.j3lib.sep
+import com.debduttapanda.j3lib.stringState
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
-import com.example.jayasales.model.StoreDataResponse
+import com.example.jayasales.model.Store
 import com.example.jayasales.presentation.viewmodels.TransactionTab
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,14 +70,18 @@ import com.example.jayasales.presentation.viewmodels.TransactionTab
 fun StoreDetailsScreen(
     notifier: NotificationService = rememberNotifier(),
     selectedTransactionTab: State<TransactionTab> = rememberTState(id = MyDataIds.selectedTransactionTab),
-    storeDetailsList: SnapshotStateList<StoreDataResponse> = listState(key = MyDataIds.storeDetailsList)
+    storeDetailsList: SnapshotStateList<Store> = listState(key = MyDataIds.storeDetailsList),
+    storeName: State<String> = stringState(key = MyDataIds.storeNameState),
+    due : State<String> = stringState(key = MyDataIds.dueState),
+    address : State<String> = stringState(key = MyDataIds.addressState),
+    phoneNumber: State<String> = stringState(key = MyDataIds.phoneNumberState)
 ) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Ram Krishna Store",
+                        text = storeName.value,
                         fontSize = 20.sep,
                         fontWeight = FontWeight.Bold,
                     )
@@ -127,7 +128,7 @@ fun StoreDetailsScreen(
                 Column {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = "₹42,568.00",
+                            text = "₹${due.value}",
                             fontSize = 20.sep,
                             fontWeight = FontWeight.ExtraBold,
                             color = Color(0xFF222222)
@@ -140,7 +141,7 @@ fun StoreDetailsScreen(
                         )
                     }
                     Text(
-                        text = "#93SARJAPUR ROAR",
+                        text = address.value,
                         fontSize = 11.sep,
                         color = Color(0xFF222222)
                     )
@@ -149,7 +150,7 @@ fun StoreDetailsScreen(
                 val requestPermissionLauncher =
                     rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
                         if (isGranted) {
-                            makePhoneCall(context)
+                            makePhoneCall(context,phoneNumber)
                         }
                     }
                 IconButton(
@@ -159,7 +160,7 @@ fun StoreDetailsScreen(
                                 android.Manifest.permission.CALL_PHONE
                             ) == PermissionChecker.PERMISSION_GRANTED
                         ) {
-                            makePhoneCall(context)
+                            makePhoneCall(context,phoneNumber)
                         } else {
                             requestPermissionLauncher.launch(android.Manifest.permission.CALL_PHONE)
                         }
@@ -357,7 +358,7 @@ fun StoreDetailsScreen(
                         contentPadding = PaddingValues(vertical = 10.dep),
                         verticalArrangement = Arrangement.spacedBy(20.dep)
                     ) {
-                        items(storeDetailsList) {
+                       /* items(storeDetailsList) {
                             if (selectedTransactionTab.value == TransactionTab.Sales) {
                                 Card(
                                     modifier = Modifier
@@ -390,7 +391,7 @@ fun StoreDetailsScreen(
                                                 .fillMaxWidth()
                                         ) {
                                             Text(
-                                                text = "Order: #${it.order_id}",
+                                                text = "Order: #2",
                                                 fontSize = 14.sep,
                                                 textAlign = TextAlign.Center,
                                                 fontWeight = FontWeight.SemiBold,
@@ -639,7 +640,7 @@ fun StoreDetailsScreen(
                                     }
                                 }
                             }
-                        }
+                        }*/
                     }
                 }
             }
@@ -647,11 +648,15 @@ fun StoreDetailsScreen(
     }
 }
 
-private fun makePhoneCall(context: Context) {
-    val phoneNumber = "tel:" + "1221122112"
+private fun makePhoneCall(
+    context: Context,
+    phoneNumber: State<String>
+) {
+    val phoneNumberUri = "tel:${phoneNumber.value}"
+    Log.d("dcfdc","$phoneNumber")
     val callIntent = Intent(
         Intent.ACTION_CALL,
-        Uri.parse(phoneNumber)
+        Uri.parse(phoneNumberUri)
     )
     context.startActivity(callIntent)
 }

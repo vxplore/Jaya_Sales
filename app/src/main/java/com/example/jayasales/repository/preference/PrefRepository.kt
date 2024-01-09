@@ -11,6 +11,13 @@ interface PrefRepository {
     fun setUserId(userId: LoginDataResponse?)
 
     fun getUserId(): String?
+    fun setUId(userId: String?)
+
+    fun getUId(): String?
+
+    fun setLogUId(logUId: String?)
+
+    fun getLogUId(): String?
 
     fun deleteUserId()
 }

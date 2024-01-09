@@ -7,6 +7,7 @@ import com.example.jayasales.model.PartiesDataResponse
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.RouteDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
+import com.example.jayasales.model.StoreDetailsDataResponse
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -62,9 +63,19 @@ interface ApiInterface {
         @Query("query") query : String,
 
         ): Response<SearchRouteDataResponse>
-    @GET("parties-list")
+    @FormUrlEncoded
+    @POST("sells/store_details")
+    suspend fun storeDetails(
+        @Field("store_id") storeId : String,
+        @Field("user_id") userId: String,
+        ): Response<StoreDetailsDataResponse>
+
+    @FormUrlEncoded
+    @POST("parties-search")
     suspend fun parties(
-        @Query("parties-list") parties : String,
+        @Field("user_id") userId : String,
+        @Field("route_id") routeId: String,
+        @Field("search_text") searchText : String,
 
         ): Response<PartiesDataResponse>
 

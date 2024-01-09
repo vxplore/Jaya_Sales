@@ -1,6 +1,7 @@
 package com.example.jayasales.presentation.viewmodels
 
 import android.os.Bundle
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -16,6 +17,7 @@ import com.example.jayasales.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.log
 
 enum class PartiesTab {
     All,
@@ -28,10 +30,12 @@ class PartiesViewModel @Inject constructor(
     private val repo: Repository
 ) : WirelessViewModel() {
     private val partiesSearch = mutableStateOf("")
+    private val userId  = mutableStateOf("")
+    private val routeId  = mutableStateOf("")
     private val selectedTab = mutableStateOf(PartiesTab.All)
     private val effectivePartiesList = mutableStateListOf<PartiesDatum>()
     private val allPartiesList = mutableStateListOf<PartiesDatum>()
-    private val partiesData = mutableStateOf("parties-list")
+    //private val partiesData = mutableStateOf("parties-search")
     override fun eventBusDescription(): EventBusDescription? {
         return null
     }
@@ -71,6 +75,11 @@ class PartiesViewModel @Inject constructor(
             }
 
             MyDataIds.storeDetails -> {
+                val storedtls = arg as PartiesDatum
+                Log.d("dfcvf","$storedtls")
+                viewModelScope.launch {
+                    repo.setUId(storedtls.uid)
+                }
                 navigation {
                     navigate(Routes.storeDetails.full)
                 }
@@ -99,18 +108,23 @@ class PartiesViewModel @Inject constructor(
 
     private fun pendingPartiesList() {
         viewModelScope.launch {
-            val partiesData = partiesData.value
+            //val partiesData = partiesData.value
+            userId.value = "USER_78u88isit6yhadolutedd"
+            routeId.value = "ROUTE_003"
+            val searchText = ""
             try {
-                val response = repo.parties(partiesData)
+                val response = repo.parties(userId.value,routeId.value,searchText)
                 if (response?.status == true) {
+                     Log.d("gbhg", "$response")
                     val list = response.data
                     mainScope {
-                        allPartiesList.clear()
+                       allPartiesList.clear()
                         allPartiesList.addAll(list)
                         filter()
                     }
                 }
             } catch (e: Exception) {
+                Log.e("gbhg", "${e.message}")
             }
         }
     }

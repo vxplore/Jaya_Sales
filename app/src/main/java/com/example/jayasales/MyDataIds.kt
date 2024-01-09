@@ -102,4 +102,9 @@ enum class MyDataIds {
     isSearchResultEmpty,
     notificationList,
     notification,
+    storeNameState,
+    dueState,
+    addressState,
+    phoneNumberState,
+    nameState,
 }

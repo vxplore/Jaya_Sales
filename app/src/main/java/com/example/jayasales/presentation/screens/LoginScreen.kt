@@ -252,7 +252,7 @@ fun LoginScreen(
                 .fillMaxSize()
         ) {
             Button(
-                onClick = { notifier.notify(MyDataIds.signUpClick) },
+                onClick = { notifier.notify(MyDataIds.signUpClick,) },
                 modifier = Modifier
                     .height(60.dep)
                     .fillMaxWidth(),

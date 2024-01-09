@@ -10,5 +10,5 @@ data class Data (
     val user_id: String,
     val name: String,
     val phone: String,
-    val userType: String
+    val email: String
 )

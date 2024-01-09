@@ -13,6 +13,7 @@ import com.example.jayasales.model.Product
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.RouteDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
+import com.example.jayasales.model.StoreDetailsDataResponse
 import com.example.jayasales.repository.preference.PrefRepository
 import java.io.File
 import javax.inject.Inject
@@ -125,11 +126,24 @@ class MockRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun parties(parties: String): PartiesDataResponse? {
-        val response = apiHelper.parties(parties)
+    override suspend fun parties(
+        userId: String,
+        routeId: String,
+        searchText: String
+    ): PartiesDataResponse? {
+        val response = apiHelper.parties(userId,routeId,searchText)
         return if (response.isSuccessful) {
             response.body()
         } else {
+            null
+        }
+    }
+
+    override suspend fun storeDetails(storeId: String, userId: String): StoreDetailsDataResponse? {
+        val response = apiHelper.storeDetails(storeId,userId)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
             null
         }
     }
@@ -155,6 +169,7 @@ class MockRepositoryImpl @Inject constructor(
             null
         }
     }
+
     @SuppressLint("SuspiciousIndentation")
     override suspend fun addCustomer(
         storeName: String,
@@ -170,10 +185,23 @@ class MockRepositoryImpl @Inject constructor(
         contactEmail: String,
         gst: String
     ): AddStoreDataResponse? {
-      val response = apiHelper.addCustomer(storeName, image, cityId, stateId, postalCode, address, routeId, gpsLocation, contactName, contactNumber, contactEmail, gst)
-        return if (response.isSuccessful){
+        val response = apiHelper.addCustomer(
+            storeName,
+            image,
+            cityId,
+            stateId,
+            postalCode,
+            address,
+            routeId,
+            gpsLocation,
+            contactName,
+            contactNumber,
+            contactEmail,
+            gst
+        )
+        return if (response.isSuccessful) {
             response.body()
-        }else{
+        } else {
             null
         }
     }
@@ -193,6 +221,22 @@ class MockRepositoryImpl @Inject constructor(
 
     override fun getUserId(): String? {
         return myPref.getUserId()
+    }
+
+    override fun getUId(): String? {
+        return myPref.getUId()
+    }
+
+    override fun setUId(UId: String?) {
+        myPref.setUId(UId)
+    }
+
+    override fun getLogUId(): String? {
+        return myPref.getLogUId()
+    }
+
+    override fun setLogUId(logUId: String?) {
+        myPref.setLogUId(logUId)
     }
 
     override fun removeUser() {

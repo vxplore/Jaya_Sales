@@ -131,7 +131,6 @@ fun NotificationScreen(
                                     textAlign = TextAlign.Center,
                                     color = Color(0xFF222222)
                                 )
-                                //Spacer(modifier = Modifier.height(4.dep))
                                 Text(
                                     text = it.details,
                                     fontSize = 14.sep,
