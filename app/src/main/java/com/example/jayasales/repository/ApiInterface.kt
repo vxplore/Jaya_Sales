@@ -3,6 +3,7 @@ package com.example.jayasales.repository
 import com.example.jayasales.model.AddStoreDataResponse
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
+import com.example.jayasales.model.MarkVisitDataResponse
 import com.example.jayasales.model.PartiesDataResponse
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.RouteDataResponse
@@ -78,6 +79,16 @@ interface ApiInterface {
         @Field("search_text") searchText : String,
 
         ): Response<PartiesDataResponse>
+    @FormUrlEncoded
+    @POST("sells/mark_visit")
+    suspend fun markVisit(
+        @Field("user_id") userId: String,
+        @Field("store_id") storeId: String,
+        @Field("lat") lat: String,
+        @Field("lng") lng: String,
+        @Field("comment") comment: String,
+
+        ): Response<MarkVisitDataResponse>
 
     @GET("parties-search")
     suspend fun searchParty(

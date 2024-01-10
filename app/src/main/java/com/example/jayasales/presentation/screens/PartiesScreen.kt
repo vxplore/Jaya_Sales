@@ -252,7 +252,7 @@ fun PartiesScreen(
                                             )
                                             Spacer(modifier = Modifier.height(8.dep))
                                             Text(
-                                                text = it.uid,
+                                                text = it.last_visited_at,
                                                 fontSize = 10.sep,
                                                 color = Color(0xFF898989)
                                             )
@@ -426,7 +426,7 @@ fun Pending(
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .background(
-                            if (it.status == "Pending") {
+                            if (it.status == "pending") {
                                 Color(0xFFF2F2F2)
                             } else {
                                 Color(0xFFF6D907)
@@ -439,7 +439,7 @@ fun Pending(
                         text = it.status,
                         fontSize = 12.sep,
                         color =
-                        if (it.status == "Pending") {
+                        if (it.status == "pending") {
                             Color(0xFF1FB574)
                         } else {
                             Color(0xFFFFA956)

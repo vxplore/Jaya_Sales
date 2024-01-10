@@ -67,6 +67,8 @@ fun MarkAttendanceScreen(
     notifier: NotificationService = rememberNotifier(),
     attencomments: State<String> = stringState(key = MyDataIds.attencomments)
 ) {
+    var currentLatitude by remember { mutableStateOf(0.0) }
+    var currentLongitude by remember { mutableStateOf(0.0) }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -138,7 +140,14 @@ fun MarkAttendanceScreen(
                         .fillMaxWidth()
                         .height(200.dep)
                 ) {
-                    GoogleMapSection()
+                    GoogleMapSection(
+                        latitude = currentLatitude,
+                        longitude = currentLongitude,
+                        onLocationChanged = { newLatitude, newLongitude ->
+                            currentLatitude = newLatitude
+                            currentLongitude = newLongitude
+                        }
+                    )
                 }
                 Spacer(modifier = Modifier.height(24.dep))
                 val currentDate = remember {

@@ -4,7 +4,17 @@ package com.example.jayasales.model
 data class StoreDetailsDataResponse (
     val status: Boolean,
     val store: Store,
-    val transactions: List<Any?>
+    val order_list: List<OrderList>
+)
+
+data class OrderList (
+    val id: String,
+    val total: String,
+    val due_amount: String,
+    val status: String,
+    val store_name: String,
+    val date: String,
+    val time: String
 )
 
 data class Store (

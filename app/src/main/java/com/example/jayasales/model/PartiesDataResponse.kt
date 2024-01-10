@@ -11,5 +11,5 @@ data class PartiesDatum (
     val store_name: String,
     val amount: Long,
     val status: String,
-    val visited_date_time: String
+    val last_visited_at: String
 )

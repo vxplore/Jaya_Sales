@@ -13,6 +13,7 @@ import com.debduttapanda.j3lib.models.EventBusDescription
 import com.debduttapanda.j3lib.models.Route
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.Routes
+import com.example.jayasales.model.OrderList
 import com.example.jayasales.model.Store
 import com.example.jayasales.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,6 +31,7 @@ class StoreDetailsViewModel @Inject constructor(
 ) : WirelessViewModel() {
     private val selectedTransactionTab = mutableStateOf(TransactionTab.Sales)
     private val storeDetailsList = mutableStateListOf<Store>()
+    private val storeDetailsOrderList = mutableStateListOf<OrderList>()
     private val storeId  = mutableStateOf("")
     private val userId  = mutableStateOf("")
     private val storeName = mutableStateOf("")
@@ -97,52 +99,11 @@ class StoreDetailsViewModel @Inject constructor(
             MyDataIds.dueState to dueState,
             MyDataIds.addressState to addressState,
             MyDataIds.phoneNumberState to phoneNumberState,
+            MyDataIds.storeDetailsOrderList to storeDetailsOrderList,
         )
         setStatusBarColor(Color(0xFFFFEB56), true)
         storeDtls()
-       /* storeDetailsList.addAll(
-            listOf(
-                StoreDataResponse(
-                    "32",
-                    "Order Placed",
-                    "Ram Krishna Store",
-                    "September 10, 2023",
-                    "12:40 Pm",
-                    "43923",
-                    "Paid",
-                    "Cash"
-                )
-            )
-        )
-        storeDetailsList.addAll(
-            listOf(
-                StoreDataResponse(
-                    "32",
-                    "Order Placed",
-                    "Ram Krishna Store",
-                    "September 10, 2023",
-                    "12:40 Pm",
-                    "43923",
-                    "₹43923 Due",
-                    "Cash"
-                )
-            )
-        )
-        storeDetailsList.addAll(
-            listOf(
-                StoreDataResponse(
-                    "32",
-                    "Order Placed",
-                    "Ram Krishna Store",
-                    "September 10, 2023",
-                    "12:40 Pm",
-                    "43923",
-                    "Paid",
-                    "Cheque"
-                )
-            )
-        )*/
-
+        storeDtlsOrders()
     }
     private fun storeDtls(){
         viewModelScope.launch {
@@ -168,4 +129,34 @@ class StoreDetailsViewModel @Inject constructor(
             }
         }
     }
+
+    private fun storeDtlsOrders() {
+        viewModelScope.launch {
+            storeId.value = repo.getUId()!!
+            Log.d("fvbdf", "$storeId")
+            userId.value = "USER_78u88isit6yhadolutedd"
+            try {
+                val response = repo.storeDetails(storeId.value, userId.value)
+                if (response?.status == true) {
+                    Log.d("fvfr", "$response")
+                    val orderlist = response.order_list
+                    if (orderlist.isNotEmpty()) {
+                        Log.d("fvfr", "$orderlist")
+                        mainScope {
+                            storeDetailsOrderList.clear()
+                            storeDetailsOrderList.addAll(orderlist)
+                        }
+                    } else {
+                        Log.d("fvfr", "Order list is empty.")
+                        mainScope {
+                            storeDetailsOrderList.clear()
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("fvfr", "${e.message}")
+            }
+        }
+    }
+
 }

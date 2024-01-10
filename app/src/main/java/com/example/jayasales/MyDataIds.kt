@@ -107,4 +107,10 @@ enum class MyDataIds {
     addressState,
     phoneNumberState,
     nameState,
+    emailState,
+    storeDetailsOrderList,
+    currentLocation,
+    currentLat,
+    currentLong,
+    getcontext,
 }

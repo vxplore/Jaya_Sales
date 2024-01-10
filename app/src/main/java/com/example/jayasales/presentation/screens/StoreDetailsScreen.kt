@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,12 +24,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,11 +50,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.DefaultShadowColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import com.debduttapanda.j3lib.NotificationService
@@ -62,6 +70,7 @@ import com.debduttapanda.j3lib.sep
 import com.debduttapanda.j3lib.stringState
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
+import com.example.jayasales.model.OrderList
 import com.example.jayasales.model.Store
 import com.example.jayasales.presentation.viewmodels.TransactionTab
 
@@ -71,9 +80,10 @@ fun StoreDetailsScreen(
     notifier: NotificationService = rememberNotifier(),
     selectedTransactionTab: State<TransactionTab> = rememberTState(id = MyDataIds.selectedTransactionTab),
     storeDetailsList: SnapshotStateList<Store> = listState(key = MyDataIds.storeDetailsList),
+    storeDetailsOrderList: SnapshotStateList<OrderList> = listState(key = MyDataIds.storeDetailsOrderList),
     storeName: State<String> = stringState(key = MyDataIds.storeNameState),
-    due : State<String> = stringState(key = MyDataIds.dueState),
-    address : State<String> = stringState(key = MyDataIds.addressState),
+    due: State<String> = stringState(key = MyDataIds.dueState),
+    address: State<String> = stringState(key = MyDataIds.addressState),
     phoneNumber: State<String> = stringState(key = MyDataIds.phoneNumberState)
 ) {
     Scaffold(
@@ -150,7 +160,7 @@ fun StoreDetailsScreen(
                 val requestPermissionLauncher =
                     rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
                         if (isGranted) {
-                            makePhoneCall(context,phoneNumber)
+                            makePhoneCall(context, phoneNumber)
                         }
                     }
                 IconButton(
@@ -160,7 +170,7 @@ fun StoreDetailsScreen(
                                 android.Manifest.permission.CALL_PHONE
                             ) == PermissionChecker.PERMISSION_GRANTED
                         ) {
-                            makePhoneCall(context,phoneNumber)
+                            makePhoneCall(context, phoneNumber)
                         } else {
                             requestPermissionLauncher.launch(android.Manifest.permission.CALL_PHONE)
                         }
@@ -358,7 +368,7 @@ fun StoreDetailsScreen(
                         contentPadding = PaddingValues(vertical = 10.dep),
                         verticalArrangement = Arrangement.spacedBy(20.dep)
                     ) {
-                       /* items(storeDetailsList) {
+                        items(storeDetailsOrderList) {
                             if (selectedTransactionTab.value == TransactionTab.Sales) {
                                 Card(
                                     modifier = Modifier
@@ -380,7 +390,7 @@ fun StoreDetailsScreen(
                                 ) {
                                     Column(
                                         modifier = Modifier
-                                            .padding(start = 16.dep, end = 14.dep)
+                                            .padding(start = 12.dep, end = 12.dep)
                                             .fillMaxSize()
                                     ) {
                                         Spacer(modifier = Modifier.height(12.dep))
@@ -391,8 +401,8 @@ fun StoreDetailsScreen(
                                                 .fillMaxWidth()
                                         ) {
                                             Text(
-                                                text = "Order: #2",
-                                                fontSize = 14.sep,
+                                                text = "Order: ${it.id}",
+                                                fontSize = 13.sep,
                                                 textAlign = TextAlign.Center,
                                                 fontWeight = FontWeight.SemiBold,
                                                 color = Color(0xFF222222)
@@ -406,10 +416,10 @@ fun StoreDetailsScreen(
                                                         .size(8.dep)
                                                 ) {
                                                 }
-                                                Spacer(modifier = Modifier.width(12.dep))
+                                                Spacer(modifier = Modifier.width(4.dep))
                                                 Text(
-                                                    text = it.order_status,
-                                                    fontSize = 12.sep,
+                                                    text = "Order Placed",
+                                                    fontSize = 11.sep,
                                                     textAlign = TextAlign.Center,
                                                     color = Color(0xFF222222)
                                                 )
@@ -433,13 +443,13 @@ fun StoreDetailsScreen(
                                                 Spacer(modifier = Modifier.width(4.dep))
                                                 Text(
                                                     text = it.store_name,
-                                                    fontSize = 10.sep,
+                                                    fontSize = 12.sep,
                                                     textAlign = TextAlign.Center,
                                                     color = Color(0xFF222222)
                                                 )
                                             }
                                             Text(
-                                                text = "₹${it.amount}",
+                                                text = "₹${it.total}",
                                                 fontSize = 14.sep,
                                                 textAlign = TextAlign.Center,
                                                 fontWeight = FontWeight.SemiBold,
@@ -466,7 +476,7 @@ fun StoreDetailsScreen(
                                                 Spacer(modifier = Modifier.width(4.dep))
                                                 Text(
                                                     text = it.date,
-                                                    fontSize = 10.sep,
+                                                    fontSize = 12.sep,
                                                     textAlign = TextAlign.Center,
                                                     color = Color(0xFF222222)
                                                 )
@@ -481,7 +491,7 @@ fun StoreDetailsScreen(
                                                 Spacer(modifier = Modifier.width(4.dep))
                                                 Text(
                                                     text = it.time,
-                                                    fontSize = 10.sep,
+                                                    fontSize = 12.sep,
                                                     textAlign = TextAlign.Center,
                                                     color = Color(0xFF222222)
                                                 )
@@ -491,7 +501,7 @@ fun StoreDetailsScreen(
                                                 horizontalArrangement = Arrangement.Center,
                                                 modifier = Modifier
                                                     .background(
-                                                        if (it.transaction_status == "Paid") {
+                                                        if (it.status == "Paid") {
                                                             Color(0xFFCDFFE9)
                                                         } else {
                                                             Color(0xFFFFCFCF)
@@ -500,7 +510,7 @@ fun StoreDetailsScreen(
                                                     )
                                                     .border(
                                                         .5.dep,
-                                                        if (it.transaction_status == "Paid") {
+                                                        if (it.status == "Paid") {
                                                             Color(0xFF1FB574)
                                                         } else {
                                                             Color(0xFFD62B2B)
@@ -511,15 +521,21 @@ fun StoreDetailsScreen(
                                                     .padding(vertical = 4.dep)
                                             ) {
                                                 Text(
-                                                    text = it.transaction_status,
-                                                    fontSize = 10.sep,
-                                                    textAlign = TextAlign.Center,
-                                                    color = if (it.transaction_status == "Paid") {
-                                                        Color(0xFF1FB574)
-                                                    } else {
-                                                        Color(0xFFD62B2B)
+                                                    text = buildAnnotatedString {
+                                                        withStyle(
+                                                            style = SpanStyle(
+                                                                color = if (it.status == "Paid") Color(
+                                                                    0xFF1FB574
+                                                                ) else Color(0xFFD62B2B),
+                                                                fontSize = 10.sep
+                                                            )
+                                                        ) {
+                                                            append(if (it.status == "Paid") it.status else "₹${it.due_amount} ${it.status}")
+                                                        }
                                                     },
+                                                    textAlign = TextAlign.Center
                                                 )
+
                                             }
                                         }
                                     }
@@ -566,7 +582,7 @@ fun StoreDetailsScreen(
                                                 color = Color(0xFF222222)
                                             )
                                             Text(
-                                                text = "₹${it.amount}",
+                                                text = "₹${it.total}",
                                                 fontSize = 14.sep,
                                                 textAlign = TextAlign.Center,
                                                 fontWeight = FontWeight.SemiBold,
@@ -630,7 +646,7 @@ fun StoreDetailsScreen(
                                                     .padding(vertical = 4.dep)
                                             ) {
                                                 Text(
-                                                    text = it.payment_mode,
+                                                    text = it.status,
                                                     fontSize = 10.sep,
                                                     textAlign = TextAlign.Center,
                                                     color = Color(0xFF1FB574),
@@ -640,7 +656,7 @@ fun StoreDetailsScreen(
                                     }
                                 }
                             }
-                        }*/
+                        }
                     }
                 }
             }
@@ -653,7 +669,7 @@ private fun makePhoneCall(
     phoneNumber: State<String>
 ) {
     val phoneNumberUri = "tel:${phoneNumber.value}"
-    Log.d("dcfdc","$phoneNumber")
+    Log.d("dcfdc", "$phoneNumber")
     val callIntent = Intent(
         Intent.ACTION_CALL,
         Uri.parse(phoneNumberUri)

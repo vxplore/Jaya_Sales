@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.ArrowDropDown
+import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -71,6 +72,7 @@ fun HomeScreen(
     notifier: NotificationService = rememberNotifier(),
     openLogoutDialog: Boolean = boolState(key = MyDataIds.opendialog).value,
     nameState : State<String> = stringState(key = MyDataIds.nameState),
+    emailState: State<String> = stringState(key = MyDataIds.emailState)
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -143,13 +145,13 @@ fun HomeScreen(
                             horizontalArrangement = Arrangement.spacedBy(2.dep)
                         ) {
                             Icon(
-                                imageVector = Icons.Filled.LocationOn,
+                                imageVector = Icons.Outlined.Email,
                                 contentDescription = "",
                                 tint = Color(0xFFD62B2B),
                                 modifier = Modifier.size(width = 16.dep, height = 20.dep)
                             )
                             Text(
-                                text = "Belur Howrah India",
+                                text = emailState.value,
                                 fontSize = 12.sep,
                                 color = Color.DarkGray
                             )

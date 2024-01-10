@@ -15,6 +15,7 @@ class PrefRepositoryImpl @Inject constructor(
     private val userIdKey="userIdKey"
     private val uIdKey="uIdKey"
     private val logUIdKey="logUIdKey"
+    private val logEmailKey="logEmailKey"
 
     private lateinit var myPref : SharedPreferences
     init {
@@ -51,6 +52,14 @@ class PrefRepositoryImpl @Inject constructor(
 
     override fun getLogUId(): String? {
        return myPref.getString(logUIdKey,"")
+    }
+
+    override fun setLogEmail(logEmail: String?) {
+        myPref.edit().putString(logEmailKey,logEmail.toString()).apply()
+    }
+
+    override fun getLogEmail(): String? {
+        return myPref.getString(logEmailKey,"")
     }
 
     override fun deleteUserId() {

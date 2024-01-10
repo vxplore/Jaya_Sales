@@ -22,6 +22,7 @@ class HomeViewModel @Inject constructor(
 ) : WirelessViewModel() {
     private val opendialog = mutableStateOf(false)
     private val nameState = mutableStateOf("")
+    private val emailState = mutableStateOf("")
     override fun eventBusDescription(): EventBusDescription? {
         return null
     }
@@ -99,12 +100,14 @@ class HomeViewModel @Inject constructor(
         mapData(
             MyDataIds.opendialog to opendialog,
             MyDataIds.nameState to nameState,
+            MyDataIds.emailState to emailState,
         )
         setStatusBarColor(Color(0xFFFFEB56), true)
 
         viewModelScope.launch {
             Log.d("hnvfn","${repo.getLogUId()}")
             nameState.value = repo.getLogUId()!!
+            emailState.value = repo.getLogEmail()!!
         }
     }
 

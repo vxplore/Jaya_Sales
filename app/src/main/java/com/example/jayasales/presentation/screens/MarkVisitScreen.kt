@@ -1,6 +1,8 @@
 package com.example.jayasales.presentation.screens
 
+import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -34,6 +36,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -67,6 +70,8 @@ fun MarkVisitScreen(
     notifier: NotificationService = rememberNotifier(),
     comments: State<String> = stringState(key = MyDataIds.comments)
 ) {
+    var currentLatitude by remember { mutableStateOf(0.0) }
+    var currentLongitude by remember { mutableStateOf(0.0) }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -111,7 +116,14 @@ fun MarkVisitScreen(
                     .fillMaxWidth()
                     .height(236.dep)
             ) {
-                GoogleMapSection()
+                GoogleMapSection(
+                    latitude = currentLatitude,
+                    longitude = currentLongitude,
+                    onLocationChanged = { newLatitude, newLongitude ->
+                        currentLatitude = newLatitude
+                        currentLongitude = newLongitude
+                    }
+                )
             }
             Spacer(modifier = Modifier.height(20.dep))
             OutlinedTextField(
@@ -167,6 +179,7 @@ fun MarkVisitScreen(
 fun GoogleMapSection(
     latitude: Double = 0.0,
     longitude: Double = 0.0,
+    onLocationChanged: (Double, Double) -> Unit
 ) {
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
@@ -198,7 +211,7 @@ fun GoogleMapSection(
 
     when (permissionState) {
         PermissionState.Granted -> {
-            MapContent(latitude, longitude)
+            MapContent(latitude, longitude, onLocationChanged)
         }
         PermissionState.NotGranted -> {
             Text("Location permission is required for this feature.")
@@ -215,15 +228,22 @@ enum class PermissionState {
 @Composable
 fun MapContent(
     latitude: Double,
-    longitude: Double
+    longitude: Double,
+    onLocationChanged: (Double, Double) -> Unit,
+    notifier: NotificationService = rememberNotifier()
 ) {
-    val currentLocationState = remember { MarkerState(position = LatLng(latitude, longitude)) }
+    val context =LocalContext.current
+    var currentLatitude by remember { mutableStateOf(latitude) }
+    var currentLongitude by remember { mutableStateOf(longitude) }
+
+    val currentLocationState = remember { mutableStateOf(MarkerState(position = LatLng(latitude, longitude))) }
     val cameraPositionState = rememberCameraPositionState("default") {
         CameraPosition.Builder()
-            .target(LatLng(latitude, longitude))
+            .target(LatLng(currentLatitude, currentLongitude))
             .zoom(15f)
             .build()
     }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -256,9 +276,18 @@ fun MapContent(
                 )
             ) {
                 Marker(
-                    state = currentLocationState,
+                    state = currentLocationState.value,
                 )
+                currentLatitude = currentLocationState.value.position.latitude
+                currentLongitude = currentLocationState.value.position.longitude
+
+                onLocationChanged(currentLatitude, currentLongitude)
+                Log.d("cvfv", "$currentLatitude")
+
+                notifier.notify(MyDataIds.getcontext, context)
+
             }
         }
     }
 }
+

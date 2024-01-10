@@ -19,5 +19,9 @@ interface PrefRepository {
 
     fun getLogUId(): String?
 
+    fun setLogEmail(logEmail: String?)
+
+    fun getLogEmail(): String?
+
     fun deleteUserId()
 }

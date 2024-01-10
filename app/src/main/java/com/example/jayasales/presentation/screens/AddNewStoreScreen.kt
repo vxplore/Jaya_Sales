@@ -87,6 +87,8 @@ fun AddNewStoreScreen(
     pin: State<String> = stringState(key = MyDataIds.pin),
     address: State<String> = stringState(key = MyDataIds.address),
 ) {
+    var currentLatitude by remember { mutableStateOf(0.0) }
+    var currentLongitude by remember { mutableStateOf(0.0) }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -321,7 +323,14 @@ fun AddNewStoreScreen(
                     .fillMaxWidth()
                     .height(144.dep)
             ) {
-                GoogleMapSection()
+                GoogleMapSection(
+                    latitude = currentLatitude,
+                    longitude = currentLongitude,
+                    onLocationChanged = { newLatitude, newLongitude ->
+                        currentLatitude = newLatitude
+                        currentLongitude = newLongitude
+                    }
+                )
             }
             Spacer(modifier = Modifier.height(20.dep))
             Button(

@@ -4,6 +4,7 @@ import com.example.jayasales.model.AddStoreDataResponse
 import com.example.jayasales.model.Brand
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
+import com.example.jayasales.model.MarkVisitDataResponse
 import com.example.jayasales.model.PartiesDataResponse
 import com.example.jayasales.model.Product
 import com.example.jayasales.model.ResetDataResponse
@@ -22,6 +23,7 @@ interface Repository {
     suspend fun parties(userId:String,routeId: String,searchText : String) : PartiesDataResponse?
     suspend fun storeDetails(storeId : String, userId: String) : StoreDetailsDataResponse?
     suspend fun searchParty(searchParty:String) : PartiesDataResponse?
+    suspend fun markVisit(userId: String, storeId: String, lat: String, lng: String, comment: String) : MarkVisitDataResponse?
     fun setIsLoggedIn(done : Boolean)
     suspend fun allBrands(): List<Brand>
     suspend fun allProducts(): List<Product>
@@ -37,6 +39,9 @@ interface Repository {
 
     fun getLogUId() : String?
     fun setLogUId(logUId: String?)
+
+    fun getLogEmail() : String?
+    fun setLogEmail(logEmail: String?)
 
     fun removeUser()
 

@@ -181,6 +181,7 @@ class LoginViewModel @Inject constructor(
                             delay(3000)
                             repo.setIsLoggedIn(true)
                             repo.setLogUId(response.data.name)
+                            repo.setLogEmail(response.data.email)
                             repo.saveUser(response)
                             navigation {
                                 navigate(Routes.home.full)

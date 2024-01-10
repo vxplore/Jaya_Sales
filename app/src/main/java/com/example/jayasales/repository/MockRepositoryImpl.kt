@@ -8,6 +8,7 @@ import com.example.jayasales.model.Category
 import com.example.jayasales.model.CategoryDetail
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
+import com.example.jayasales.model.MarkVisitDataResponse
 import com.example.jayasales.model.PartiesDataResponse
 import com.example.jayasales.model.Product
 import com.example.jayasales.model.ResetDataResponse
@@ -157,6 +158,21 @@ class MockRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun markVisit(
+        userId: String,
+        storeId: String,
+        lat: String,
+        lng: String,
+        comment: String
+    ): MarkVisitDataResponse? {
+        val response = apiHelper.markVisit(userId,storeId,lat, lng, comment)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
+
     override suspend fun resetPassword(
         recoverUsername: String,
         confirmPassword: String,
@@ -237,6 +253,14 @@ class MockRepositoryImpl @Inject constructor(
 
     override fun setLogUId(logUId: String?) {
         myPref.setLogUId(logUId)
+    }
+
+    override fun getLogEmail(): String? {
+        return myPref.getLogEmail()
+    }
+
+    override fun setLogEmail(logEmail: String?) {
+       myPref.setLogEmail(logEmail)
     }
 
     override fun removeUser() {
