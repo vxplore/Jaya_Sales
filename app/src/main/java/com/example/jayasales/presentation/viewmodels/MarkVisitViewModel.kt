@@ -57,11 +57,10 @@ class MarkVisitViewModel @Inject constructor(
             }
 
             MyDataIds.visitShop -> {
+                markVisit()
                 navigation {
                     navigate(Routes.home.full)
                 }
-
-                markVisit()
             }
         }
     }
@@ -92,15 +91,17 @@ class MarkVisitViewModel @Inject constructor(
                     currentLong.value,
                     comments.value
                 )
-                Log.d("jhyhjy", "${currentLat.value}")
-                Log.d("jhyhjy", "${currentLong.value}")
-                Log.d("jhyhjy", "${comments.value}")
+                Log.d("jhyhjy", currentLat.value)
+                Log.d("jhyhjy", currentLong.value)
+                Log.d("jhyhjy", comments.value)
+                Log.d("jhyhjy", storeId.value)
+                Log.d("jhyhjy", userId.value)
                 if (response?.status == true) {
                     Log.d("hgbj", response.toString())
-                    toast(response!!.message)
+                    toast(response.message)
                 } else {
                     Log.d("hgbj", response.toString())
-                    toast("Something went wrong")
+                    toast("${response?.message}")
                 }
             } catch (e: Exception) {
                 Log.e("hgbj", "Error: ${e.message}")
@@ -108,28 +109,25 @@ class MarkVisitViewModel @Inject constructor(
             }
         }
     }
-    @OptIn(ExperimentalPermissionsApi::class)
+
     private fun tryGetLocation() {
 
         viewModelScope.launch {
-            val granted = permissionHandler.check(
+            val p = listOf(
                 android.Manifest.permission.ACCESS_COARSE_LOCATION,
                 android.Manifest.permission.ACCESS_FINE_LOCATION,
             )
+
+            val granted = p.checkPermission()
             if (granted?.allPermissionsGranted == true) {
                 getLocation()
             } else {
-                val result = permissionHandler.request(
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION,
-                )
-                if (result?.all { it.value } == true) {
-                    getLocation()
-                } else {
-                }
+                val result = p.requestPermission()
+
             }
         }
     }
+
     @SuppressLint("MissingPermission")
     private fun getLocation() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(AppContext.app)
@@ -140,9 +138,9 @@ class MarkVisitViewModel @Inject constructor(
                 if (location != null) {
                     currentLat.value = location?.latitude.toString()!!
                     currentLong.value = location?.longitude.toString()!!
-                    Log.d("bgbgg","${currentLat.value}")
+                    Log.d("bgbgg", "${currentLat.value}")
                     //onBtnClick()
-                }else{
+                } else {
                     //onBtnClick()
                     //toast("Please enable Location from settings")
                 }
