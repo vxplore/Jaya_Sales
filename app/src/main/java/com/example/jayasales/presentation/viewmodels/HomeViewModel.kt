@@ -85,13 +85,15 @@ class HomeViewModel @Inject constructor(
                     navigate(Routes.markAttendance.full)
                 }
             }
-            MyDataIds.notification->{
+
+            MyDataIds.notification -> {
                 navigation {
                     navigate(Routes.notification.full)
                 }
             }
         }
     }
+
 
     override fun onStartUp(route: Route?, arguments: Bundle?) {
     }
@@ -105,7 +107,7 @@ class HomeViewModel @Inject constructor(
         setStatusBarColor(Color(0xFFFFEB56), true)
 
         viewModelScope.launch {
-            Log.d("hnvfn","${repo.getLogUId()}")
+            Log.d("hnvfn", "${repo.getLogUId()}")
             nameState.value = repo.getLogUId()!!
             emailState.value = repo.getLogEmail()!!
         }
@@ -120,5 +122,4 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-
 }

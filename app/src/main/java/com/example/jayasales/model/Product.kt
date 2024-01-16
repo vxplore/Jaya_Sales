@@ -1,27 +1,17 @@
 package com.example.jayasales.model
-data class Product(
-    val id : Int,
-    val name : String,
-    val brandDetails : BrandDetail,
-    val categoryDetails : CategoryDetail,
-    val type : String,
-    val mrp : Float,
-    val sellValue : String,
-    val quantity : Long,
-    val discount : Int
-) {
-    val names: List<String>
-        get() = listOf(
-            name,
-            type
-        )
-}
-
-data class CategoryDetail(
-    val id : String,
-    val name: String
+data class AllProduct (
+    val status: Boolean,
+    val message: String,
+    val data: List<Product>
 )
-data class BrandDetail(
-    val id : String,
-    val name: String
+
+data class Product (
+    val uid: String,
+    val name: String,
+    val weight: String,
+    val pcs: String,
+    val mrp: String,
+    val discount: String,
+    val sell_price: String,
+    val image: String
 )

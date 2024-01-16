@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -73,6 +74,7 @@ import com.debduttapanda.j3lib.sep
 import com.debduttapanda.j3lib.stringState
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
+import com.example.jayasales.model.PaymentIn
 import com.example.jayasales.model.PaymentInList
 import com.example.jayasales.presentation.viewmodels.PaymentModeTab
 
@@ -80,7 +82,7 @@ import com.example.jayasales.presentation.viewmodels.PaymentModeTab
 @Composable
 fun PaymentInScreen(
     notifier: NotificationService = rememberNotifier(),
-    paymentInList: SnapshotStateList<PaymentInList> = listState(key = MyDataIds.paymentInList),
+    paymentInList: SnapshotStateList<PaymentIn> = listState(key = MyDataIds.paymentInList),
     selectedPaymentMode: State<PaymentModeTab> = rememberTState(id = MyDataIds.selectedPaymentMode),
     instruction: State<String> = stringState(key = MyDataIds.instruction),
     paymentInDialog: Boolean = boolState(key = MyDataIds.paymentInDialog).value,
@@ -179,12 +181,12 @@ fun PaymentInScreen(
                 contentPadding = PaddingValues(vertical = 10.dep),
                 verticalArrangement = Arrangement.spacedBy(20.dep)
             ) {
-                items(paymentInList) { paymentItem ->
+                items(paymentInList) {
                     var comment by remember { mutableStateOf("") }
                     Card(
                         modifier = Modifier
                             .padding(horizontal = 20.dep)
-                            .height(124.dep)
+                            .wrapContentHeight()
                             .fillMaxWidth()
                             .shadow(
                                 2.dep,
@@ -210,15 +212,29 @@ fun PaymentInScreen(
                                 .padding(horizontal = 16.dep)
                                 .fillMaxWidth()
                         ) {
+                            Row (
+                                verticalAlignment = Alignment.CenterVertically
+                            ){
+                                Text(
+                                    text = "Invoice #",
+                                    fontSize = 14.sep,
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF222222)
+                                )
+
+                                Text(
+                                    text = "${it.id}",
+                                    fontSize = 10.sep,
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF222222)
+                                )
+                            }
+
+
                             Text(
-                                text = "Invoice #${paymentItem.invoice_id}",
-                                fontSize = 14.sep,
-                                textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Color(0xFF222222)
-                            )
-                            Text(
-                                text = "₹${paymentItem.amount}",
+                                text = "₹${it.total}",
                                 fontSize = 14.sep,
                                 textAlign = TextAlign.Center,
                                 fontWeight = FontWeight.SemiBold,
@@ -246,8 +262,8 @@ fun PaymentInScreen(
                                 )
                                 Spacer(modifier = Modifier.width(4.dep))
                                 Text(
-                                    text = paymentItem.date,
-                                    fontSize = 11.sep,
+                                    text = it.date,
+                                    fontSize = 12.sep,
                                     textAlign = TextAlign.Center,
                                     color = Color(0xFF222222)
                                 )
@@ -257,7 +273,7 @@ fun PaymentInScreen(
                                 horizontalArrangement = Arrangement.Center,
                                 modifier = Modifier
                                     .background(
-                                        if (paymentItem.paymentDone == "00%") {
+                                        if (!it.payment_start) {
                                             Color(0xFFFFEAEA)
                                         } else {
                                             Color(0xFFFFFDEB)
@@ -266,7 +282,7 @@ fun PaymentInScreen(
                                     )
                                     .border(
                                         .5.dep,
-                                        if (paymentItem.paymentDone == "00%") {
+                                        if (!it.payment_start) {
                                             Color(0xFFD62B2B)
                                         } else {
                                             Color(0xFFFAC800)
@@ -277,10 +293,10 @@ fun PaymentInScreen(
                                     .padding(vertical = 4.dep)
                             ) {
                                 Text(
-                                    text = paymentItem.transaction_status,
-                                    fontSize = 11.sep,
+                                    text = "${it.due_amount} ${it.status}",
+                                    fontSize = 12.sep,
                                     textAlign = TextAlign.Center,
-                                    color = if (paymentItem.paymentDone == "00%") {
+                                    color = if (!it.payment_start) {
                                         Color(0xFFD62B2B)
                                     } else {
                                         Color(0xFFFAC800)
@@ -310,8 +326,8 @@ fun PaymentInScreen(
                                 )
                                 Spacer(modifier = Modifier.width(4.dep))
                                 Text(
-                                    text = paymentItem.time,
-                                    fontSize = 11.sep,
+                                    text = it.time,
+                                    fontSize = 12.sep,
                                     textAlign = TextAlign.Center,
                                     color = Color(0xFF222222)
                                 )
@@ -331,7 +347,7 @@ fun PaymentInScreen(
                                     imeAction = ImeAction.Done
                                 ),
                                 textStyle = MaterialTheme.typography.bodyMedium.copy(
-                                    fontSize = 11.sep
+                                    fontSize = 12.sep
                                 ),
                                 placeholder = {
                                     Text(

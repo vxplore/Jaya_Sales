@@ -53,10 +53,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import coil.compose.AsyncImage
 import com.debduttapanda.j3lib.NotificationService
 import com.debduttapanda.j3lib.dep
 import com.debduttapanda.j3lib.intState
@@ -66,8 +68,8 @@ import com.debduttapanda.j3lib.sep
 import com.debduttapanda.j3lib.stringState
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
-import com.example.jayasales.model.Brand
-import com.example.jayasales.model.Category
+import com.example.jayasales.model.AllBrandDataResponse
+import com.example.jayasales.model.AllCategory
 import com.example.jayasales.model.Product
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -75,9 +77,9 @@ import com.example.jayasales.model.Product
 @Composable
 fun NewOrdersPage(
     notifier: NotificationService = rememberNotifier(),
-    brandTabItem: List<Brand> = listState(key = MyDataIds.brands),
+    brandTabItem: List<AllBrandDataResponse.Brand> = listState(key = MyDataIds.brands),
     selectedTabIndex: State<Int> = intState(key = MyDataIds.brandChange),
-    categoryList: List<Category> = listState(key = MyDataIds.categories),
+    categoryList: List<AllCategory.Category> = listState(key = MyDataIds.categories),
     selectedCategoryId: State<String> = stringState(key = MyDataIds.selectedCategoryId),
     productData: List<Product> = listState(key = MyDataIds.filterProductData)
 ) {
@@ -133,19 +135,19 @@ fun NewOrdersPage(
                     contentColor = Color.Black,
                     containerColor = Color.Transparent,
                     edgePadding = 0.dep,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    indicator = { tabPosition ->
-                        if (selectedTabIndex.value > -1) {
+                    modifier = Modifier.fillMaxWidth(),
+                    indicator = { tabPositions ->
+                        if (selectedTabIndex.value > -1 && tabPositions.isNotEmpty()) {
                             TabRowDefaults.Indicator(
                                 modifier = Modifier.tabIndicatorOffset(
-                                    currentTabPosition = tabPosition[selectedTabIndex.value]
+                                    currentTabPosition = tabPositions[selectedTabIndex.value]
                                 ),
                                 color = Color.Red
                             )
                         }
                     }
-                ) {
+                )
+                {
                     brandTabItem.forEachIndexed { tabIndex, tab ->
                         Tab(
                             selected = selectedTabIndex.value == tabIndex,
@@ -293,18 +295,25 @@ fun ProductList(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dep),
+                .padding(8.dep),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(painter = painterResource(id = R.drawable.biscuit), contentDescription = "")
-                Spacer(modifier = Modifier.width(16.dep))
+                AsyncImage(
+                    model = it.image,
+                    contentDescription = "",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .height(64.dep)
+                        .width(72.dep)
+                )
+                Spacer(modifier = Modifier.width(8.dep))
                 Column {
                     Text(
-                        text = "${it.type}",
+                        text = "${it.name}",
                         fontSize = 14.sep,
                         color = Color(0XFF838383)
                     )
@@ -317,7 +326,7 @@ fun ProductList(
                     )
                     Spacer(modifier = Modifier.height(5.dep))
                     Text(
-                        text = "₹${it.sellValue} MRP ₹${it.mrp}",
+                        text = "₹${it.sell_price} MRP ₹${it.mrp}",
                         fontSize = 12.sep,
                         color = Color(0XFF838383)
                     )
@@ -419,16 +428,16 @@ fun ProductList(
 @Composable
 fun CategoryTabItemUi(
     index: Int,
-    it: Category,
+    it: AllCategory.Category,
     selectedCategoryId: String,
     notifier: NotificationService = rememberNotifier()
 
 ) {
     Button(
         onClick = {
-            notifier.notify(MyDataIds.categoryChange, it.id)
+            notifier.notify(MyDataIds.categoryChange, it.uid)
         },
-        colors = if (it.id == selectedCategoryId)
+        colors = if (it.uid == selectedCategoryId)
             ButtonDefaults.buttonColors(Color(0XFF1FB574))
         else
             ButtonDefaults.buttonColors(Color.White)
@@ -436,7 +445,7 @@ fun CategoryTabItemUi(
         Text(
             text = it.name,
             fontSize = 12.sep,
-            color = if (it.id == selectedCategoryId) Color.White
+            color = if (it.uid == selectedCategoryId) Color.White
             else Color.Black
         )
     }

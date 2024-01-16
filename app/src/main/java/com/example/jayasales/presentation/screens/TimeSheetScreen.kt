@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
@@ -30,6 +31,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,15 +41,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.debduttapanda.j3lib.NotificationService
 import com.debduttapanda.j3lib.dep
+import com.debduttapanda.j3lib.listState
 import com.debduttapanda.j3lib.rememberNotifier
 import com.debduttapanda.j3lib.sep
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
+import com.example.jayasales.model.TimeSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimeSheetScreen(
-    notifier: NotificationService = rememberNotifier()
+    notifier: NotificationService = rememberNotifier(),
+    showTimeSheet : SnapshotStateList<TimeSheet> = listState(key = MyDataIds.showTimeSheet)
 ) {
     Scaffold(
         topBar = {
@@ -168,7 +173,7 @@ fun TimeSheetScreen(
                     contentPadding = PaddingValues(vertical = 10.dep),
                     verticalArrangement = Arrangement.spacedBy(20.dep)
                 ) {
-                    items(count = 10000000) {
+                    items(showTimeSheet) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
@@ -193,19 +198,18 @@ fun TimeSheetScreen(
                                         .padding(8.dep),
                                 ) {
                                     Text(
-                                        text = "14",
+                                        text = it.date,
                                         fontSize = 12.sep,
                                         fontWeight = FontWeight.Bold,
-                                        modifier = Modifier,
                                         textAlign = TextAlign.Center
                                     )
-                                    Text(
+                                 /*   Text(
                                         text = "Sat",
                                         fontSize = 12.sep,
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier,
                                         textAlign = TextAlign.Center
-                                    )
+                                    )*/
                                 }
                             }
                             Spacer(modifier = Modifier.width(12.dep))
@@ -223,9 +227,10 @@ fun TimeSheetScreen(
                                         .size(8.dep)
                                 )
                                 Text(
-                                    "14:01",
-                                    color = Color(0xFF222222),
+                                    text = "${it.check_in.time}",
                                     fontSize = 12.sep,
+                                    color = Color(0xFF222222),
+                                    textAlign = TextAlign.Center
                                 )
                                 Icon(
                                     imageVector = Icons.Default.LocationOn,
@@ -249,10 +254,10 @@ fun TimeSheetScreen(
                                         .size(8.dep)
                                 )
                                 Text(
-                                    "14:50",
-                                    color = Color(0xFF222222),
+                                    text = "${it.check_out.time}",
                                     fontSize = 12.sep,
-                                    modifier = Modifier
+                                    color = Color(0xFF222222),
+                                    textAlign = TextAlign.Center
                                 )
                                 Icon(
                                     imageVector = Icons.Default.LocationOn,
@@ -264,7 +269,7 @@ fun TimeSheetScreen(
                             }
                             Spacer(modifier = Modifier.width(12.dep))
                             Text(
-                                "0hr 50m",
+                                text = "${it.working_hour}",
                                 color = Color(0xFFD62B2B),
                                 fontSize = 12.sep,
                                 modifier = Modifier

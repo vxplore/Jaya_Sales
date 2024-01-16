@@ -1,10 +1,17 @@
 package com.example.jayasales.model
 
 data class PaymentInList (
-    val invoice_id: String,
-    val amount: String,
+    val status: Boolean,
+    val data: List<PaymentIn>
+)
+
+data class PaymentIn (
+    val id: String,
+    val total: String,
+    val due_amount: String,
+    val status: String,
+    val store_name: String,
     val date: String,
-    val transaction_status: String,
     val time: String,
-    val paymentDone:String
+    val payment_start: Boolean
 )

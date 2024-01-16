@@ -113,4 +113,13 @@ enum class MyDataIds {
     currentLat,
     currentLong,
     getcontext,
+    storeDetailsPaymentList,
+    currentInTime,
+    currentOutTime,
+    status,
+    btnClick,
+    attendanceList,
+    currentInTimeState,
+    currentOutTimeState,
+    showTimeSheet,
 }

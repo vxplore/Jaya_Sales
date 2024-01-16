@@ -15,6 +15,7 @@ import com.debduttapanda.j3lib.models.Route
 import com.example.jayasales.AppContext
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.Routes
+import com.example.jayasales.repository.ApiInterface
 import com.example.jayasales.repository.Repository
 import com.example.jayasales.utility.PermissionHandler
 import com.example.jayasales.utility.updateLocation
@@ -22,6 +23,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -57,9 +59,11 @@ class MarkVisitViewModel @Inject constructor(
             }
 
             MyDataIds.visitShop -> {
-                markVisit()
-                navigation {
-                    navigate(Routes.home.full)
+                viewModelScope.launch {
+                    markVisit()
+                    navigation {
+                        navigate(Routes.home.full)
+                    }
                 }
             }
         }
@@ -78,34 +82,61 @@ class MarkVisitViewModel @Inject constructor(
         setStatusBarColor(Color(0xFFFFEB56), true)
     }
 
+    /*private suspend fun markVisit() {
+        try {
+            val api = ApiInterface.ApiClient.apiService
+            val response = api.markVisit(
+                repo.getUId() ?: "",
+                "USER_78u88isit6yhadolutedd",
+                currentLat.value ?: "",
+                currentLong.value ?: "",
+                comments.value ?: ""
+            )
+
+            Log.d("jhyhjy", currentLat.value)
+            Log.d("jhyhjy", currentLong.value)
+            Log.d("jhyhjy", comments.value)
+            Log.d("jhyhjy", response.toString())
+
+            if (response.isSuccessful) {
+                Log.d("hgbj", response.toString())
+                toast(response.message())
+            } else {
+                Log.d("hgbj", response.toString())
+                toast("${response.message()}")
+            }
+        } catch (e: Exception) {
+            Log.e("hgbj", "Error: ${e.message}")
+            toast("Check network connection")
+        }
+    }*/
+
+
     private fun markVisit() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             storeId.value = repo.getUId()!!
             Log.d("fvbdf", "$storeId")
             userId.value = "USER_78u88isit6yhadolutedd"
-            try {
-                val response = repo.markVisit(
-                    storeId.value,
-                    userId.value,
-                    currentLat.value,
-                    currentLong.value,
-                    comments.value
-                )
-                Log.d("jhyhjy", currentLat.value)
-                Log.d("jhyhjy", currentLong.value)
-                Log.d("jhyhjy", comments.value)
-                Log.d("jhyhjy", storeId.value)
-                Log.d("jhyhjy", userId.value)
-                if (response?.status == true) {
-                    Log.d("hgbj", response.toString())
+            val response = repo.markVisit(
+                storeId.value,
+                userId.value,
+                currentLat.value,
+                currentLong.value,
+                comments.value
+            )
+            Log.d("jhyhjy", currentLat.value)
+            Log.d("jhyhjy", currentLong.value)
+            Log.d("jhyhjy", comments.value)
+            Log.d("jhyhjy", storeId.value)
+            Log.d("jhyhjy", userId.value)
+            if (response?.status == true) {
+                Log.d("hgbj", response.toString())
+                toast(response.message)
+            } else {
+                Log.d("hgbj", response.toString())
+                if (response != null) {
                     toast(response.message)
-                } else {
-                    Log.d("hgbj", response.toString())
-                    toast("${response?.message}")
                 }
-            } catch (e: Exception) {
-                Log.e("hgbj", "Error: ${e.message}")
-                toast("Check network connection")
             }
         }
     }

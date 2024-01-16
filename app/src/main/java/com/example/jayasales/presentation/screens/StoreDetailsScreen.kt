@@ -71,6 +71,7 @@ import com.debduttapanda.j3lib.stringState
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
 import com.example.jayasales.model.OrderList
+import com.example.jayasales.model.PaymentList
 import com.example.jayasales.model.Store
 import com.example.jayasales.presentation.viewmodels.TransactionTab
 
@@ -81,6 +82,7 @@ fun StoreDetailsScreen(
     selectedTransactionTab: State<TransactionTab> = rememberTState(id = MyDataIds.selectedTransactionTab),
     storeDetailsList: SnapshotStateList<Store> = listState(key = MyDataIds.storeDetailsList),
     storeDetailsOrderList: SnapshotStateList<OrderList> = listState(key = MyDataIds.storeDetailsOrderList),
+    storeDetailsPaymentList: SnapshotStateList<PaymentList> = listState(key = MyDataIds.storeDetailsPaymentList),
     storeName: State<String> = stringState(key = MyDataIds.storeNameState),
     due: State<String> = stringState(key = MyDataIds.dueState),
     address: State<String> = stringState(key = MyDataIds.addressState),
@@ -362,14 +364,15 @@ fun StoreDetailsScreen(
                         }
                     }
                     Spacer(modifier = Modifier.height(12.dep))
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        contentPadding = PaddingValues(vertical = 10.dep),
-                        verticalArrangement = Arrangement.spacedBy(20.dep)
-                    ) {
-                        items(storeDetailsOrderList) {
-                            if (selectedTransactionTab.value == TransactionTab.Sales) {
+                    if (selectedTransactionTab.value == TransactionTab.Sales) {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            contentPadding = PaddingValues(vertical = 10.dep),
+                            verticalArrangement = Arrangement.spacedBy(20.dep)
+                        ) {
+                            items(storeDetailsOrderList) {
+
                                 Card(
                                     modifier = Modifier
                                         .height(112.dep)
@@ -540,7 +543,17 @@ fun StoreDetailsScreen(
                                         }
                                     }
                                 }
-                            } else {
+                            }
+                        }
+                    }
+                    else {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            contentPadding = PaddingValues(vertical = 10.dep),
+                            verticalArrangement = Arrangement.spacedBy(20.dep)
+                        ) {
+                            items(storeDetailsPaymentList) {
                                 Card(
                                     modifier = Modifier
                                         .height(84.dep)
@@ -582,7 +595,7 @@ fun StoreDetailsScreen(
                                                 color = Color(0xFF222222)
                                             )
                                             Text(
-                                                text = "₹${it.total}",
+                                                text = "₹${it.amount}",
                                                 fontSize = 14.sep,
                                                 textAlign = TextAlign.Center,
                                                 fontWeight = FontWeight.SemiBold,
@@ -609,7 +622,7 @@ fun StoreDetailsScreen(
                                                 Spacer(modifier = Modifier.width(4.dep))
                                                 Text(
                                                     text = it.date,
-                                                    fontSize = 10.sep,
+                                                    fontSize = 12.sep,
                                                     textAlign = TextAlign.Center,
                                                     color = Color(0xFF222222)
                                                 )
@@ -624,7 +637,7 @@ fun StoreDetailsScreen(
                                                 Spacer(modifier = Modifier.width(4.dep))
                                                 Text(
                                                     text = it.time,
-                                                    fontSize = 10.sep,
+                                                    fontSize = 12.sep,
                                                     textAlign = TextAlign.Center,
                                                     color = Color(0xFF222222)
                                                 )
@@ -646,7 +659,7 @@ fun StoreDetailsScreen(
                                                     .padding(vertical = 4.dep)
                                             ) {
                                                 Text(
-                                                    text = it.status,
+                                                    text = it.payment_method,
                                                     fontSize = 10.sep,
                                                     textAlign = TextAlign.Center,
                                                     color = Color(0xFF1FB574),

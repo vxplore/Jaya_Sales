@@ -1,9 +1,11 @@
 package com.example.jayasales.presentation.viewmodels
 
 import android.os.Bundle
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.viewModelScope
 import com.debduttapanda.j3lib.InterCom
 import com.debduttapanda.j3lib.SoftInputMode
 import com.debduttapanda.j3lib.WirelessViewModel
@@ -11,8 +13,12 @@ import com.debduttapanda.j3lib.models.EventBusDescription
 import com.debduttapanda.j3lib.models.Route
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.Routes
-import com.example.jayasales.model.PaymentInList
+import com.example.jayasales.model.PaymentIn
+import com.example.jayasales.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 enum class PaymentModeTab {
@@ -23,12 +29,17 @@ enum class PaymentModeTab {
 
 @HiltViewModel
 class PaymentInViewModel @Inject constructor(
+    private val repo: Repository
 ) : WirelessViewModel() {
     private val comment = mutableStateOf("")
-    private val paymentInList = mutableStateListOf<PaymentInList>()
+    private val paymentInList = mutableStateListOf<PaymentIn>()
     private val selectedPaymentMode = mutableStateOf(PaymentModeTab.Cash)
     private val instruction = mutableStateOf("")
     private val paymentInDialog = mutableStateOf(false)
+    private val userId = mutableStateOf("")
+    private val storeId = mutableStateOf("")
+    private val orderId = mutableStateOf("")
+    private var clickedButtonText = ""
     override fun eventBusDescription(): EventBusDescription? {
         return null
     }
@@ -43,6 +54,10 @@ class PaymentInViewModel @Inject constructor(
         when (id) {
             MyDataIds.back -> {
                 popBackStack()
+            }
+            MyDataIds.cashbtn, MyDataIds.chequebtn, MyDataIds.onlinebtn -> {
+                clickedButtonText = arg as String
+
             }
 
             MyDataIds.comment -> {
@@ -66,6 +81,7 @@ class PaymentInViewModel @Inject constructor(
             }
 
             MyDataIds.savebtn -> {
+                receivePayment()
                 paymentInDialog.value = !paymentInDialog.value
                 navigation {
                 }
@@ -93,54 +109,34 @@ class PaymentInViewModel @Inject constructor(
         )
         setStatusBarColor(Color(0xFFFFEB56), true)
         setSoftInputMode(SoftInputMode.adjustPan)
+        paymentIn()
+    }
 
-        paymentInList.addAll(
-            listOf(
-                PaymentInList(
-                    "22",
-                    "43343",
-                    "Sep 10, 2023",
-                    "43923.00 Due",
-                    "12:40 Pm",
-                    "10%"
-                )
-            )
-        )
-        paymentInList.addAll(
-            listOf(
-                PaymentInList(
-                    "23",
-                    "43343",
-                    "Sep 10, 2023",
-                    "43923.00 Due",
-                    "12:40 Pm",
-                    "20%"
-                )
-            )
-        )
-        paymentInList.addAll(
-            listOf(
-                PaymentInList(
-                    "24",
-                    "43343",
-                    "Sep 10, 2023",
-                    "43923.00 Due",
-                    "12:40 Pm",
-                    "00%"
-                )
-            )
-        )
-        paymentInList.addAll(
-            listOf(
-                PaymentInList(
-                    "25",
-                    "43343",
-                    "Sep 10, 2023",
-                    "43923.00 Due",
-                    "12:40 Pm",
-                    "20%"
-                )
-            )
-        )
+    private fun paymentIn() {
+        viewModelScope.launch(Dispatchers.Main) {
+            userId.value = "USER_78u88isit6yhadolutedd"
+            storeId.value = repo.getUId()!!
+            val response = repo.paymentIn(userId.value,storeId.value )
+            if (response?.status == true) {
+                Log.d("fgvgvf", response.toString())
+                val list = response.data
+                withContext(Dispatchers.Main) {
+                    paymentInList.clear()
+                    paymentInList.addAll(list)
+                    repo.setOrderId(paymentInList.map { it.id })
+                }
+            }
+        }
+    }
+    private fun receivePayment(){
+        viewModelScope.launch(Dispatchers.Main) {
+            userId.value = "USER_78u88isit6yhadolutedd"
+            storeId.value = repo.getUId()!!
+            orderId.value = repo.getOrderId()!!
+            val response = repo.receivePayment(userId.value,storeId.value,orderId.value,comment.value,instruction.value,)
+            if (response?.status == true) {
+                toast(response.message)
+            }
+        }
     }
 }

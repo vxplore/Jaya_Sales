@@ -1,6 +1,7 @@
 package com.example.jayasales.presentation.screens
 
 import android.annotation.SuppressLint
+import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.*
 import androidx.compose.foundation.background
@@ -38,6 +39,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,11 +52,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.debduttapanda.j3lib.NotificationService
 import com.debduttapanda.j3lib.dep
+import com.debduttapanda.j3lib.listState
 import com.debduttapanda.j3lib.rememberNotifier
 import com.debduttapanda.j3lib.sep
 import com.debduttapanda.j3lib.stringState
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
+import com.example.jayasales.model.Attendance
+import com.example.jayasales.model.Datum
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
@@ -65,7 +70,9 @@ import java.util.Date
 @Composable
 fun MarkAttendanceScreen(
     notifier: NotificationService = rememberNotifier(),
-    attencomments: State<String> = stringState(key = MyDataIds.attencomments)
+    attencomments: State<String> = stringState(key = MyDataIds.attencomments),
+    currentInTimeState: State<String> = stringState(key = MyDataIds.currentInTimeState),
+    currentOutTimeState: State<String> = stringState(key = MyDataIds.currentOutTimeState),
 ) {
     var currentLatitude by remember { mutableStateOf(0.0) }
     var currentLongitude by remember { mutableStateOf(0.0) }
@@ -180,7 +187,7 @@ fun MarkAttendanceScreen(
                             .weight(.5f)
                     ) {
                         Text(
-                            text = checkTimeIn,
+                            text = "$checkTimeIn${currentInTimeState.value}",
                             fontSize = 12.sep,
                             color = Color(0xFF2B2B2B)
                         )
@@ -195,7 +202,7 @@ fun MarkAttendanceScreen(
                             .weight(.5f)
                     ) {
                         Text(
-                            text = checkTimeOut,
+                            text = "$checkTimeOut ${currentOutTimeState.value}",
                             fontSize = 12.sep,
                             color = Color(0xFF2B2B2B)
                         )
@@ -243,10 +250,15 @@ fun MarkAttendanceScreen(
                     onClick = {
                         if (isCheckInSelected) {
                             currentInTime = Calendar.getInstance().time
+                            //notifier.notify(MyDataIds.currentInTime,currentInTime)
                         } else {
                             currentOutTime = Calendar.getInstance().time
+                            //notifier.notify(MyDataIds.currentOutTime, currentOutTime)
                         }
                         isCheckInSelected = !isCheckInSelected
+                        val status = if (isCheckInSelected) "check_out" else "check_in"
+                        notifier.notify(MyDataIds.status, status)
+                        notifier.notify(MyDataIds.btnClick)
                     },
                     colors = ButtonDefaults.buttonColors(
                         if (isCheckInSelected) {

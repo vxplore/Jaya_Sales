@@ -1,10 +1,14 @@
 package com.example.jayasales.model
 
-data class Category(
-    val id: String,
-    val name: String,
-    val image: String? = null
+data class AllCategory (
+    val status: Boolean,
+    val message: String,
+    val data: List<Category>
 ){
+data class Category (
+    val uid: String,
+    val name: String
+)
     companion object{
         val All = Category("","All")
     }

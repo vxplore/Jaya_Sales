@@ -3,7 +3,6 @@ package com.example.jayasales.repository.preference
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.jayasales.model.LoginDataResponse
-import com.example.jayasales.model.PartiesDataResponse
 import javax.inject.Inject
 
 
@@ -16,6 +15,9 @@ class PrefRepositoryImpl @Inject constructor(
     private val uIdKey="uIdKey"
     private val logUIdKey="logUIdKey"
     private val logEmailKey="logEmailKey"
+    private val brandKey="brandKey"
+    private val categoryKey="categoryKey"
+    private val orderKey="orderKey"
 
     private lateinit var myPref : SharedPreferences
     init {
@@ -40,6 +42,30 @@ class PrefRepositoryImpl @Inject constructor(
 
     override fun setUId(uId: String?) {
       myPref.edit().putString(uIdKey,uId.toString()).apply()
+    }
+
+    override fun getBrand(): String? {
+        return myPref.getString(brandKey,"")
+    }
+
+    override fun setBrand(brand: String?) {
+        myPref.edit().putString(brandKey,brand.toString()).apply()
+    }
+
+    override fun getCategory(): String? {
+        return myPref.getString(categoryKey,"")
+    }
+
+    override fun setCategory(category: String?) {
+       myPref.edit().putString(categoryKey,category.toString()).apply()
+    }
+
+    override fun getOrderId(): String? {
+        return myPref.getString(orderKey,"")
+    }
+
+    override fun setOrderId(orderId: List<String>) {
+        myPref.edit().putString(orderKey,orderId.toString()).apply()
     }
 
     override fun getUId(): String? {

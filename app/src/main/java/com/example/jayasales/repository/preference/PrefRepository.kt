@@ -12,6 +12,13 @@ interface PrefRepository {
 
     fun getUserId(): String?
     fun setUId(userId: String?)
+    fun getBrand(): String?
+    fun setBrand(brand: String?)
+    fun getCategory(): String?
+    fun setCategory(category: String?)
+
+    fun getOrderId(): String?
+    fun setOrderId(orderId: List<String>)
 
     fun getUId(): String?
 
