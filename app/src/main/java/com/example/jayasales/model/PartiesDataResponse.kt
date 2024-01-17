@@ -1,12 +1,12 @@
 package com.example.jayasales.model
 
-data class PartiesDataResponse (
+data class PartiesDataResponse(
     val status: Boolean,
     val message: String,
     val data: List<PartiesDatum>
 )
 
-data class PartiesDatum (
+data class PartiesDatum(
     val uid: String,
     val store_name: String,
     val amount: Long,

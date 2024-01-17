@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -41,6 +42,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,11 +58,13 @@ import androidx.compose.ui.unit.dp
 import com.debduttapanda.j3lib.NotificationService
 import com.debduttapanda.j3lib.boolState
 import com.debduttapanda.j3lib.dep
+import com.debduttapanda.j3lib.listState
 import com.debduttapanda.j3lib.rememberNotifier
 import com.debduttapanda.j3lib.sep
 import com.debduttapanda.j3lib.stringState
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
+import com.example.jayasales.model.ReviewCartDataResponse
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -68,7 +72,8 @@ import com.example.jayasales.R
 fun ReviewCartScreen(
     notifier: NotificationService = rememberNotifier(),
     reviewCartDialog: Boolean = boolState(key = MyDataIds.reviewCartDialog).value,
-    reviewInstruction :State<String> = stringState(key = MyDataIds.reviewInstruction)
+    reviewInstruction :State<String> = stringState(key = MyDataIds.reviewInstruction),
+    reviewCart : SnapshotStateList<ReviewCartDataResponse> = listState(key = MyDataIds.reviewCart)
 ) {
     val openDialog = remember { mutableStateOf(false) }
     if (reviewCartDialog){
@@ -203,13 +208,61 @@ fun ReviewCartScreen(
                         .fillMaxWidth()
                         .heightIn(max = 300.dep),
                 ) {
-                    items(5) {
+                    items(reviewCart) {
                         Divider(
                             modifier = Modifier.height(0.3.dep),
                             color = Color(0XFFADA9A9)
                         )
                         Spacer(modifier = Modifier.height(5.dep))
-                        AddedProductToCartList()
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 30.dep),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ){
+                            Column(horizontalAlignment = Alignment.Start) {
+                                Text(
+                                    text = it.data[0].product.name,
+                                    fontSize = 14.sep)
+                                Spacer(modifier = Modifier.height(10.dep))
+                                Text(
+                                    text = it.data[0].product.pcs,
+                                    fontSize = 12.sep,
+                                    fontWeight = FontWeight.Medium
+                                )
+                                TextButton(
+                                    onClick = {
+                                    },
+                                    modifier = Modifier
+                                ) {
+                                    Text(text = stringResource(id = R.string.REMOVE),
+                                        fontSize = 10.sep,
+                                        color = Color(0xFF222222)
+                                    )
+                                }
+                            }
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                OutlinedCard(
+                                    shape = RoundedCornerShape(2.dep),
+                                    modifier = Modifier.width(73.dep),
+                                    border = BorderStroke(1.dep, color = Color(0XFFD3D3D3))
+                                ) {
+                                    Text(
+                                        text = it.data[1].quantity,
+                                        fontSize = 14.sep,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(10.dep),
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(10.dep))
+                                Text(
+                                    text = "₹${it.data[1].price_for_product}",
+                                    fontSize = 14.sep,
+                                    fontWeight = FontWeight.Medium)
+                            }
+                        }
                         Divider(
                             modifier = Modifier.height(0.3.dep),
                             color = Color(0XFFADA9A9)
@@ -217,7 +270,68 @@ fun ReviewCartScreen(
                     }
                 }
                 Spacer(modifier = Modifier.height(10.dep))
-                PaymentDetails()
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dep)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.Payment_Details),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sep
+                    )
+                    Spacer(modifier = Modifier.height(12.dep))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                        ,
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ){
+                        Column(horizontalAlignment = Alignment.Start) {
+                            Text(
+                                text = stringResource(id = R.string.Taxable_Amount),
+                                fontSize = 12.sep
+                            )
+                            Spacer(modifier = Modifier.height(10.dep))
+                            Text(
+                                text = stringResource(id = R.string.CGST),
+                                fontSize = 12.sep
+                            )
+                            Spacer(modifier = Modifier.height(10.dep))
+                            Text(
+                                text = stringResource(id = R.string.SGST),
+                                fontSize = 12.sep
+                            )
+                            Spacer(modifier = Modifier.height(10.dep))
+                            Text(
+                                text = stringResource(id = R.string.Total),
+                                fontSize = 14.sep,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                        Column(horizontalAlignment = Alignment.End) {
+                            Text(
+                                text = "₹{reviewCart[1].sub_total}",
+                                fontSize = 14.sep
+                            )
+                            Spacer(modifier = Modifier.height(10.dep))
+                            Text(
+                                text = "reviewCart[1].cgst",
+                                fontSize = 14.sep
+                            )
+                            Spacer(modifier = Modifier.height(10.dep))
+                            Text(
+                                text =" reviewCart[1].gst",
+                                fontSize = 14.sep
+                            )
+                            Spacer(modifier = Modifier.height(10.dep))
+                            Text(
+                                text = "₹{reviewCart[1].total}",
+                                fontSize = 14.sep, fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
+                }
                 Spacer(modifier = Modifier.height(20.dep))
                 Divider(
                     modifier = Modifier.height(0.3.dep),
@@ -294,11 +408,11 @@ fun ReviewCartScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "3 item",
+                            text =" reviewCart[1].data.size.toString()",
                             fontSize = 12.sep,
                             fontWeight = FontWeight.Medium
                         )
-                        Text(text = "₹16100.00",
+                        Text(text = "₹{reviewCart[1].total}",
                             fontSize = 18.sep,
                             fontWeight = FontWeight.Bold
                         )
@@ -325,7 +439,9 @@ fun ReviewCartScreen(
 }
 
 @Composable
-fun PaymentDetails() {
+fun PaymentDetails(
+    it:ReviewCartDataResponse
+) {
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = 20.dep)
@@ -367,22 +483,22 @@ fun PaymentDetails() {
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    text = "₹15000",
+                    text = "₹${it.sub_total}",
                     fontSize = 14.sep
                 )
                 Spacer(modifier = Modifier.height(10.dep))
                 Text(
-                    text = "₹50",
+                    text = it.cgst,
                     fontSize = 14.sep
                 )
                 Spacer(modifier = Modifier.height(10.dep))
                 Text(
-                    text = "₹50",
+                    text = it.gst,
                     fontSize = 14.sep
                 )
                 Spacer(modifier = Modifier.height(10.dep))
                 Text(
-                    text = "₹16100",
+                    text = "₹${it.total}",
                     fontSize = 14.sep, fontWeight = FontWeight.Medium
                 )
             }
@@ -390,8 +506,10 @@ fun PaymentDetails() {
     }
 }
 
-@Composable
-fun AddedProductToCartList(){
+/*@Composable
+fun AddedProductToCartList(
+    it: ReviewCartDataResponse.Cart.ProductList
+){
     Row(modifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = 30.dep),
@@ -400,7 +518,7 @@ fun AddedProductToCartList(){
     ){
         Column(horizontalAlignment = Alignment.Start) {
             Text(
-                text = "Top Star Creaks Biscuit",
+                text = it.name,
                 fontSize = 14.sep)
             Spacer(modifier = Modifier.height(10.dep))
             Text(text = "₹100/pcs", fontSize = 12.sep, fontWeight = FontWeight.Medium)
@@ -433,4 +551,4 @@ fun AddedProductToCartList(){
                 fontWeight = FontWeight.Medium)
         }
     }
-}
+}*/

@@ -18,7 +18,7 @@ interface PrefRepository {
     fun setCategory(category: String?)
 
     fun getOrderId(): String?
-    fun setOrderId(orderId: List<String>)
+    fun setOrderId(orderId: String)
 
     fun getUId(): String?
 

@@ -64,7 +64,7 @@ class PrefRepositoryImpl @Inject constructor(
         return myPref.getString(orderKey,"")
     }
 
-    override fun setOrderId(orderId: List<String>) {
+    override fun setOrderId(orderId: String) {
         myPref.edit().putString(orderKey,orderId.toString()).apply()
     }
 

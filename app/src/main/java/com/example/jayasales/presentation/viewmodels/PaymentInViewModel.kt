@@ -55,10 +55,6 @@ class PaymentInViewModel @Inject constructor(
             MyDataIds.back -> {
                 popBackStack()
             }
-            MyDataIds.cashbtn, MyDataIds.chequebtn, MyDataIds.onlinebtn -> {
-                clickedButtonText = arg as String
-
-            }
 
             MyDataIds.comment -> {
                 comment.value = arg as String
@@ -66,14 +62,20 @@ class PaymentInViewModel @Inject constructor(
 
             MyDataIds.cashbtn -> {
                 selectedPaymentMode.value = PaymentModeTab.Cash
+                clickedButtonText = arg as String
+                Log.d("fvvfv",clickedButtonText)
             }
 
             MyDataIds.chequebtn -> {
                 selectedPaymentMode.value = PaymentModeTab.Cheque
+                clickedButtonText = arg as String
+                Log.d("fvvfv",clickedButtonText)
             }
 
             MyDataIds.onlinebtn -> {
                 selectedPaymentMode.value = PaymentModeTab.Online
+                clickedButtonText = arg as String
+                Log.d("fvvfv",clickedButtonText)
             }
 
             MyDataIds.instruction -> {
@@ -82,7 +84,7 @@ class PaymentInViewModel @Inject constructor(
 
             MyDataIds.savebtn -> {
                 receivePayment()
-                paymentInDialog.value = !paymentInDialog.value
+                //paymentInDialog.value = !paymentInDialog.value
                 navigation {
                 }
             }
@@ -116,6 +118,7 @@ class PaymentInViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Main) {
             userId.value = "USER_78u88isit6yhadolutedd"
             storeId.value = repo.getUId()!!
+            Log.d("dc", storeId.value)
             val response = repo.paymentIn(userId.value,storeId.value )
             if (response?.status == true) {
                 Log.d("fgvgvf", response.toString())
@@ -123,7 +126,11 @@ class PaymentInViewModel @Inject constructor(
                 withContext(Dispatchers.Main) {
                     paymentInList.clear()
                     paymentInList.addAll(list)
-                    repo.setOrderId(paymentInList.map { it.id })
+                   // repo.setOrderId(paymentInList.map { it.id })
+                    val orderIds = paymentInList.map { it.id }
+                    val orderIdsString = orderIds.joinToString(", ")
+                    repo.setOrderId(orderIdsString)
+                    Log.d("OrderIdLog", orderIdsString)
                 }
             }
         }
@@ -132,10 +139,23 @@ class PaymentInViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Main) {
             userId.value = "USER_78u88isit6yhadolutedd"
             storeId.value = repo.getUId()!!
+            Log.d("vffvv", storeId.value)
             orderId.value = repo.getOrderId()!!
-            val response = repo.receivePayment(userId.value,storeId.value,orderId.value,comment.value,instruction.value,)
+            Log.d("vffvv", orderId.value)
+            val response = repo.receivePayment(userId.value,orderId.value,storeId.value,comment.value,clickedButtonText,instruction.value)
+            Log.d("fdvf",clickedButtonText)
+            Log.d("fdvf",userId.value)
+            Log.d("fdvf",storeId.value)
+            Log.d("fdvf",orderId.value)
+            Log.d("fdvf",comment.value)
+            Log.d("fdvf",clickedButtonText)
             if (response?.status == true) {
+                paymentInDialog.value = !paymentInDialog.value
                 toast(response.message)
+            }else{
+                if (response != null) {
+                    toast(response.message)
+                }
             }
         }
     }

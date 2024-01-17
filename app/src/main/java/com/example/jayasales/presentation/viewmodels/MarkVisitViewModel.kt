@@ -1,7 +1,6 @@
 package com.example.jayasales.presentation.viewmodels
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
@@ -15,11 +14,7 @@ import com.debduttapanda.j3lib.models.Route
 import com.example.jayasales.AppContext
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.Routes
-import com.example.jayasales.repository.ApiInterface
 import com.example.jayasales.repository.Repository
-import com.example.jayasales.utility.PermissionHandler
-import com.example.jayasales.utility.updateLocation
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,7 +26,6 @@ import javax.inject.Inject
 class MarkVisitViewModel @Inject constructor(
     private val repo: Repository
 ) : WirelessViewModel() {
-    private val permissionHandler = PermissionHandler()
     private val comments = mutableStateOf("")
     private val storeId = mutableStateOf("")
     private val userId = mutableStateOf("")
@@ -118,8 +112,8 @@ class MarkVisitViewModel @Inject constructor(
             Log.d("fvbdf", "$storeId")
             userId.value = "USER_78u88isit6yhadolutedd"
             val response = repo.markVisit(
-                storeId.value,
                 userId.value,
+                storeId.value,
                 currentLat.value,
                 currentLong.value,
                 comments.value
@@ -129,7 +123,7 @@ class MarkVisitViewModel @Inject constructor(
             Log.d("jhyhjy", comments.value)
             Log.d("jhyhjy", storeId.value)
             Log.d("jhyhjy", userId.value)
-            if (response?.status == true) {
+            if (response?.status == false) {
                 Log.d("hgbj", response.toString())
                 toast(response.message)
             } else {
@@ -152,9 +146,6 @@ class MarkVisitViewModel @Inject constructor(
             val granted = p.checkPermission()
             if (granted?.allPermissionsGranted == true) {
                 getLocation()
-            } else {
-                val result = p.requestPermission()
-
             }
         }
     }
@@ -169,7 +160,7 @@ class MarkVisitViewModel @Inject constructor(
                 if (location != null) {
                     currentLat.value = location?.latitude.toString()!!
                     currentLong.value = location?.longitude.toString()!!
-                    Log.d("bgbgg", "${currentLat.value}")
+                    Log.d("bgbgg", currentLat.value)
                     //onBtnClick()
                 } else {
                     //onBtnClick()

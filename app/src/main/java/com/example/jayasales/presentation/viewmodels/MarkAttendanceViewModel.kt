@@ -3,7 +3,6 @@ package com.example.jayasales.presentation.viewmodels
 import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Bundle
-import android.text.format.Time
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
@@ -18,15 +17,12 @@ import com.example.jayasales.AppContext
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.Routes
 import com.example.jayasales.model.Attendance
-import com.example.jayasales.model.Datum
 import com.example.jayasales.repository.Repository
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.Date
-import java.util.Timer
 import javax.inject.Inject
 
 @HiltViewModel
@@ -59,9 +55,9 @@ class MarkAttendanceViewModel @Inject constructor(
     override fun onNotification(id: Any?, arg: Any?) {
         when (id) {
             MyDataIds.back -> {
-               navigation {
-                   navigate(Routes.home.full)
-               }
+                navigation {
+                    navigate(Routes.home.full)
+                }
             }
 
             MyDataIds.attencomments -> {
@@ -72,19 +68,14 @@ class MarkAttendanceViewModel @Inject constructor(
                 navigation {
                     navigate(Routes.timeSheet.full)
                 }
-            }/*
-            MyDataIds.currentInTime -> {
-               currentInTime.value = (arg as Date).toString()
-                Log.d("vfgfbvg",currentInTime.value)
             }
-            MyDataIds.currentOutTime -> {
-                currentOutTime.value = (arg as Date).toString()
-            }*/
-            MyDataIds.status->{
+
+            MyDataIds.status -> {
                 status.value = arg as String
-                Log.d("ghgh",status.value)
+                Log.d("ghgh", status.value)
             }
-            MyDataIds.btnClick->{
+
+            MyDataIds.btnClick -> {
                 markAttendance()
             }
         }
@@ -96,8 +87,6 @@ class MarkAttendanceViewModel @Inject constructor(
     init {
         mapData(
             MyDataIds.attencomments to attencomments,
-           /* MyDataIds.currentInTime to currentInTime,
-            MyDataIds.currentOutTime to currentOutTime,*/
             MyDataIds.status to status,
             MyDataIds.attendanceList to attendanceList,
             MyDataIds.currentInTimeState to currentInTimeState,
@@ -108,7 +97,7 @@ class MarkAttendanceViewModel @Inject constructor(
         setStatusBarColor(Color(0xFFFFEB56), true)
     }
 
-    private fun markAttendance(){
+    private fun markAttendance() {
         viewModelScope.launch(Dispatchers.IO) {
             userId.value = "USER_78u88isit6yhadolutedd"
             try {
@@ -128,7 +117,7 @@ class MarkAttendanceViewModel @Inject constructor(
                         toast(response.message)
                     }
                 }
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 Log.e("hgbj", "Error: ${e.message}")
                 toast("Check network connection")
             }
@@ -146,21 +135,20 @@ class MarkAttendanceViewModel @Inject constructor(
                     mainScope {
                         attendanceList.clear()
                         attendanceList.addAll(listOf(list))
-                        Log.d("fvg",list.check_in)
+                        Log.d("fvg", list.check_in)
                         currentInTime.value = list.check_in
                         currentOutTime.value = list.check_out
-                        Log.d("fgvr",currentInTime.value)
+                        Log.d("fgvr", currentInTime.value)
                     }
 
                 }
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 Log.e("dcdcvdf", "${e.message}")
             }
         }
     }
 
     private fun tryGetLocation() {
-
         viewModelScope.launch {
             val p = listOf(
                 android.Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -170,9 +158,6 @@ class MarkAttendanceViewModel @Inject constructor(
             val granted = p.checkPermission()
             if (granted?.allPermissionsGranted == true) {
                 getLocation()
-            } else {
-                val result = p.requestPermission()
-
             }
         }
     }
@@ -183,15 +168,11 @@ class MarkAttendanceViewModel @Inject constructor(
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location: Location? ->
                 toast("${location?.latitude},${location?.longitude}")
-                Log.d("MyL", "latitude ${location?.latitude}, longitude ${location?.longitude}")
+                Log.d("kibjbk", "latitude ${location?.latitude}, longitude ${location?.longitude}")
                 if (location != null) {
                     currentLat.value = location?.latitude.toString()!!
                     currentLong.value = location?.longitude.toString()!!
                     Log.d("bgbgg", "${currentLat.value}")
-                    //onBtnClick()
-                } else {
-                    //onBtnClick()
-                    //toast("Please enable Location from settings")
                 }
             }
     }

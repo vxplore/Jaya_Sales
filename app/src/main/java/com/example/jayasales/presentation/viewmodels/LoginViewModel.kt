@@ -12,9 +12,6 @@ import com.debduttapanda.j3lib.models.EventBusDescription
 import com.debduttapanda.j3lib.models.Route
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.Routes
-import com.example.jayasales.model.Data
-import com.example.jayasales.model.LoginDataResponse
-import com.example.jayasales.model.PartiesDatum
 import com.example.jayasales.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

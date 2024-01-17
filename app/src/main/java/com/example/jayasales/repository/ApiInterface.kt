@@ -14,11 +14,11 @@ import com.example.jayasales.model.PartiesDataResponse
 import com.example.jayasales.model.PaymentInList
 import com.example.jayasales.model.ReceivePaymentInList
 import com.example.jayasales.model.ResetDataResponse
+import com.example.jayasales.model.ReviewCartDataResponse
 import com.example.jayasales.model.RouteDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
 import com.example.jayasales.model.StoreDetailsDataResponse
 import com.example.jayasales.model.TimeSheetDataResponse
-import com.example.jayasales.presentation.viewmodels.PaymentModeTab
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,15 +36,16 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST("log-in")
     suspend fun Login(
-        @Field("email") email : String,
-        @Field("password") password : String,
+        @Field("email") email: String,
+        @Field("password") password: String,
     ): Response<LoginDataResponse>
 
     @GET("forgot-password")
     suspend fun getOtp(
-        @Query("email") email : String,
+        @Query("email") email: String,
 
         ): Response<GetOtpResponse>
+
     @FormUrlEncoded
     @POST("change-password")
     suspend fun resetPassword(
@@ -69,47 +70,54 @@ interface ApiInterface {
         @Field("contact_email") contactEmail: String,
         @Field("gst") gst: String,
     ): Response<AddStoreDataResponse>
+
     @GET("routes-lists")
     suspend fun route(
-        @Query("routes-lists") data : String,
+        @Query("routes-lists") data: String,
 
         ): Response<RouteDataResponse>
+
     @GET("sells/attendance")
     suspend fun attendance(
-        @Query("user_id") userId : String,
+        @Query("user_id") userId: String,
 
         ): Response<AttendanceDataResponse>
+
     @GET("sells/timesheet")
     suspend fun timeSheet(
-        @Query("user_id") userId : String,
+        @Query("user_id") userId: String,
 
         ): Response<TimeSheetDataResponse>
+
     @GET("sells/product_brands")
     suspend fun allBrands(
-        @Query("sells/product_brands") allBrands:String,
+        @Query("sells/product_brands") allBrands: String,
 
         ): Response<AllBrandDataResponse>
+
     @GET("sells/product_categories")
     suspend fun allCategories(
-        @Query("sells/product_categories") allCategories:String,
+        @Query("sells/product_categories") allCategories: String,
 
         ): Response<AllCategory>
+
     @GET("routes-search")
     suspend fun searchRoute(
-        @Query("query") query : String,
+        @Query("query") query: String,
 
         ): Response<SearchRouteDataResponse>
+
     @FormUrlEncoded
     @POST("sells/store_details")
     suspend fun storeDetails(
-        @Field("store_id") storeId : String,
+        @Field("store_id") storeId: String,
         @Field("user_id") userId: String,
-        ): Response<StoreDetailsDataResponse>
+    ): Response<StoreDetailsDataResponse>
 
     @FormUrlEncoded
     @POST("sells/products")
     suspend fun allProducts(
-        @Field("category_id") categoryId : String,
+        @Field("category_id") categoryId: String,
         @Field("brand_id") brandId: String,
         @Field("search_text") searchText: String,
     ): Response<AllProduct>
@@ -121,24 +129,26 @@ interface ApiInterface {
         @Field("order_id") orderId: String,
         @Field("store_id") storeId: String,
         @Field("price") price: String,
-        @Field("payment_type") paymentType: PaymentModeTab,
+        @Field("payment_type") paymentType: String,
         @Field("instruction") instruction: String,
     ): Response<ReceivePaymentInList>
+
     @FormUrlEncoded
     @POST("sells/invoice_list")
     suspend fun paymentIn(
-        @Field("user_id") userId : String,
+        @Field("user_id") userId: String,
         @Field("store_id") storeId: String,
     ): Response<PaymentInList>
 
     @FormUrlEncoded
     @POST("parties-search")
     suspend fun parties(
-        @Field("user_id") userId : String,
+        @Field("user_id") userId: String,
         @Field("route_id") routeId: String,
-        @Field("search_text") searchText : String,
+        @Field("search_text") searchText: String,
 
         ): Response<PartiesDataResponse>
+
     @FormUrlEncoded
     @POST("sells/mark_visit")
     suspend fun markVisit(
@@ -151,6 +161,13 @@ interface ApiInterface {
         ): Response<MarkVisitDataResponse>
 
     @FormUrlEncoded
+    @POST("sells/review_cart")
+    suspend fun reviewCart(
+        @Field("user_id") userId: String,
+        @Field("store_id") storeId: String,
+    ): Response<ReviewCartDataResponse>
+
+    @FormUrlEncoded
     @POST("sells/attendance")
     suspend fun checkInOut(
         @Field("user_id") userId: String,
@@ -158,7 +175,7 @@ interface ApiInterface {
         @Field("lng") lng: String,
         @Field("comment") comment: String,
         @Field("status") status: String,
-        ): Response<CheckInOutDataResponse>
+    ): Response<CheckInOutDataResponse>
 
     @FormUrlEncoded
     @POST("sells/mark_visit")
@@ -191,6 +208,7 @@ interface ApiInterface {
                 val data = response.body()
                 Log.d("cddcv", data.toString())
             }
+
             override fun onFailure(call: Call<MarkVisitDataResponse>, t: Throwable) {
                 Log.d("cddcv", t.message ?: "null")
             }
@@ -204,7 +222,7 @@ interface ApiInterface {
 
     @GET("parties-search")
     suspend fun searchParty(
-        @Query("query") searchParty : String,
+        @Query("query") searchParty: String,
 
         ): Response<PartiesDataResponse>
 }

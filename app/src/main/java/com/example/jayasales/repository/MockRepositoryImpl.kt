@@ -1,7 +1,6 @@
 package com.example.jayasales.repository
 
 import android.annotation.SuppressLint
-import android.util.Log
 import com.example.jayasales.model.AddStoreDataResponse
 import com.example.jayasales.model.AllBrandDataResponse
 import com.example.jayasales.model.AllCategory
@@ -15,16 +14,12 @@ import com.example.jayasales.model.PartiesDataResponse
 import com.example.jayasales.model.PaymentInList
 import com.example.jayasales.model.ReceivePaymentInList
 import com.example.jayasales.model.ResetDataResponse
+import com.example.jayasales.model.ReviewCartDataResponse
 import com.example.jayasales.model.RouteDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
 import com.example.jayasales.model.StoreDetailsDataResponse
 import com.example.jayasales.model.TimeSheetDataResponse
-import com.example.jayasales.presentation.viewmodels.PaymentModeTab
 import com.example.jayasales.repository.preference.PrefRepository
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import java.io.File
 import javax.inject.Inject
 
@@ -62,18 +57,18 @@ class MockRepositoryImpl @Inject constructor(
 
     override suspend fun timeSheet(userId: String): TimeSheetDataResponse? {
         val response = apiHelper.timeSheet(userId)
-        return if (response.isSuccessful){
+        return if (response.isSuccessful) {
             response.body()
-        }else{
+        } else {
             null
         }
     }
 
     override suspend fun attendance(data: String): AttendanceDataResponse? {
-       val response = apiHelper.attendance(data)
-        return if (response.isSuccessful){
+        val response = apiHelper.attendance(data)
+        return if (response.isSuccessful) {
             response.body()
-        }else{
+        } else {
             null
         }
     }
@@ -92,7 +87,7 @@ class MockRepositoryImpl @Inject constructor(
         routeId: String,
         searchText: String
     ): PartiesDataResponse? {
-        val response = apiHelper.parties(userId,routeId,searchText)
+        val response = apiHelper.parties(userId, routeId, searchText)
         return if (response.isSuccessful) {
             response.body()
         } else {
@@ -101,10 +96,19 @@ class MockRepositoryImpl @Inject constructor(
     }
 
     override suspend fun storeDetails(storeId: String, userId: String): StoreDetailsDataResponse? {
-        val response = apiHelper.storeDetails(storeId,userId)
-        return if (response.isSuccessful){
+        val response = apiHelper.storeDetails(storeId, userId)
+        return if (response.isSuccessful) {
             response.body()
-        }else{
+        } else {
+            null
+        }
+    }
+
+    override suspend fun reviewCart(userId: String, storeId: String): ReviewCartDataResponse? {
+        val response = apiHelper.reviewCart(userId, storeId)
+        return if (response.isSuccessful) {
+            response.body()
+        } else {
             null
         }
     }
@@ -125,23 +129,12 @@ class MockRepositoryImpl @Inject constructor(
         lng: String,
         comment: String
     ): MarkVisitDataResponse? {
-        //val response = apiHelper.markVisit(userId,storeId,lat, lng, comment)
-        val client = OkHttpClient()
-        val mediaType = "text/plain".toMediaType()
-        val body = MultipartBody.Builder().setType(MultipartBody.FORM)
-            .addFormDataPart("user_id","USER_78u88isit6yhadolutedd")
-            .addFormDataPart("store_id","STORE_590645")
-            .addFormDataPart("lat"," 22.6483178")
-            .addFormDataPart("lng"," 88.341644")
-            .addFormDataPart("comment","test comment")
-            .build()
-        val request = Request.Builder()
-            .url("https://apis.jayaindustries.in/jayasalesapi/v1/sells/mark_visit")
-            .post(body)
-            .build()
-        val response = client.newCall(request).execute()
-        Log.d("dfuh",response.networkResponse.toString())
-        return null
+        val response = apiHelper.markVisit(userId, storeId, lat, lng, comment)
+        return if (response.isSuccessful) {
+            response.body()
+        } else {
+            null
+        }
     }
 
     override suspend fun checkInOut(
@@ -151,10 +144,10 @@ class MockRepositoryImpl @Inject constructor(
         comment: String,
         status: String
     ): CheckInOutDataResponse? {
-        val response = apiHelper.checkInOut(userId,lat, lng, comment, status)
-        return if (response.isSuccessful){
+        val response = apiHelper.checkInOut(userId, lat, lng, comment, status)
+        return if (response.isSuccessful) {
             response.body()
-        }else{
+        } else {
             null
         }
     }
@@ -215,18 +208,18 @@ class MockRepositoryImpl @Inject constructor(
 
     override suspend fun allBrands(allBrands: String): AllBrandDataResponse? {
         val response = apiHelper.allBrands(allBrands)
-        return if (response.isSuccessful){
+        return if (response.isSuccessful) {
             response.body()
-        }else{
+        } else {
             null
         }
     }
 
     override suspend fun allCategory(allCategory: String): AllCategory? {
         val response = apiHelper.allCategories(allCategory)
-       return if (response.isSuccessful){
+        return if (response.isSuccessful) {
             response.body()
-        }else{
+        } else {
             null
         }
     }
@@ -237,18 +230,18 @@ class MockRepositoryImpl @Inject constructor(
         searchText: String
     ): AllProduct? {
         val response = apiHelper.allProducts(categoryId, brandId, searchText)
-        return if (response.isSuccessful){
+        return if (response.isSuccessful) {
             response.body()
-        }else{
+        } else {
             null
         }
     }
 
     override suspend fun paymentIn(userId: String, storeId: String): PaymentInList? {
-        val response = apiHelper.paymentIn(userId,storeId)
-        return if (response.isSuccessful){
+        val response = apiHelper.paymentIn(userId, storeId)
+        return if (response.isSuccessful) {
             response.body()
-        }else{
+        } else {
             null
         }
     }
@@ -258,13 +251,14 @@ class MockRepositoryImpl @Inject constructor(
         orderId: String,
         storeId: String,
         price: String,
-        paymentType: PaymentModeTab,
+        paymentType: String,
         instruction: String
     ): ReceivePaymentInList? {
-        val response = apiHelper.receivePayment(userId,orderId,storeId,price,paymentType,instruction)
-        return if (response.isSuccessful){
+        val response =
+            apiHelper.receivePayment(userId, orderId, storeId, price, paymentType, instruction)
+        return if (response.isSuccessful) {
             response.body()
-        }else{
+        } else {
             null
         }
     }
@@ -294,7 +288,7 @@ class MockRepositoryImpl @Inject constructor(
     }
 
     override fun setBrand(brand: String?) {
-      myPref.setBrand(brand)
+        myPref.setBrand(brand)
     }
 
     override fun getCategory(): String? {
@@ -302,14 +296,14 @@ class MockRepositoryImpl @Inject constructor(
     }
 
     override fun setCategory(category: String?) {
-       myPref.setCategory(category)
+        myPref.setCategory(category)
     }
 
     override fun getOrderId(): String? {
-       return myPref.getOrderId()
+        return myPref.getOrderId()
     }
 
-    override fun setOrderId(orderId: List<String>) {
+    override fun setOrderId(orderId: String) {
         myPref.setOrderId(orderId)
     }
 
@@ -327,7 +321,7 @@ class MockRepositoryImpl @Inject constructor(
     }
 
     override fun setLogEmail(logEmail: String?) {
-       myPref.setLogEmail(logEmail)
+        myPref.setLogEmail(logEmail)
     }
 
     override fun removeUser() {

@@ -75,7 +75,6 @@ import com.debduttapanda.j3lib.stringState
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
 import com.example.jayasales.model.PaymentIn
-import com.example.jayasales.model.PaymentInList
 import com.example.jayasales.presentation.viewmodels.PaymentModeTab
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -153,7 +152,7 @@ fun PaymentInScreen(
                         onClick = {
                             notifier.notify(MyDataIds.back)
                         }
-                    ){
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBackIosNew,
                             contentDescription = "ArrowBackIosNew",
@@ -212,9 +211,9 @@ fun PaymentInScreen(
                                 .padding(horizontal = 16.dep)
                                 .fillMaxWidth()
                         ) {
-                            Row (
+                            Row(
                                 verticalAlignment = Alignment.CenterVertically
-                            ){
+                            ) {
                                 Text(
                                     text = "Invoice #",
                                     fontSize = 14.sep,
@@ -224,7 +223,7 @@ fun PaymentInScreen(
                                 )
 
                                 Text(
-                                    text = "${it.id}",
+                                    text = it.id,
                                     fontSize = 10.sep,
                                     textAlign = TextAlign.Center,
                                     fontWeight = FontWeight.Bold,
@@ -391,7 +390,7 @@ fun PaymentInScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 OutlinedButton(
-                    onClick = { notifier.notify(MyDataIds.cashbtn, "Cash") },
+                    onClick = { notifier.notify(MyDataIds.cashbtn, "cash") },
                     colors = if (selectedPaymentMode.value == PaymentModeTab.Cash) ButtonDefaults.buttonColors(
                         Color(0XFF1FB574)
                     )
@@ -399,13 +398,13 @@ fun PaymentInScreen(
                     border = BorderStroke(0.dep, Color.Transparent)
                 ) {
                     Text(
-                        text = "Cash",
+                        text = "cash",
                         color = if (selectedPaymentMode.value == PaymentModeTab.Cash) Color.White else Color.Black
                     )
                 }
                 Spacer(modifier = Modifier.width(12.dep))
                 OutlinedButton(
-                    onClick = { notifier.notify(MyDataIds.chequebtn, "Cheque") },
+                    onClick = { notifier.notify(MyDataIds.chequebtn, "cheque") },
                     colors = if (selectedPaymentMode.value == PaymentModeTab.Cheque) ButtonDefaults.buttonColors(
                         Color(0XFF1FB574)
                     )
@@ -413,12 +412,12 @@ fun PaymentInScreen(
                     border = BorderStroke(0.dep, Color.Transparent)
                 ) {
                     Text(
-                        text = "Cheque",
+                        text = "cheque",
                         color = if (selectedPaymentMode.value == PaymentModeTab.Cheque) Color.White else Color.Black
                     )
                 }
                 OutlinedButton(
-                    onClick = { notifier.notify(MyDataIds.onlinebtn, "Online") },
+                    onClick = { notifier.notify(MyDataIds.onlinebtn, "online") },
                     colors = if (selectedPaymentMode.value == PaymentModeTab.Online) ButtonDefaults.buttonColors(
                         Color(0XFF1FB574)
                     )
@@ -426,7 +425,7 @@ fun PaymentInScreen(
                     border = BorderStroke(0.dep, Color.Transparent)
                 ) {
                     Text(
-                        text = "Online",
+                        text = "online",
                         color = if (selectedPaymentMode.value == PaymentModeTab.Online) Color.White else Color.Black
                     )
                 }

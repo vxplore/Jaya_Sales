@@ -11,7 +11,6 @@ import com.debduttapanda.j3lib.WirelessViewModel
 import com.debduttapanda.j3lib.models.EventBusDescription
 import com.debduttapanda.j3lib.models.Route
 import com.example.jayasales.MyDataIds
-import com.example.jayasales.model.Datum
 import com.example.jayasales.model.TimeSheet
 import com.example.jayasales.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +22,6 @@ class TimesheetViedModel @Inject constructor(
     private val repo: Repository
 ) : WirelessViewModel() {
     private val showTimeSheet = mutableStateListOf<TimeSheet>()
-    private val dataEndpoint = mutableStateOf("sells/timesheet")
     private val userId = mutableStateOf("")
     override fun eventBusDescription(): EventBusDescription? {
         return null

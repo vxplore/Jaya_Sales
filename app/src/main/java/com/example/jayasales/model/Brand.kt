@@ -1,6 +1,6 @@
 package com.example.jayasales.model
 
-data class AllBrandDataResponse (
+data class AllBrandDataResponse(
     val status: Boolean,
     val message: String,
     val data: List<Brand>
@@ -10,7 +10,8 @@ data class AllBrandDataResponse (
         val uid: String,
         val name: String
     )
-    companion object{
+
+    companion object {
         val All = Brand("", "All")
     }
 }
