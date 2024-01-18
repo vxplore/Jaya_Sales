@@ -12,6 +12,7 @@ import com.example.jayasales.model.LoginDataResponse
 import com.example.jayasales.model.MarkVisitDataResponse
 import com.example.jayasales.model.PartiesDataResponse
 import com.example.jayasales.model.PaymentInList
+import com.example.jayasales.model.PlaceOrderDataResponse
 import com.example.jayasales.model.ReceivePaymentInList
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
@@ -19,6 +20,7 @@ import com.example.jayasales.model.RouteDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
 import com.example.jayasales.model.StoreDetailsDataResponse
 import com.example.jayasales.model.TimeSheetDataResponse
+import com.example.jayasales.model.ViewCartDataResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -141,6 +143,13 @@ interface ApiInterface {
     ): Response<PaymentInList>
 
     @FormUrlEncoded
+    @POST("sells/place_order")
+    suspend fun placeOrder(
+        @Field("user_id") userId: String,
+        @Field("store_id") storeId: String,
+    ): Response<PlaceOrderDataResponse>
+
+    @FormUrlEncoded
     @POST("parties-search")
     suspend fun parties(
         @Field("user_id") userId: String,
@@ -157,8 +166,15 @@ interface ApiInterface {
         @Field("lat") lat: String,
         @Field("lng") lng: String,
         @Field("comment") comment: String,
-
         ): Response<MarkVisitDataResponse>
+    @FormUrlEncoded
+    @POST("sells/add_to_cart")
+    suspend fun viewCart(
+        @Field("user_id") userId: String,
+        @Field("store_id") storeId: String,
+        @Field("product_id") productId: String,
+        @Field("quantity") quantity: String,
+        ): Response<ViewCartDataResponse>
 
     @FormUrlEncoded
     @POST("sells/review_cart")

@@ -19,6 +19,10 @@ interface PrefRepository {
 
     fun getOrderId(): String?
     fun setOrderId(orderId: String)
+    fun getCartId(): String?
+    fun setCartId(cartId: String)
+    fun getProductId(): String?
+    fun setProductId(productId: String)
 
     fun getUId(): String?
 

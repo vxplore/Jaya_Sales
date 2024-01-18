@@ -12,6 +12,7 @@ import com.example.jayasales.model.LoginDataResponse
 import com.example.jayasales.model.MarkVisitDataResponse
 import com.example.jayasales.model.PartiesDataResponse
 import com.example.jayasales.model.PaymentInList
+import com.example.jayasales.model.PlaceOrderDataResponse
 import com.example.jayasales.model.ReceivePaymentInList
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
@@ -19,6 +20,7 @@ import com.example.jayasales.model.RouteDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
 import com.example.jayasales.model.StoreDetailsDataResponse
 import com.example.jayasales.model.TimeSheetDataResponse
+import com.example.jayasales.model.ViewCartDataResponse
 import com.example.jayasales.repository.preference.PrefRepository
 import java.io.File
 import javax.inject.Inject
@@ -137,6 +139,20 @@ class MockRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun viewCart(
+        userId: String,
+        storeId: String,
+        productId: String,
+        quantity: String
+    ): ViewCartDataResponse? {
+        val response = apiHelper.viewCart(userId, storeId, productId, quantity)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
+
     override suspend fun checkInOut(
         userId: String,
         lat: String,
@@ -246,6 +262,15 @@ class MockRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun placeOrder(userId: String, storeId: String): PlaceOrderDataResponse? {
+        val response = apiHelper.placeOrder(userId, storeId)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
+
     override suspend fun receivePayment(
         userId: String,
         orderId: String,
@@ -305,6 +330,22 @@ class MockRepositoryImpl @Inject constructor(
 
     override fun setOrderId(orderId: String) {
         myPref.setOrderId(orderId)
+    }
+
+    override fun getCartId(): String? {
+        return myPref.getCartId()
+    }
+
+    override fun setCartId(cartId: String) {
+       myPref.setCartId(cartId)
+    }
+
+    override fun getProductId(): String? {
+        return myPref.getProductId()
+    }
+
+    override fun setProductId(productId: String) {
+       myPref.setProductId(productId)
     }
 
 

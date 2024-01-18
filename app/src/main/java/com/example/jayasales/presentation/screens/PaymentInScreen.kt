@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -180,7 +181,7 @@ fun PaymentInScreen(
                 contentPadding = PaddingValues(vertical = 10.dep),
                 verticalArrangement = Arrangement.spacedBy(20.dep)
             ) {
-                items(paymentInList) {
+                itemsIndexed(paymentInList) {index,it->
                     var comment by remember { mutableStateOf("") }
                     Card(
                         modifier = Modifier
@@ -335,6 +336,7 @@ fun PaymentInScreen(
                                 value = comment,
                                 onValueChange = {
                                     comment = it
+                                    notifier.notify(MyDataIds.index,index)
                                     notifier.notify(MyDataIds.comment, it)
                                 },
                                 modifier = Modifier
@@ -511,14 +513,7 @@ fun PaymentInScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = stringResource(id = R.string.Amount),
-                                fontSize = 12.sep,
-                                textAlign = TextAlign.Center,
-                                color = Color(0xFF222222)
-                            )
-                            Spacer(modifier = Modifier.width(12.dep))
-                            Text(
-                                text = "₹16100.00",
+                                text = "",
                                 fontSize = 15.sep,
                                 textAlign = TextAlign.Center,
                                 fontWeight = FontWeight.Bold,

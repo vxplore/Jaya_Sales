@@ -84,7 +84,7 @@
     <string name="Payment_Details">Payment Details</string>
     <string name="Taxable_Amount">Taxable Amount</string>
     <string name="CGST">CGST</string>
-    <string name="SGST">SGST</string>
+    <string name="SGST">GST</string>
     <string name="Total">Total</string>
     <string name="REMOVE">REMOVE</string>
     <string name="Sales">Sales</string>

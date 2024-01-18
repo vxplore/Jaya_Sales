@@ -11,6 +11,7 @@ import com.example.jayasales.model.LoginDataResponse
 import com.example.jayasales.model.MarkVisitDataResponse
 import com.example.jayasales.model.PartiesDataResponse
 import com.example.jayasales.model.PaymentInList
+import com.example.jayasales.model.PlaceOrderDataResponse
 import com.example.jayasales.model.ReceivePaymentInList
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
@@ -18,6 +19,7 @@ import com.example.jayasales.model.RouteDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
 import com.example.jayasales.model.StoreDetailsDataResponse
 import com.example.jayasales.model.TimeSheetDataResponse
+import com.example.jayasales.model.ViewCartDataResponse
 import java.io.File
 
 interface Repository {
@@ -40,6 +42,12 @@ interface Repository {
         lng: String,
         comment: String
     ): MarkVisitDataResponse?
+    suspend fun viewCart(
+        userId: String,
+        storeId: String,
+        productId: String,
+        quantity: String,
+    ): ViewCartDataResponse?
 
     suspend fun checkInOut(
         userId: String,
@@ -54,6 +62,7 @@ interface Repository {
     suspend fun allCategory(allCategory: String): AllCategory?
     suspend fun allProducts(categoryId: String, brandId: String, searchText: String): AllProduct?
     suspend fun paymentIn(userId: String, storeId: String): PaymentInList?
+    suspend fun placeOrder(userId: String, storeId: String): PlaceOrderDataResponse?
     suspend fun receivePayment(
         userId: String,
         orderId: String,
@@ -76,6 +85,10 @@ interface Repository {
     fun setCategory(category: String?)
     fun getOrderId(): String?
     fun setOrderId(orderId: String)
+    fun getCartId(): String?
+    fun setCartId(cartId: String)
+    fun getProductId(): String?
+    fun setProductId(productId: String)
 
     fun getLogUId(): String?
     fun setLogUId(logUId: String?)

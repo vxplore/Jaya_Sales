@@ -64,6 +64,7 @@ import com.debduttapanda.j3lib.sep
 import com.debduttapanda.j3lib.stringState
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
+import com.example.jayasales.model.Cart
 import com.example.jayasales.model.ReviewCartDataResponse
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,7 +74,12 @@ fun ReviewCartScreen(
     notifier: NotificationService = rememberNotifier(),
     reviewCartDialog: Boolean = boolState(key = MyDataIds.reviewCartDialog).value,
     reviewInstruction :State<String> = stringState(key = MyDataIds.reviewInstruction),
-    reviewCart : SnapshotStateList<ReviewCartDataResponse> = listState(key = MyDataIds.reviewCart)
+    reviewCart : SnapshotStateList<Cart> = listState(key = MyDataIds.reviewCart),
+    taxAmountState : State<String> = stringState(key = MyDataIds.taxAmountState),
+    cgstState : State<String> = stringState(key = MyDataIds.cgstState),
+    gstState : State<String> = stringState(key = MyDataIds.gstState),
+    totalState : State<String> = stringState(key = MyDataIds.totalState),
+    totalQuantityState : State<String> = stringState(key = MyDataIds.totalQuantityState),
 ) {
     val openDialog = remember { mutableStateOf(false) }
     if (reviewCartDialog){
@@ -222,16 +228,18 @@ fun ReviewCartScreen(
                         ){
                             Column(horizontalAlignment = Alignment.Start) {
                                 Text(
-                                    text = it.data[0].product.name,
-                                    fontSize = 14.sep)
+                                    text = it.product.name,
+                                    fontSize = 14.sep
+                                )
                                 Spacer(modifier = Modifier.height(10.dep))
                                 Text(
-                                    text = it.data[0].product.pcs,
+                                    text = it.product.pcs,
                                     fontSize = 12.sep,
                                     fontWeight = FontWeight.Medium
                                 )
                                 TextButton(
                                     onClick = {
+                                              notifier.notify(MyDataIds.remove)
                                     },
                                     modifier = Modifier
                                 ) {
@@ -248,7 +256,7 @@ fun ReviewCartScreen(
                                     border = BorderStroke(1.dep, color = Color(0XFFD3D3D3))
                                 ) {
                                     Text(
-                                        text = it.data[1].quantity,
+                                        text = it.quantity,
                                         fontSize = 14.sep,
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -258,7 +266,7 @@ fun ReviewCartScreen(
                                 }
                                 Spacer(modifier = Modifier.height(10.dep))
                                 Text(
-                                    text = "₹${it.data[1].price_for_product}",
+                                    text = "₹${it.price_for_product}",
                                     fontSize = 14.sep,
                                     fontWeight = FontWeight.Medium)
                             }
@@ -311,22 +319,22 @@ fun ReviewCartScreen(
                         }
                         Column(horizontalAlignment = Alignment.End) {
                             Text(
-                                text = "₹{reviewCart[1].sub_total}",
+                                text = "₹${taxAmountState.value}",
                                 fontSize = 14.sep
                             )
                             Spacer(modifier = Modifier.height(10.dep))
                             Text(
-                                text = "reviewCart[1].cgst",
+                                text = cgstState.value,
                                 fontSize = 14.sep
                             )
                             Spacer(modifier = Modifier.height(10.dep))
                             Text(
-                                text =" reviewCart[1].gst",
+                                text =gstState.value,
                                 fontSize = 14.sep
                             )
                             Spacer(modifier = Modifier.height(10.dep))
                             Text(
-                                text = "₹{reviewCart[1].total}",
+                                text = totalState.value,
                                 fontSize = 14.sep, fontWeight = FontWeight.Medium
                             )
                         }
@@ -408,11 +416,11 @@ fun ReviewCartScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text =" reviewCart[1].data.size.toString()",
+                            text ="${totalQuantityState.value} items",
                             fontSize = 12.sep,
                             fontWeight = FontWeight.Medium
                         )
-                        Text(text = "₹{reviewCart[1].total}",
+                        Text(text = "₹${totalState.value}",
                             fontSize = 18.sep,
                             fontWeight = FontWeight.Bold
                         )

@@ -42,6 +42,11 @@ class NewOrdersViewModel @Inject constructor(
     private val categoryEndPoint = mutableStateOf("sells/product_categories")
     private val brandId = mutableStateOf("")
     private val categoryId = mutableStateOf("")
+    private val productId = mutableStateOf("")
+    private val userId = mutableStateOf("")
+    private val storeId = mutableStateOf("")
+    private val quantity = mutableStateOf("")
+    private val index = mutableStateOf(0)
 
     override fun eventBusDescription(): EventBusDescription? {
         return null
@@ -61,7 +66,12 @@ class NewOrdersViewModel @Inject constructor(
                 }
             }
 
+            MyDataIds.orderIndex -> {
+                index.value = arg as Int
+            }
+
             MyDataIds.viewToCart -> {
+                viewCart()
                 navigation {
                     navigate(Routes.reviewCart.full)
                 }
@@ -79,19 +89,9 @@ class NewOrdersViewModel @Inject constructor(
                 }
             }
 
-            MyDataIds.productQuantityMinus -> {
-                if (noOfItem.value > 0) {
-                    noOfItem.value -= 1
-                }
-            }
-
-            MyDataIds.productQuantityPlus -> {
-                noOfItem.value += 1
-            }
-
             MyDataIds.categoryChange -> {
                 selectedCategoryTabId.value = arg as String
-                //filterProducts()
+                filterProducts()
             }
         }
     }
@@ -111,6 +111,7 @@ class NewOrdersViewModel @Inject constructor(
         }
     }
 
+
     init {
         setup()
         fetchBrands()
@@ -127,6 +128,9 @@ class NewOrdersViewModel @Inject constructor(
                 brands.add(AllBrandDataResponse.All)
                 if (response != null) {
                     brands.addAll(response.data)
+                    val brands = response.data[index.value].uid
+                    repository.setBrand(brands)
+                    Log.d("dcdscx",brands)
                 }
                 loadAllCategories()
                 fetchProducts()
@@ -147,6 +151,11 @@ class NewOrdersViewModel @Inject constructor(
 
                 if (response != null) {
                     categories.addAll(response.data)
+                    val selectedCategoryId = selectedCategoryTabId.value
+                    val matchingCategory = response.data.find { it.uid == selectedCategoryId }
+                    val categories = matchingCategory?.uid ?: ""
+                    repository.setCategory(categories)
+                    Log.d("dcdscx",categories)
                 }
                 fetchProducts()
             }
@@ -156,16 +165,27 @@ class NewOrdersViewModel @Inject constructor(
 
     private fun fetchProducts() {
         viewModelScope.launch(Dispatchers.IO) {
-            brandId.value = ""!!
-            Log.d("jkkmjm", "${brandId.value}")
-            categoryId.value = repository.getCategory()!!
-            val response = repository.allProducts(brandId.value,categoryId.value,searchProductQuery.value)
+            // Check if both brandId and categoryId are "All"
+            val showAllProducts =
+                brandId.value == AllBrandDataResponse.All.uid && categoryId.value == AllCategory.All.uid
+
+            val response = if (showAllProducts) {
+                // Fetch all products
+                repository.allProducts("", "", searchProductQuery.value)
+            } else {
+                brandId.value = repository.getBrand()!!
+                categoryId.value = repository.getCategory()!!
+                // Fetch products based on brand and category
+                repository.allProducts(categoryId.value, brandId.value, searchProductQuery.value)
+            }
+
             if (response?.status == true) {
-                Log.d("ghb", "$response")
                 val list = response.data
                 withContext(Dispatchers.Main) {
                     listOfProducts.clear()
                     listOfProducts.addAll(list)
+                    val productId = response.data[index.value].uid
+                    repository.setProductId(productId)
                     withContext(Dispatchers.Main) {
                         filterProducts()
                     }
@@ -174,6 +194,26 @@ class NewOrdersViewModel @Inject constructor(
             }
         }
     }
+
+
+    private fun viewCart() {
+        viewModelScope.launch(Dispatchers.IO) {
+            userId.value = "USER_78u88isit6yhadolutedd"
+            storeId.value = repository.getUId()!!
+            productId.value = repository.getProductId()!!
+
+            val response =
+                repository.viewCart(userId.value, storeId.value, productId.value, quantity.value)
+
+            Log.d("fdvf", productId.value)
+            Log.d("fdvf", quantity.value)
+
+            if (response?.status == true) {
+                toast(response.message)
+            }
+        }
+    }
+
 
     private fun selectDefaultBrand() {
         selectedBrandTabId.intValue = 0
@@ -187,24 +227,22 @@ class NewOrdersViewModel @Inject constructor(
     }
 
 
-/*    private fun refreshCategories() {
-        val currentBrand = brands.getOrNull(selectedBrandTabId.value)
-        if (currentBrand == AllBrandDataResponse.All) {
-            loadAllCategories()
-        } else {
-            //categories.clear()
-            loadAllCategories()
-           // categories.addAll(currentBrand?.categories ?: emptyList())
+    /*    private fun refreshCategories() {
+            val currentBrand = brands.getOrNull(selectedBrandTabId.value)
+            if (currentBrand == AllBrandDataResponse.All) {
+                loadAllCategories()
+            } else {
+                //categories.clear()
+                loadAllCategories()
+               // categories.addAll(currentBrand?.categories ?: emptyList())
 
-           *//* if (!categories.any { it.uid == AllCategory.All.uid }) {
+               *//* if (!categories.any { it.uid == AllCategory.All.uid }) {
                 categories.add(AllCategory.All)
             }*//*
         }
         //selectedCategoryTabId.value = AllCategory.All.uid
         onCategoryChange()
     }*/
-
-
 
 
     private fun onCategoryChange() {
@@ -222,6 +260,7 @@ class NewOrdersViewModel @Inject constructor(
         if (selectedBrandTabId.value < 0) {
             return false
         }
+
         val currentBrand = brands.getOrNull(selectedBrandTabId.value)
         val currentCategory = categories.firstOrNull { it.uid == selectedCategoryTabId.value }
 
@@ -237,15 +276,19 @@ class NewOrdersViewModel @Inject constructor(
             return false
         }
 
-        if (searchProductQuery.value.isEmpty()) {
+        val queryLowerCase = searchProductQuery.value.toLowerCase()
+
+        if (queryLowerCase.isBlank()) {
             return true
         }
 
-        val namesToSearchIn = listOf(p.uid, p.name, p.weight, p.pcs, p.mrp, p.discount, p.sell_price, p.image)
-        return namesToSearchIn.any {
-            matcher().match(it.toString(), searchProductQuery.value)
+        val productAttributes = listOf(p.uid, p.name, p.weight, p.pcs, p.mrp, p.discount, p.sell_price, p.image)
+        return productAttributes.any { attribute ->
+            attribute.toString().toLowerCase().contains(queryLowerCase)
         }
     }
+
+
 
 
     private fun matcher(): Matcher {

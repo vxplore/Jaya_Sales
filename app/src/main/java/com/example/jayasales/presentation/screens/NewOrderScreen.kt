@@ -198,13 +198,14 @@ fun NewOrdersPage(
                             .padding(bottom = 80.dep)
                             .fillMaxSize(),
                     ) {
-                        items(productData) {
+                        itemsIndexed(productData) {index,it->
                             ProductList(
                                 noOfItem = totalQuantity,
                                 it,
                                 onQuantityChange = { newQuantity ->
                                     totalQuantity += newQuantity
-                                }
+                                },
+                                index = index
                             )
                         }
                     }
@@ -279,7 +280,8 @@ fun ProductList(
     noOfItem: Int,
     it: Product,
     onQuantityChange: (Int) -> Unit,
-    notifier: NotificationService = rememberNotifier()
+    index: Int,
+    notifier: NotificationService = rememberNotifier(),
 ) {
     var quantity by remember { mutableStateOf(0) }
     Card(
@@ -361,6 +363,7 @@ fun ProductList(
                                 .fillMaxSize()
                                 .weight(.33f)
                                 .clickable {
+                                    notifier.notify(MyDataIds.orderIndex,index)
                                     if (quantity > 0) {
                                         quantity--
                                         onQuantityChange(-1)
@@ -391,7 +394,7 @@ fun ProductList(
                             Text(
                                 text = quantity.toString(),
                                 fontSize = 16.sep,
-                                fontWeight = FontWeight.Normal
+                                fontWeight = FontWeight.Normal,
                             )
                         }
                         Divider(
@@ -407,6 +410,7 @@ fun ProductList(
                                 .fillMaxSize()
                                 .weight(.33f)
                                 .clickable {
+                                    notifier.notify(MyDataIds.orderIndex,index)
                                     quantity++
                                     onQuantityChange(1)
                                 }

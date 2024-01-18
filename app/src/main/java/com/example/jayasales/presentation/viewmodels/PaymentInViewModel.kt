@@ -39,6 +39,7 @@ class PaymentInViewModel @Inject constructor(
     private val userId = mutableStateOf("")
     private val storeId = mutableStateOf("")
     private val orderId = mutableStateOf("")
+    private val index = mutableStateOf(0)
     private var clickedButtonText = ""
     override fun eventBusDescription(): EventBusDescription? {
         return null
@@ -54,6 +55,9 @@ class PaymentInViewModel @Inject constructor(
         when (id) {
             MyDataIds.back -> {
                 popBackStack()
+            }
+            MyDataIds.index->{
+                index.value = arg as Int
             }
 
             MyDataIds.comment -> {
@@ -127,10 +131,10 @@ class PaymentInViewModel @Inject constructor(
                     paymentInList.clear()
                     paymentInList.addAll(list)
                    // repo.setOrderId(paymentInList.map { it.id })
-                    val orderIds = paymentInList.map { it.id }
-                    val orderIdsString = orderIds.joinToString(", ")
-                    repo.setOrderId(orderIdsString)
-                    Log.d("OrderIdLog", orderIdsString)
+                    val orderIds = response.data[index.value].id
+
+                    repo.setOrderId(orderIds)
+                    Log.d("OrderIdLog", orderIds)
                 }
             }
         }
