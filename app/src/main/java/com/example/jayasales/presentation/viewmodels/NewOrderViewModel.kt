@@ -13,6 +13,7 @@ import com.debduttapanda.j3lib.models.EventBusDescription
 import com.debduttapanda.j3lib.models.Route
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.Routes
+import com.example.jayasales.di.NoConnectivityException
 import com.example.jayasales.model.AllBrandDataResponse
 import com.example.jayasales.model.AllCategory
 import com.example.jayasales.model.Product
@@ -32,7 +33,7 @@ class NewOrdersViewModel @Inject constructor(
 ) : WirelessViewModel() {
     private val brands = mutableStateListOf<AllBrandDataResponse.Brand>()
     private val categories = mutableStateListOf<AllCategory.Category>()
-    private val selectedBrandTabId = mutableIntStateOf(-1)
+    private val selectedBrandTabId = mutableIntStateOf(0)
     private val selectedCategoryTabId = mutableStateOf("")
     private val searchProductQuery = mutableStateOf("")
     private val noOfItem = mutableIntStateOf(0)
@@ -47,6 +48,9 @@ class NewOrdersViewModel @Inject constructor(
     private val storeId = mutableStateOf("")
     private val quantity = mutableStateOf("")
     private val index = mutableStateOf(0)
+    private val lostInternet = mutableStateOf(false)
+    private val loadingState = mutableStateOf(false)
+    private val emptyDataDialog = mutableStateOf(false)
 
     override fun eventBusDescription(): EventBusDescription? {
         return null
@@ -79,19 +83,30 @@ class NewOrdersViewModel @Inject constructor(
 
             MyDataIds.brandChange -> {
                 selectedBrandTabId.value = arg as Int
+                Log.d("BrandChange", "Selected Brand ID: ${selectedBrandTabId.value}")
                 onBrandChange()
+                fetchProducts()
             }
 
             MyDataIds.productSearch -> {
                 searchProductQuery.value = arg as String
-                searchLatch(500) {
-                    filterProducts()
-                }
+                fetchProducts()
+                filterProducts()
+
             }
 
             MyDataIds.categoryChange -> {
                 selectedCategoryTabId.value = arg as String
+                onCategoryChange()
+                fetchProducts()
                 filterProducts()
+            }
+
+            MyDataIds.tryagain -> {
+                lostInternet.value = false
+                fetchBrands()
+                loadAllCategories()
+                fetchProducts()
             }
         }
     }
@@ -115,6 +130,7 @@ class NewOrdersViewModel @Inject constructor(
     init {
         setup()
         fetchBrands()
+        loadAllCategories()
         //loadAllCategories()
         setStatusBarColor(Color(0xFFFFEB56), true)
     }
@@ -122,18 +138,22 @@ class NewOrdersViewModel @Inject constructor(
     private fun fetchBrands() {
         val brandEndPoint = brandEndPoint.value
         viewModelScope.launch(Dispatchers.IO) {
-            val response = repository.allBrands(brandEndPoint)
-            withContext(Dispatchers.Main) {
-                brands.clear()
-                brands.add(AllBrandDataResponse.All)
-                if (response != null) {
-                    brands.addAll(response.data)
-                    val brands = response.data[index.value].uid
-                    repository.setBrand(brands)
-                    Log.d("dcdscx",brands)
+            try {
+                val response = repository.allBrands(brandEndPoint)
+                withContext(Dispatchers.Main) {
+                    brands.clear()
+                    brands.add(AllBrandDataResponse.All)
+                    if (response != null) {
+                        brands.addAll(response.data)
+                        val brands = response.data[index.value].uid
+                        repository.setBrand(brands)
+                        Log.d("dcdsgcx", brands)
+                    }
+                    //loadAllCategories()
+                    fetchProducts()
                 }
-                loadAllCategories()
-                fetchProducts()
+            } catch (e: NoConnectivityException) {
+                handleNoConnectivity()
             }
         }
     }
@@ -141,56 +161,103 @@ class NewOrdersViewModel @Inject constructor(
     private fun loadAllCategories() {
         val categoryEndPoint = categoryEndPoint.value
         viewModelScope.launch(Dispatchers.IO) {
-            val response = repository.allCategory(categoryEndPoint)
-            withContext(Dispatchers.Main) {
-                categories.clear()
+            try {
+                val response = repository.allCategory(categoryEndPoint)
+                withContext(Dispatchers.Main) {
+                    categories.clear()
 
-                if (!categories.any { it.uid == AllCategory.All.uid }) {
-                    categories.add(AllCategory.All)
-                }
+                    if (!categories.any { it.uid == AllCategory.All.uid }) {
+                        categories.add(AllCategory.All)
+                    }
 
-                if (response != null) {
-                    categories.addAll(response.data)
-                    val selectedCategoryId = selectedCategoryTabId.value
-                    val matchingCategory = response.data.find { it.uid == selectedCategoryId }
-                    val categories = matchingCategory?.uid ?: ""
-                    repository.setCategory(categories)
-                    Log.d("dcdscx",categories)
+                    if (response != null) {
+                        categories.addAll(response.data)
+                        val selectedCategoryId = selectedCategoryTabId.value
+                        val matchingCategory = response.data.find { it.uid == selectedCategoryId }
+                        val categories = matchingCategory?.uid ?: ""
+                        repository.setCategory(categories)
+                        Log.d("dcdscx", categories)
+                    }
+                    fetchProducts()
                 }
-                fetchProducts()
+            } catch (e: NoConnectivityException) {
+                handleNoConnectivity()
             }
         }
     }
 
+    private suspend fun handleNoConnectivity() {
+        withContext(Dispatchers.Main) {
+            lostInternet.value = true
+        }
+    }
 
     private fun fetchProducts() {
+        loadingState.value = true
         viewModelScope.launch(Dispatchers.IO) {
-            // Check if both brandId and categoryId are "All"
-            val showAllProducts =
-                brandId.value == AllBrandDataResponse.All.uid && categoryId.value == AllCategory.All.uid
+            try {
+                val filterByBrandOrCategory =
+                    brandId.value != AllBrandDataResponse.All.uid && brandId.value != "NoBrandSelected" ||
+                            categoryId.value != AllCategory.All.uid
+                val productbrandId: String
+                val response = if (filterByBrandOrCategory) {
+                    // Only update brandId and categoryId if not "All"
+                    if (selectedBrandTabId.value != 0) {
+                        productbrandId =
+                            brands.getOrNull(selectedBrandTabId.value)?.uid ?: "NoBrandSelected"
+                        Log.d("swsd", productbrandId)
+                        val selectedBrandIndex = selectedBrandTabId.value
+                        if (selectedBrandIndex in brands.indices) {
+                            val selectedBrand = brands[selectedBrandIndex]
+                            val productBrandId = selectedBrand.uid ?: "NoBrandSelected"
+                            Log.d("SelectedBrandId", productBrandId)
 
-            val response = if (showAllProducts) {
-                // Fetch all products
-                repository.allProducts("", "", searchProductQuery.value)
-            } else {
-                brandId.value = repository.getBrand()!!
-                categoryId.value = repository.getCategory()!!
-                // Fetch products based on brand and category
-                repository.allProducts(categoryId.value, brandId.value, searchProductQuery.value)
-            }
+                            val productbrandId =
+                                brands.getOrNull(selectedBrandTabId.value)?.uid ?: "NoBrandSelected"
+                            brandId.value = productBrandId
+                            Log.d("swsd", brandId.value)// Update brandId here
+                        }
+                    } else {
 
-            if (response?.status == true) {
-                val list = response.data
-                withContext(Dispatchers.Main) {
-                    listOfProducts.clear()
-                    listOfProducts.addAll(list)
-                    val productId = response.data[index.value].uid
-                    repository.setProductId(productId)
-                    withContext(Dispatchers.Main) {
-                        filterProducts()
+                        productbrandId = brands.getOrNull(selectedBrandTabId.value)?.uid
+                            ?: "" // Set a default value if brandId is "All"
+                        brandId.value = ""
+                        Log.d("swsd", brandId.value)// Update brandId here
                     }
-                    selectDefaultBrand()
+                    if (selectedCategoryTabId.value != AllCategory.All.uid) {
+                        categoryId.value = selectedCategoryTabId.value
+                        Log.d("swsd", categoryId.value)
+                    } else {
+                        categoryId.value = ""
+                    }
+                    // Fetch products based on brand and category
+                    repository.allProducts(
+                        categoryId.value,
+                        brandId.value,
+                        searchProductQuery.value
+                    )
+                } else {
+                    repository.allProducts("", "", searchProductQuery.value)
                 }
+
+                withContext(Dispatchers.Main) {
+                    if (response?.status == true) {
+                        val list = response.data
+                        listOfProducts.clear()
+                        listOfProducts.addAll(list)
+                        filterProducts()
+                        selectDefaultBrand()
+                        if (list.isEmpty()) {
+                            Log.d("fetchProducts", "No data available")
+                            // Handle the case when data is empty, for example, show a message
+                        }
+                    }
+                }
+            } catch (e: NoConnectivityException) {
+                handleNoConnectivity()
+                Log.d("fgffg", "${e.message}")
+            } finally {
+                loadingState.value = false
             }
         }
     }
@@ -214,64 +281,72 @@ class NewOrdersViewModel @Inject constructor(
         }
     }
 
-
     private fun selectDefaultBrand() {
-        selectedBrandTabId.intValue = 0
+        //selectedBrandTabId.intValue = 0
         onBrandChange()
     }
 
-
     private fun onBrandChange() {
-        //refreshCategories()
+        val selectedBrandIndex = selectedBrandTabId.value
+        if (selectedBrandIndex in brands.indices) {
+            val selectedBrand = brands[selectedBrandIndex]
+            val productBrandId = selectedBrand.uid ?: "NoBrandSelected"
+            Log.d("SelectedBrandId", productBrandId)
+
+            val productbrandId =
+                brands.getOrNull(selectedBrandTabId.value)?.uid ?: "NoBrandSelected"
+            Log.d("SelectedBrandId", productbrandId)
+            /*  Log.d(
+            "SelectedBrandId",
+            brands.getOrNull(selectedBrandTabId.value)?.uid ?: "NoBrandSelected"
+        )*/
+            //filterProducts()
+            //refreshCategories()
+            //onCategoryChange()
+        }
+    }
+
+    private fun refreshCategories() {
+        val currentBrand = brands.getOrNull(selectedBrandTabId.value)
+        if (currentBrand == AllBrandDataResponse.All) {
+            loadAllCategories()
+        } else {
+            categories.clear()
+            loadAllCategories()
+            if (!categories.any { it.uid == AllCategory.All.uid }) {
+                categories.add(AllCategory.All)
+            }
+        }
+        selectedCategoryTabId.value = AllCategory.All.uid
         onCategoryChange()
     }
 
 
-    /*    private fun refreshCategories() {
-            val currentBrand = brands.getOrNull(selectedBrandTabId.value)
-            if (currentBrand == AllBrandDataResponse.All) {
-                loadAllCategories()
-            } else {
-                //categories.clear()
-                loadAllCategories()
-               // categories.addAll(currentBrand?.categories ?: emptyList())
-
-               *//* if (!categories.any { it.uid == AllCategory.All.uid }) {
-                categories.add(AllCategory.All)
-            }*//*
-        }
-        //selectedCategoryTabId.value = AllCategory.All.uid
-        onCategoryChange()
-    }*/
-
-
     private fun onCategoryChange() {
+        Log.d("SelectedCategoryId", selectedCategoryTabId.value)
         filterProducts()
     }
 
     private fun filterProducts() {
         filterListOfProducts.clear()
-        filterListOfProducts.addAll(listOfProducts.filter {
-            productFilter(it)
-        })
+        filterListOfProducts.addAll(listOfProducts.filter { productFilter(it) })
     }
 
     private fun productFilter(p: Product): Boolean {
         if (selectedBrandTabId.value < 0) {
             return false
         }
-
         val currentBrand = brands.getOrNull(selectedBrandTabId.value)
         val currentCategory = categories.firstOrNull { it.uid == selectedCategoryTabId.value }
 
         val brandWiseAllowance =
-            (currentBrand == AllBrandDataResponse.All) || (p.uid == currentBrand?.uid)
+            (currentBrand == AllBrandDataResponse.All) || (p.uid != currentBrand?.uid)
         if (!brandWiseAllowance) {
             return false
         }
 
         val categoryWiseAllowance =
-            (currentCategory == AllCategory.All) || (p.uid == currentCategory?.uid)
+            (currentCategory == AllCategory.All) || (p.uid != currentCategory?.uid)
         if (!categoryWiseAllowance) {
             return false
         }
@@ -282,13 +357,12 @@ class NewOrdersViewModel @Inject constructor(
             return true
         }
 
-        val productAttributes = listOf(p.uid, p.name, p.weight, p.pcs, p.mrp, p.discount, p.sell_price, p.image)
+        val productAttributes =
+            listOf(p.uid, p.name, p.weight, p.pcs, p.mrp, p.discount, p.sell_price, p.image)
         return productAttributes.any { attribute ->
             attribute.toString().toLowerCase().contains(queryLowerCase)
         }
     }
-
-
 
 
     private fun matcher(): Matcher {
@@ -303,7 +377,10 @@ class NewOrdersViewModel @Inject constructor(
             MyDataIds.productSearch to searchProductQuery,
             MyDataIds.noOfItem to noOfItem,
             MyDataIds.selectedCategoryId to selectedCategoryTabId,
-            MyDataIds.filterProductData to filterListOfProducts
+            MyDataIds.filterProductData to filterListOfProducts,
+            MyDataIds.lostInternet to lostInternet,
+            MyDataIds.loadingState to loadingState,
+            MyDataIds.emptyDataDialog to emptyDataDialog,
         )
     }
 }
@@ -323,6 +400,7 @@ sealed class Matcher {
         }
     }
 }
+
 
 fun hasCommonSubstring(string1: String, string2: String): Boolean {
     for (i in string1.indices) {

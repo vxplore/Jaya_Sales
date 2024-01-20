@@ -30,6 +30,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -58,8 +59,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.debduttapanda.j3lib.NotificationService
+import com.debduttapanda.j3lib.boolState
 import com.debduttapanda.j3lib.dep
 import com.debduttapanda.j3lib.intState
 import com.debduttapanda.j3lib.listState
@@ -81,7 +85,9 @@ fun NewOrdersPage(
     selectedTabIndex: State<Int> = intState(key = MyDataIds.brandChange),
     categoryList: List<AllCategory.Category> = listState(key = MyDataIds.categories),
     selectedCategoryId: State<String> = stringState(key = MyDataIds.selectedCategoryId),
-    productData: List<Product> = listState(key = MyDataIds.filterProductData)
+    productData: List<Product> = listState(key = MyDataIds.filterProductData),
+    lostInternet: State<Boolean> = boolState(key = MyDataIds.lostInternet),
+    loadingState:State<Boolean> = boolState(key = MyDataIds.loadingState),
 ) {
     Scaffold(
         topBar = {
@@ -119,6 +125,9 @@ fun NewOrdersPage(
     )
     {
         var totalQuantity by remember { mutableStateOf(0) }
+        if (lostInternet.value == true) {
+            LostInternet_ui(onDismissRequest = { notifier.notify(MyDataIds.onDissmiss) })
+        }
         Box(
             modifier = Modifier
                 .padding(it)
@@ -193,20 +202,48 @@ fun NewOrdersPage(
                         }
                     }
                     Spacer(modifier = Modifier.height(24.dep))
-                    LazyColumn(
-                        modifier = Modifier
-                            .padding(bottom = 80.dep)
-                            .fillMaxSize(),
-                    ) {
-                        itemsIndexed(productData) {index,it->
-                            ProductList(
-                                noOfItem = totalQuantity,
-                                it,
-                                onQuantityChange = { newQuantity ->
-                                    totalQuantity += newQuantity
-                                },
-                                index = index
+                    if (loadingState.value) {
+                        Column (
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .padding(bottom = 60.dep)
+                                .fillMaxSize()
+                        ){
+                            CircularProgressIndicator(
+                                color = Color(0XFFFF4155),
                             )
+                        }
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier
+                                .padding(bottom = 80.dep)
+                                .fillMaxSize(),
+                        ) {
+                            if (productData.isEmpty()) {
+                                item {
+                                    // Display a message when the list is empty
+                                    Text(
+                                        text = "No data available",
+                                        fontSize = 16.sep,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dep)
+                                    )
+                                }
+                            } else {
+                                itemsIndexed(productData) { index, it ->
+                                    ProductList(
+                                        noOfItem = totalQuantity,
+                                        it,
+                                        onQuantityChange = { newQuantity ->
+                                            totalQuantity += newQuantity
+                                        },
+                                        index = index
+                                    )
+                                }
+                            }
                         }
                     }
                 }

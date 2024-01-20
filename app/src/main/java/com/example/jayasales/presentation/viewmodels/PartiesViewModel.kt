@@ -15,7 +15,9 @@ import com.example.jayasales.Routes
 import com.example.jayasales.model.PartiesDatum
 import com.example.jayasales.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.math.log
 
@@ -36,6 +38,8 @@ class PartiesViewModel @Inject constructor(
     private val effectivePartiesList = mutableStateListOf<PartiesDatum>()
     private val allPartiesList = mutableStateListOf<PartiesDatum>()
     //private val partiesData = mutableStateOf("parties-search")
+    private val partiesLoadingState = mutableStateOf(false)
+    private val lostInternet = mutableStateOf(false)
     override fun eventBusDescription(): EventBusDescription? {
         return null
     }
@@ -90,6 +94,10 @@ class PartiesViewModel @Inject constructor(
                     navigate(Routes.addNewStore.full)
                 }
             }
+            MyDataIds.tryagain->{
+                lostInternet.value = false
+                pendingPartiesList()
+            }
         }
     }
 
@@ -101,12 +109,19 @@ class PartiesViewModel @Inject constructor(
             MyDataIds.partiesSearch to partiesSearch,
             MyDataIds.SelectedTab to selectedTab,
             MyDataIds.partiesList to effectivePartiesList,
+            MyDataIds.partiesLoadingState to partiesLoadingState,
+            MyDataIds.lostInternet to lostInternet,
         )
         setStatusBarColor(Color(0xFFFFEB56), true)
         pendingPartiesList()
     }
-
+    private suspend fun handleNoConnectivity() {
+        withContext(Dispatchers.Main) {
+            lostInternet.value = true
+        }
+    }
     private fun pendingPartiesList() {
+        partiesLoadingState.value = true
         viewModelScope.launch {
             //val partiesData = partiesData.value
             userId.value = "USER_78u88isit6yhadolutedd"
@@ -124,7 +139,11 @@ class PartiesViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
+                handleNoConnectivity()
                 Log.e("gbhg", "${e.message}")
+            }
+            finally {
+                partiesLoadingState.value = false
             }
         }
     }

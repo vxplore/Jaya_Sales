@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,6 +48,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import com.debduttapanda.j3lib.NotificationService
+import com.debduttapanda.j3lib.boolState
 import com.debduttapanda.j3lib.dep
 import com.debduttapanda.j3lib.listState
 import com.debduttapanda.j3lib.rememberNotifier
@@ -61,8 +63,11 @@ import com.example.jayasales.model.Datum
 @Composable
 fun SelectRouteScreen(
     notifier: NotificationService = rememberNotifier(),
-    routeList: SnapshotStateList<Datum> = listState(key = MyDataIds.routeList)
-) {
+    routeList: SnapshotStateList<Datum> = listState(key = MyDataIds.routeList),
+    routeLoadingState:State<Boolean> = boolState(key = MyDataIds.routeLoadingState),
+    lostInternet: State<Boolean> = boolState(key = MyDataIds.lostInternet),
+
+    ) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -95,6 +100,9 @@ fun SelectRouteScreen(
         }
     )
     {
+        if (lostInternet.value) {
+            LostInternet_ui(onDismissRequest = { notifier.notify(MyDataIds.onDissmiss) })
+        }
         Column(
             modifier = Modifier
                 .padding(it)
@@ -104,75 +112,93 @@ fun SelectRouteScreen(
             Spacer(modifier = Modifier.height(16.dep))
             SearchBox()
             Spacer(modifier = Modifier.height(20.dep))
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                items(routeList) { item ->
-                    Spacer(modifier = Modifier.height(8.dep))
-                    Card(
-                        modifier = Modifier
-                            .height(58.dep)
-                            .fillMaxWidth(),
-                        colors = CardDefaults.cardColors(Color.White),
-                        elevation = CardDefaults.cardElevation(
-                            defaultElevation = 8.dep
-                        ),
-                        shape = RoundedCornerShape(4.dep)
-                    ) {
-                        Row(
+            if (routeLoadingState.value) {
+                Column (
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(bottom = 60.dep)
+                        .fillMaxSize()
+                ){
+                    CircularProgressIndicator(
+                        color = Color(0XFFFF4155),
+                    )
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    items(routeList) { item ->
+                        Spacer(modifier = Modifier.height(8.dep))
+                        Card(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 20.dep),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
+                                .height(58.dep)
+                                .fillMaxWidth(),
+                            colors = CardDefaults.cardColors(Color.White),
+                            elevation = CardDefaults.cardElevation(
+                                defaultElevation = 8.dep
+                            ),
+                            shape = RoundedCornerShape(4.dep)
                         ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                IconButton(
-                                    onClick = { },
-                                    modifier = Modifier
-                                        .width(20.dep)
-                                        .height(20.dep)
-                                        .shadow(
-                                            4.dep,
-                                            shape = CircleShape,
-                                            clip = true
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 20.dep),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    IconButton(
+                                        onClick = { },
+                                        modifier = Modifier
+                                            .width(20.dep)
+                                            .height(20.dep)
+                                            .shadow(
+                                                4.dep,
+                                                shape = CircleShape,
+                                                clip = true
+                                            )
+                                            .background(Color(0XFFD62B2B))
+                                    ) {
+                                        Text(
+                                            text = item.name.first().toString(),
+                                            fontSize = 14.sep,
+                                            fontWeight = FontWeight.Medium,
+                                            color = Color.White
                                         )
-                                        .background(Color(0XFFD62B2B))
-                                ) {
+                                    }
+                                    Spacer(modifier = Modifier.width(24.dep))
                                     Text(
-                                        text = item.name.first().toString(),
-                                        fontSize = 14.sep,
-                                        fontWeight = FontWeight.Medium,
-                                        color = Color.White
+                                        text = item.name,
+                                        fontSize = 15.sep,
+                                        color = Color.Black,
+                                        fontWeight = FontWeight.Medium
                                     )
                                 }
-                                Spacer(modifier = Modifier.width(24.dep))
-                                Text(
-                                    text = item.name,
-                                    fontSize = 15.sep,
-                                    color = Color.Black,
-                                    fontWeight = FontWeight.Medium
+                                RadioButton(
+                                    selected = item.isSelected,
+                                    onClick = {
+                                        val updatedList = routeList.mapIndexed { index, listItem ->
+                                            listItem.copy(
+                                                isSelected = (index == routeList.indexOf(
+                                                    item
+                                                ))
+                                            )
+                                        }
+                                        routeList.clear()
+                                        routeList.addAll(updatedList)
+                                    },
+                                    colors = RadioButtonDefaults.colors(
+                                        selectedColor = Color(0XFFD62B2B),
+                                        unselectedColor = Color(0xFF707070)
+                                    ),
+                                    modifier = Modifier
+                                        .size(24.dep)
                                 )
                             }
-                            RadioButton(
-                                selected = item.isSelected,
-                                onClick = {
-                                    val updatedList = routeList.mapIndexed { index, listItem ->
-                                        listItem.copy(isSelected = (index == routeList.indexOf(item)))
-                                    }
-                                    routeList.clear()
-                                    routeList.addAll(updatedList)
-                                },
-                                colors = RadioButtonDefaults.colors(
-                                    selectedColor = Color(0XFFD62B2B),
-                                    unselectedColor = Color(0xFF707070)
-                                ),
-                                modifier = Modifier
-                                    .size(24.dep)
-                            )
                         }
+                        Spacer(modifier = Modifier.height(10.dep))
                     }
-                    Spacer(modifier = Modifier.height(10.dep))
                 }
             }
         }

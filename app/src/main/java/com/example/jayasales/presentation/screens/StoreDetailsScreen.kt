@@ -34,6 +34,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -62,6 +63,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import com.debduttapanda.j3lib.NotificationService
+import com.debduttapanda.j3lib.boolState
 import com.debduttapanda.j3lib.dep
 import com.debduttapanda.j3lib.listState
 import com.debduttapanda.j3lib.rememberNotifier
@@ -86,7 +88,9 @@ fun StoreDetailsScreen(
     storeName: State<String> = stringState(key = MyDataIds.storeNameState),
     due: State<String> = stringState(key = MyDataIds.dueState),
     address: State<String> = stringState(key = MyDataIds.addressState),
-    phoneNumber: State<String> = stringState(key = MyDataIds.phoneNumberState)
+    phoneNumber: State<String> = stringState(key = MyDataIds.phoneNumberState),
+    storeDtlsLoadingState: State<Boolean> = boolState(key = MyDataIds.storeDtlsLoadingState),
+    lostInternet: State<Boolean> = boolState(key = MyDataIds.lostInternet),
 ) {
     Scaffold(
         topBar = {
@@ -120,6 +124,9 @@ fun StoreDetailsScreen(
         }
     )
     {
+        if (lostInternet.value) {
+            LostInternet_ui(onDismissRequest = { notifier.notify(MyDataIds.onDissmiss) })
+        }
         Column(
             modifier = Modifier
                 .padding(it)
@@ -365,180 +372,197 @@ fun StoreDetailsScreen(
                     }
                     Spacer(modifier = Modifier.height(12.dep))
                     if (selectedTransactionTab.value == TransactionTab.Sales) {
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            contentPadding = PaddingValues(vertical = 10.dep),
-                            verticalArrangement = Arrangement.spacedBy(20.dep)
-                        ) {
-                            items(storeDetailsOrderList) {
+                        if (storeDtlsLoadingState.value) {
+                            Column (
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .padding(bottom = 60.dep)
+                                    .fillMaxSize()
+                            ){
+                                CircularProgressIndicator(
+                                    color = Color(0XFFFF4155),
+                                )
+                            }
+                        } else {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                contentPadding = PaddingValues(vertical = 10.dep),
+                                verticalArrangement = Arrangement.spacedBy(20.dep)
+                            ) {
+                                items(storeDetailsOrderList) {
 
-                                Card(
-                                    modifier = Modifier
-                                        .height(112.dep)
-                                        .fillMaxWidth()
-                                        .shadow(
-                                            2.dep,
-                                            RoundedCornerShape(8.dep),
-                                            clip = true,
-                                            DefaultShadowColor
-                                        )
-                                        .clip(RoundedCornerShape(8.dep)),
-                                    colors = CardDefaults.cardColors(Color.White),
-                                    elevation = CardDefaults.cardElevation(
-                                        defaultElevation = 8.dep,
-                                        focusedElevation = 10.dep,
-                                    ),
-                                    shape = RoundedCornerShape(8.dep),
-                                ) {
-                                    Column(
+                                    Card(
                                         modifier = Modifier
-                                            .padding(start = 12.dep, end = 12.dep)
-                                            .fillMaxSize()
-                                    ) {
-                                        Spacer(modifier = Modifier.height(12.dep))
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                        ) {
-                                            Text(
-                                                text = "Order: ${it.id}",
-                                                fontSize = 13.sep,
-                                                textAlign = TextAlign.Center,
-                                                fontWeight = FontWeight.SemiBold,
-                                                color = Color(0xFF222222)
+                                            .height(112.dep)
+                                            .fillMaxWidth()
+                                            .shadow(
+                                                2.dep,
+                                                RoundedCornerShape(8.dep),
+                                                clip = true,
+                                                DefaultShadowColor
                                             )
+                                            .clip(RoundedCornerShape(8.dep)),
+                                        colors = CardDefaults.cardColors(Color.White),
+                                        elevation = CardDefaults.cardElevation(
+                                            defaultElevation = 8.dep,
+                                            focusedElevation = 10.dep,
+                                        ),
+                                        shape = RoundedCornerShape(8.dep),
+                                    ) {
+                                        Column(
+                                            modifier = Modifier
+                                                .padding(start = 12.dep, end = 12.dep)
+                                                .fillMaxSize()
+                                        ) {
+                                            Spacer(modifier = Modifier.height(12.dep))
                                             Row(
                                                 verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                            ) {
+                                                Text(
+                                                    text = "Order: ${it.id}",
+                                                    fontSize = 13.sep,
+                                                    textAlign = TextAlign.Center,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    color = Color(0xFF222222)
+                                                )
+                                                Row(
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                ) {
+                                                    Row(
+                                                        modifier = Modifier
+                                                            .background(
+                                                                Color(0xFFFFEB56),
+                                                                CircleShape
+                                                            )
+                                                            .size(8.dep)
+                                                    ) {
+                                                    }
+                                                    Spacer(modifier = Modifier.width(4.dep))
+                                                    Text(
+                                                        text = "Order Placed",
+                                                        fontSize = 11.sep,
+                                                        textAlign = TextAlign.Center,
+                                                        color = Color(0xFF222222)
+                                                    )
+                                                }
+                                            }
+                                            Spacer(modifier = Modifier.height(8.dep))
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                            ) {
+                                                Row {
+                                                    Image(
+                                                        painter = painterResource(id = R.drawable.shop),
+                                                        contentDescription = "",
+                                                        modifier = Modifier
+                                                            .width(16.dep)
+                                                            .height(12.dep)
+                                                    )
+                                                    Spacer(modifier = Modifier.width(4.dep))
+                                                    Text(
+                                                        text = it.store_name,
+                                                        fontSize = 12.sep,
+                                                        textAlign = TextAlign.Center,
+                                                        color = Color(0xFF222222)
+                                                    )
+                                                }
+                                                Text(
+                                                    text = "₹${it.total}",
+                                                    fontSize = 14.sep,
+                                                    textAlign = TextAlign.Center,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    color = Color(0xFF222222)
+                                                )
+                                            }
+                                            Spacer(modifier = Modifier.height(8.dep))
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
                                             ) {
                                                 Row(
-                                                    modifier = Modifier
-                                                        .background(Color(0xFFFFEB56), CircleShape)
-                                                        .size(8.dep)
+                                                    verticalAlignment = Alignment.CenterVertically
                                                 ) {
+                                                    Image(
+                                                        painter = painterResource(id = R.drawable.date),
+                                                        contentDescription = "",
+                                                        modifier = Modifier
+                                                            .width(16.dep)
+                                                            .height(12.dep)
+                                                    )
+                                                    Spacer(modifier = Modifier.width(4.dep))
+                                                    Text(
+                                                        text = it.date,
+                                                        fontSize = 12.sep,
+                                                        textAlign = TextAlign.Center,
+                                                        color = Color(0xFF222222)
+                                                    )
+                                                    Spacer(modifier = Modifier.width(8.dep))
+                                                    Image(
+                                                        painter = painterResource(id = R.drawable.watch),
+                                                        contentDescription = "",
+                                                        modifier = Modifier
+                                                            .width(12.dep)
+                                                            .height(12.dep)
+                                                    )
+                                                    Spacer(modifier = Modifier.width(4.dep))
+                                                    Text(
+                                                        text = it.time,
+                                                        fontSize = 12.sep,
+                                                        textAlign = TextAlign.Center,
+                                                        color = Color(0xFF222222)
+                                                    )
                                                 }
-                                                Spacer(modifier = Modifier.width(4.dep))
-                                                Text(
-                                                    text = "Order Placed",
-                                                    fontSize = 11.sep,
-                                                    textAlign = TextAlign.Center,
-                                                    color = Color(0xFF222222)
-                                                )
-                                            }
-                                        }
-                                        Spacer(modifier = Modifier.height(8.dep))
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                        ) {
-                                            Row {
-                                                Image(
-                                                    painter = painterResource(id = R.drawable.shop),
-                                                    contentDescription = "",
+                                                Row(
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.Center,
                                                     modifier = Modifier
-                                                        .width(16.dep)
-                                                        .height(12.dep)
-                                                )
-                                                Spacer(modifier = Modifier.width(4.dep))
-                                                Text(
-                                                    text = it.store_name,
-                                                    fontSize = 12.sep,
-                                                    textAlign = TextAlign.Center,
-                                                    color = Color(0xFF222222)
-                                                )
-                                            }
-                                            Text(
-                                                text = "₹${it.total}",
-                                                fontSize = 14.sep,
-                                                textAlign = TextAlign.Center,
-                                                fontWeight = FontWeight.SemiBold,
-                                                color = Color(0xFF222222)
-                                            )
-                                        }
-                                        Spacer(modifier = Modifier.height(8.dep))
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                        ) {
-                                            Row(
-                                                verticalAlignment = Alignment.CenterVertically
-                                            ) {
-                                                Image(
-                                                    painter = painterResource(id = R.drawable.date),
-                                                    contentDescription = "",
-                                                    modifier = Modifier
-                                                        .width(16.dep)
-                                                        .height(12.dep)
-                                                )
-                                                Spacer(modifier = Modifier.width(4.dep))
-                                                Text(
-                                                    text = it.date,
-                                                    fontSize = 12.sep,
-                                                    textAlign = TextAlign.Center,
-                                                    color = Color(0xFF222222)
-                                                )
-                                                Spacer(modifier = Modifier.width(8.dep))
-                                                Image(
-                                                    painter = painterResource(id = R.drawable.watch),
-                                                    contentDescription = "",
-                                                    modifier = Modifier
-                                                        .width(12.dep)
-                                                        .height(12.dep)
-                                                )
-                                                Spacer(modifier = Modifier.width(4.dep))
-                                                Text(
-                                                    text = it.time,
-                                                    fontSize = 12.sep,
-                                                    textAlign = TextAlign.Center,
-                                                    color = Color(0xFF222222)
-                                                )
-                                            }
-                                            Row(
-                                                verticalAlignment = Alignment.CenterVertically,
-                                                horizontalArrangement = Arrangement.Center,
-                                                modifier = Modifier
-                                                    .background(
-                                                        if (it.status == "Paid") {
-                                                            Color(0xFFCDFFE9)
-                                                        } else {
-                                                            Color(0xFFFFCFCF)
+                                                        .background(
+                                                            if (it.status == "Paid") {
+                                                                Color(0xFFCDFFE9)
+                                                            } else {
+                                                                Color(0xFFFFCFCF)
+                                                            },
+                                                            RoundedCornerShape(12.dep)
+                                                        )
+                                                        .border(
+                                                            .5.dep,
+                                                            if (it.status == "Paid") {
+                                                                Color(0xFF1FB574)
+                                                            } else {
+                                                                Color(0xFFD62B2B)
+                                                            },
+                                                            RoundedCornerShape(12.dep)
+                                                        )
+                                                        .padding(horizontal = 12.dep)
+                                                        .padding(vertical = 4.dep)
+                                                ) {
+                                                    Text(
+                                                        text = buildAnnotatedString {
+                                                            withStyle(
+                                                                style = SpanStyle(
+                                                                    color = if (it.status == "Paid") Color(
+                                                                        0xFF1FB574
+                                                                    ) else Color(0xFFD62B2B),
+                                                                    fontSize = 10.sep
+                                                                )
+                                                            ) {
+                                                                append(if (it.status == "Paid") it.status else "₹${it.due_amount} ${it.status}")
+                                                            }
                                                         },
-                                                        RoundedCornerShape(12.dep)
+                                                        textAlign = TextAlign.Center
                                                     )
-                                                    .border(
-                                                        .5.dep,
-                                                        if (it.status == "Paid") {
-                                                            Color(0xFF1FB574)
-                                                        } else {
-                                                            Color(0xFFD62B2B)
-                                                        },
-                                                        RoundedCornerShape(12.dep)
-                                                    )
-                                                    .padding(horizontal = 12.dep)
-                                                    .padding(vertical = 4.dep)
-                                            ) {
-                                                Text(
-                                                    text = buildAnnotatedString {
-                                                        withStyle(
-                                                            style = SpanStyle(
-                                                                color = if (it.status == "Paid") Color(
-                                                                    0xFF1FB574
-                                                                ) else Color(0xFFD62B2B),
-                                                                fontSize = 10.sep
-                                                            )
-                                                        ) {
-                                                            append(if (it.status == "Paid") it.status else "₹${it.due_amount} ${it.status}")
-                                                        }
-                                                    },
-                                                    textAlign = TextAlign.Center
-                                                )
 
+                                                }
                                             }
                                         }
                                     }
@@ -547,123 +571,137 @@ fun StoreDetailsScreen(
                         }
                     }
                     else {
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            contentPadding = PaddingValues(vertical = 10.dep),
-                            verticalArrangement = Arrangement.spacedBy(20.dep)
-                        ) {
-                            items(storeDetailsPaymentList) {
-                                Card(
-                                    modifier = Modifier
-                                        .height(84.dep)
-                                        .fillMaxWidth()
-                                        .shadow(
-                                            2.dep,
-                                            RoundedCornerShape(8.dep),
-                                            clip = true,
-                                            DefaultShadowColor
-                                        )
-                                        .clip(RoundedCornerShape(8.dep))
-                                        .clickable {
-                                        },
-                                    colors = CardDefaults.cardColors(Color.White),
-                                    elevation = CardDefaults.cardElevation(
-                                        defaultElevation = 8.dep,
-                                        focusedElevation = 10.dep,
-                                    ),
-                                    shape = RoundedCornerShape(8.dep),
-                                ) {
-                                    Column(
-                                        horizontalAlignment = Alignment.CenterHorizontally,
+                        if (storeDtlsLoadingState.value) {
+                            Column (
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .padding(bottom = 60.dep)
+                                    .fillMaxSize()
+                            ){
+                                CircularProgressIndicator(
+                                    color = Color(0XFFFF4155),
+                                )
+                            }
+                        } else {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                contentPadding = PaddingValues(vertical = 10.dep),
+                                verticalArrangement = Arrangement.spacedBy(20.dep)
+                            ) {
+                                items(storeDetailsPaymentList) {
+                                    Card(
                                         modifier = Modifier
-                                            .padding(start = 16.dep, end = 14.dep)
-                                            .fillMaxSize()
+                                            .height(84.dep)
+                                            .fillMaxWidth()
+                                            .shadow(
+                                                2.dep,
+                                                RoundedCornerShape(8.dep),
+                                                clip = true,
+                                                DefaultShadowColor
+                                            )
+                                            .clip(RoundedCornerShape(8.dep))
+                                            .clickable {
+                                            },
+                                        colors = CardDefaults.cardColors(Color.White),
+                                        elevation = CardDefaults.cardElevation(
+                                            defaultElevation = 8.dep,
+                                            focusedElevation = 10.dep,
+                                        ),
+                                        shape = RoundedCornerShape(8.dep),
                                     ) {
-                                        Spacer(modifier = Modifier.height(12.dep))
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                        Column(
+                                            horizontalAlignment = Alignment.CenterHorizontally,
                                             modifier = Modifier
-                                                .fillMaxWidth()
+                                                .padding(start = 16.dep, end = 14.dep)
+                                                .fillMaxSize()
                                         ) {
-                                            Text(
-                                                text = stringResource(id = R.string.Payment),
-                                                fontSize = 14.sep,
-                                                textAlign = TextAlign.Center,
-                                                fontWeight = FontWeight.SemiBold,
-                                                color = Color(0xFF222222)
-                                            )
-                                            Text(
-                                                text = "₹${it.amount}",
-                                                fontSize = 14.sep,
-                                                textAlign = TextAlign.Center,
-                                                fontWeight = FontWeight.SemiBold,
-                                                color = Color(0xFF222222)
-                                            )
-                                        }
-                                        Spacer(modifier = Modifier.height(8.dep))
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                        ) {
+                                            Spacer(modifier = Modifier.height(12.dep))
                                             Row(
-                                                verticalAlignment = Alignment.CenterVertically
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
                                             ) {
-                                                Image(
-                                                    painter = painterResource(id = R.drawable.date),
-                                                    contentDescription = "",
-                                                    modifier = Modifier
-                                                        .width(16.dep)
-                                                        .height(12.dep)
-                                                )
-                                                Spacer(modifier = Modifier.width(4.dep))
                                                 Text(
-                                                    text = it.date,
-                                                    fontSize = 12.sep,
+                                                    text = stringResource(id = R.string.Payment),
+                                                    fontSize = 14.sep,
                                                     textAlign = TextAlign.Center,
+                                                    fontWeight = FontWeight.SemiBold,
                                                     color = Color(0xFF222222)
                                                 )
-                                                Spacer(modifier = Modifier.width(8.dep))
-                                                Image(
-                                                    painter = painterResource(id = R.drawable.watch),
-                                                    contentDescription = "",
-                                                    modifier = Modifier
-                                                        .width(12.dep)
-                                                        .height(12.dep)
-                                                )
-                                                Spacer(modifier = Modifier.width(4.dep))
                                                 Text(
-                                                    text = it.time,
-                                                    fontSize = 12.sep,
+                                                    text = "₹${it.amount}",
+                                                    fontSize = 14.sep,
                                                     textAlign = TextAlign.Center,
+                                                    fontWeight = FontWeight.SemiBold,
                                                     color = Color(0xFF222222)
                                                 )
                                             }
+                                            Spacer(modifier = Modifier.height(8.dep))
                                             Row(
                                                 verticalAlignment = Alignment.CenterVertically,
-                                                horizontalArrangement = Arrangement.Center,
+                                                horizontalArrangement = Arrangement.SpaceBetween,
                                                 modifier = Modifier
-                                                    .background(
-                                                        Color(0xFFCDFFE9),
-                                                        RoundedCornerShape(12.dep)
-                                                    )
-                                                    .border(
-                                                        .5.dep,
-                                                        Color(0xFF1FB574),
-                                                        RoundedCornerShape(12.dep)
-                                                    )
-                                                    .padding(horizontal = 12.dep)
-                                                    .padding(vertical = 4.dep)
+                                                    .fillMaxWidth()
                                             ) {
-                                                Text(
-                                                    text = it.payment_method,
-                                                    fontSize = 10.sep,
-                                                    textAlign = TextAlign.Center,
-                                                    color = Color(0xFF1FB574),
-                                                )
+                                                Row(
+                                                    verticalAlignment = Alignment.CenterVertically
+                                                ) {
+                                                    Image(
+                                                        painter = painterResource(id = R.drawable.date),
+                                                        contentDescription = "",
+                                                        modifier = Modifier
+                                                            .width(16.dep)
+                                                            .height(12.dep)
+                                                    )
+                                                    Spacer(modifier = Modifier.width(4.dep))
+                                                    Text(
+                                                        text = it.date,
+                                                        fontSize = 12.sep,
+                                                        textAlign = TextAlign.Center,
+                                                        color = Color(0xFF222222)
+                                                    )
+                                                    Spacer(modifier = Modifier.width(8.dep))
+                                                    Image(
+                                                        painter = painterResource(id = R.drawable.watch),
+                                                        contentDescription = "",
+                                                        modifier = Modifier
+                                                            .width(12.dep)
+                                                            .height(12.dep)
+                                                    )
+                                                    Spacer(modifier = Modifier.width(4.dep))
+                                                    Text(
+                                                        text = it.time,
+                                                        fontSize = 12.sep,
+                                                        textAlign = TextAlign.Center,
+                                                        color = Color(0xFF222222)
+                                                    )
+                                                }
+                                                Row(
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.Center,
+                                                    modifier = Modifier
+                                                        .background(
+                                                            Color(0xFFCDFFE9),
+                                                            RoundedCornerShape(12.dep)
+                                                        )
+                                                        .border(
+                                                            .5.dep,
+                                                            Color(0xFF1FB574),
+                                                            RoundedCornerShape(12.dep)
+                                                        )
+                                                        .padding(horizontal = 12.dep)
+                                                        .padding(vertical = 4.dep)
+                                                ) {
+                                                    Text(
+                                                        text = it.payment_method,
+                                                        fontSize = 10.sep,
+                                                        textAlign = TextAlign.Center,
+                                                        color = Color(0xFF1FB574),
+                                                    )
+                                                }
                                             }
                                         }
                                     }

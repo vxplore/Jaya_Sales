@@ -27,6 +27,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -80,8 +81,13 @@ fun ReviewCartScreen(
     gstState : State<String> = stringState(key = MyDataIds.gstState),
     totalState : State<String> = stringState(key = MyDataIds.totalState),
     totalQuantityState : State<String> = stringState(key = MyDataIds.totalQuantityState),
+    reviewLoadingState : State<Boolean> = boolState(key = MyDataIds.reviewLoadingState),
+    lostInternet: State<Boolean> = boolState(key = MyDataIds.lostInternet),
 ) {
     val openDialog = remember { mutableStateOf(false) }
+    if (lostInternet.value) {
+        LostInternet_ui(onDismissRequest = { notifier.notify(MyDataIds.onDissmiss) })
+    }
     if (reviewCartDialog){
         AlertDialog(
             onDismissRequest = {
@@ -209,72 +215,89 @@ fun ReviewCartScreen(
                         )
                     }
                 }
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(max = 300.dep),
-                ) {
-                    items(reviewCart) {
-                        Divider(
-                            modifier = Modifier.height(0.3.dep),
-                            color = Color(0XFFADA9A9)
+                if (reviewLoadingState.value) {
+                    Column (
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .padding(bottom = 60.dep)
+                            .fillMaxSize()
+                    ){
+                        CircularProgressIndicator(
+                            color = Color(0XFFFF4155),
                         )
-                        Spacer(modifier = Modifier.height(5.dep))
-                        Row(modifier = Modifier
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 30.dep),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ){
-                            Column(horizontalAlignment = Alignment.Start) {
-                                Text(
-                                    text = it.product.name,
-                                    fontSize = 14.sep
-                                )
-                                Spacer(modifier = Modifier.height(10.dep))
-                                Text(
-                                    text = it.product.pcs,
-                                    fontSize = 12.sep,
-                                    fontWeight = FontWeight.Medium
-                                )
-                                TextButton(
-                                    onClick = {
-                                              notifier.notify(MyDataIds.remove)
-                                    },
-                                    modifier = Modifier
-                                ) {
-                                    Text(text = stringResource(id = R.string.REMOVE),
-                                        fontSize = 10.sep,
-                                        color = Color(0xFF222222)
-                                    )
-                                }
-                            }
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                OutlinedCard(
-                                    shape = RoundedCornerShape(2.dep),
-                                    modifier = Modifier.width(73.dep),
-                                    border = BorderStroke(1.dep, color = Color(0XFFD3D3D3))
-                                ) {
+                            .heightIn(max = 300.dep),
+                    ) {
+                        items(reviewCart) {
+                            Divider(
+                                modifier = Modifier.height(0.3.dep),
+                                color = Color(0XFFADA9A9)
+                            )
+                            Spacer(modifier = Modifier.height(5.dep))
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 30.dep),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Column(horizontalAlignment = Alignment.Start) {
                                     Text(
-                                        text = it.quantity,
-                                        fontSize = 14.sep,
+                                        text = it.product.name,
+                                        fontSize = 14.sep
+                                    )
+                                    Spacer(modifier = Modifier.height(10.dep))
+                                    Text(
+                                        text = it.product.pcs,
+                                        fontSize = 12.sep,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                    TextButton(
+                                        onClick = {
+                                            notifier.notify(MyDataIds.remove)
+                                        },
                                         modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(10.dep),
-                                        textAlign = TextAlign.Center
+                                    ) {
+                                        Text(
+                                            text = stringResource(id = R.string.REMOVE),
+                                            fontSize = 10.sep,
+                                            color = Color(0xFF222222)
+                                        )
+                                    }
+                                }
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    OutlinedCard(
+                                        shape = RoundedCornerShape(2.dep),
+                                        modifier = Modifier.width(73.dep),
+                                        border = BorderStroke(1.dep, color = Color(0XFFD3D3D3))
+                                    ) {
+                                        Text(
+                                            text = it.quantity,
+                                            fontSize = 14.sep,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(10.dep),
+                                            textAlign = TextAlign.Center
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(10.dep))
+                                    Text(
+                                        text = "₹${it.price_for_product}",
+                                        fontSize = 14.sep,
+                                        fontWeight = FontWeight.Medium
                                     )
                                 }
-                                Spacer(modifier = Modifier.height(10.dep))
-                                Text(
-                                    text = "₹${it.price_for_product}",
-                                    fontSize = 14.sep,
-                                    fontWeight = FontWeight.Medium)
                             }
+                            Divider(
+                                modifier = Modifier.height(0.3.dep),
+                                color = Color(0XFFADA9A9)
+                            )
                         }
-                        Divider(
-                            modifier = Modifier.height(0.3.dep),
-                            color = Color(0XFFADA9A9)
-                        )
                     }
                 }
                 Spacer(modifier = Modifier.height(10.dep))

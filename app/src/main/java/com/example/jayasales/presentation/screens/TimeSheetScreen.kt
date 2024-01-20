@@ -23,6 +23,7 @@ import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -31,6 +32,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.debduttapanda.j3lib.NotificationService
+import com.debduttapanda.j3lib.boolState
 import com.debduttapanda.j3lib.dep
 import com.debduttapanda.j3lib.listState
 import com.debduttapanda.j3lib.rememberNotifier
@@ -52,7 +55,9 @@ import com.example.jayasales.model.TimeSheet
 @Composable
 fun TimeSheetScreen(
     notifier: NotificationService = rememberNotifier(),
-    showTimeSheet : SnapshotStateList<TimeSheet> = listState(key = MyDataIds.showTimeSheet)
+    showTimeSheet: SnapshotStateList<TimeSheet> = listState(key = MyDataIds.showTimeSheet),
+    timeSheetLoadingState: State<Boolean> = boolState(key = MyDataIds.timeSheetLoadingState),
+    lostInternet: State<Boolean> = boolState(key = MyDataIds.lostInternet),
 ) {
     Scaffold(
         topBar = {
@@ -89,6 +94,9 @@ fun TimeSheetScreen(
         }
     )
     {
+        if (lostInternet.value) {
+            LostInternet_ui(onDismissRequest = { notifier.notify(MyDataIds.onDissmiss) })
+        }
         Box(
             modifier = Modifier
                 .padding(it)
@@ -166,118 +174,132 @@ fun TimeSheetScreen(
                 Spacer(modifier = Modifier.height(16.dep))
                 Divider()
                 Spacer(modifier = Modifier.height(12.dep))
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(horizontal = 20.dep)
-                        .fillMaxSize(),
-                    contentPadding = PaddingValues(vertical = 10.dep),
-                    verticalArrangement = Arrangement.spacedBy(20.dep)
-                ) {
-                    items(showTimeSheet) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            Card(
+                if (timeSheetLoadingState.value) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .padding(bottom = 60.dep)
+                            .fillMaxSize()
+                    ) {
+                        CircularProgressIndicator(
+                            color = Color(0XFFFF4155),
+                        )
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(horizontal = 20.dep)
+                            .fillMaxSize(),
+                        contentPadding = PaddingValues(vertical = 10.dep),
+                        verticalArrangement = Arrangement.spacedBy(20.dep)
+                    ) {
+                        items(showTimeSheet) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .weight(.25f),
-                                colors = CardDefaults.cardColors(Color(0XFFF5F5F5)),
-                                elevation = CardDefaults.cardElevation(
-                                    defaultElevation = 4.dep
-                                ),
-                                border = BorderStroke(1.dep, color = Color(0XFFECECEC)),
-                                shape = RoundedCornerShape(8.dep),
                             ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Center,
+                                Card(
                                     modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(8.dep),
+                                        .fillMaxWidth()
+                                        .weight(.25f),
+                                    colors = CardDefaults.cardColors(Color(0XFFF5F5F5)),
+                                    elevation = CardDefaults.cardElevation(
+                                        defaultElevation = 4.dep
+                                    ),
+                                    border = BorderStroke(1.dep, color = Color(0XFFECECEC)),
+                                    shape = RoundedCornerShape(8.dep),
                                 ) {
-                                    Text(
-                                        text = it.date,
-                                        fontSize = 12.sep,
-                                        fontWeight = FontWeight.Bold,
-                                        textAlign = TextAlign.Center
-                                    )
-                                 /*   Text(
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center,
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(8.dep),
+                                    ) {
+                                        Text(
+                                            text = it.date,
+                                            fontSize = 12.sep,
+                                            fontWeight = FontWeight.Bold,
+                                            textAlign = TextAlign.Center
+                                        )
+                                        /*   Text(
                                         text = "Sat",
                                         fontSize = 12.sep,
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier,
                                         textAlign = TextAlign.Center
                                     )*/
+                                    }
                                 }
-                            }
-                            Spacer(modifier = Modifier.width(12.dep))
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .weight(.25f)
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.up_right_arrow),
-                                    contentDescription = "DateRange",
-                                    tint = Color(0xFF1FB574),
+                                Spacer(modifier = Modifier.width(12.dep))
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier
-                                        .padding(top = 4.dep)
-                                        .size(8.dep)
-                                )
+                                        .weight(.25f)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.up_right_arrow),
+                                        contentDescription = "DateRange",
+                                        tint = Color(0xFF1FB574),
+                                        modifier = Modifier
+                                            .padding(top = 4.dep)
+                                            .size(8.dep)
+                                    )
+                                    Text(
+                                        text = "${it.check_in.time}",
+                                        fontSize = 12.sep,
+                                        color = Color(0xFF222222),
+                                        textAlign = TextAlign.Center
+                                    )
+                                    Icon(
+                                        imageVector = Icons.Default.LocationOn,
+                                        contentDescription = "ArrowForwardIos",
+                                        tint = Color(0xFFD62B2B),
+                                        modifier = Modifier
+                                            .size(16.dep)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(12.dep))
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .weight(.25f)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.red_up_right_arrow),
+                                        contentDescription = "DateRange",
+                                        tint = Color(0xFFD62B2B),
+                                        modifier = Modifier
+                                            .size(8.dep)
+                                    )
+                                    Text(
+                                        text = "${it.check_out.time}",
+                                        fontSize = 12.sep,
+                                        color = Color(0xFF222222),
+                                        textAlign = TextAlign.Center
+                                    )
+                                    Icon(
+                                        imageVector = Icons.Default.LocationOn,
+                                        contentDescription = "ArrowForwardIos",
+                                        tint = Color(0xFFD62B2B),
+                                        modifier = Modifier
+                                            .size(16.dep)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(12.dep))
                                 Text(
-                                    text = "${it.check_in.time}",
+                                    text = "${it.working_hour}",
+                                    color = Color(0xFFD62B2B),
                                     fontSize = 12.sep,
-                                    color = Color(0xFF222222),
-                                    textAlign = TextAlign.Center
-                                )
-                                Icon(
-                                    imageVector = Icons.Default.LocationOn,
-                                    contentDescription = "ArrowForwardIos",
-                                    tint = Color(0xFFD62B2B),
                                     modifier = Modifier
-                                        .size(16.dep)
+                                        .weight(.25f)
                                 )
                             }
-                            Spacer(modifier = Modifier.width(12.dep))
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .weight(.25f)
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.red_up_right_arrow),
-                                    contentDescription = "DateRange",
-                                    tint = Color(0xFFD62B2B),
-                                    modifier = Modifier
-                                        .size(8.dep)
-                                )
-                                Text(
-                                    text = "${it.check_out.time}",
-                                    fontSize = 12.sep,
-                                    color = Color(0xFF222222),
-                                    textAlign = TextAlign.Center
-                                )
-                                Icon(
-                                    imageVector = Icons.Default.LocationOn,
-                                    contentDescription = "ArrowForwardIos",
-                                    tint = Color(0xFFD62B2B),
-                                    modifier = Modifier
-                                        .size(16.dep)
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(12.dep))
-                            Text(
-                                text = "${it.working_hour}",
-                                color = Color(0xFFD62B2B),
-                                fontSize = 12.sep,
-                                modifier = Modifier
-                                    .weight(.25f)
-                            )
+                            Spacer(modifier = Modifier.height(12.dep))
+                            Divider()
                         }
-                        Spacer(modifier = Modifier.height(12.dep))
-                        Divider()
                     }
                 }
             }

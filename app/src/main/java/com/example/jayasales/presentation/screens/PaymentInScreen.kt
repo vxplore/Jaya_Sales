@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -32,6 +31,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -86,6 +86,8 @@ fun PaymentInScreen(
     selectedPaymentMode: State<PaymentModeTab> = rememberTState(id = MyDataIds.selectedPaymentMode),
     instruction: State<String> = stringState(key = MyDataIds.instruction),
     paymentInDialog: Boolean = boolState(key = MyDataIds.paymentInDialog).value,
+    paymentLoadingState: State<Boolean> = boolState(key = MyDataIds.paymentLoadingState),
+    lostInternet: State<Boolean> = boolState(key = MyDataIds.lostInternet),
 ) {
     val openDialog = remember { mutableStateOf(false) }
     if (paymentInDialog) {
@@ -168,203 +170,220 @@ fun PaymentInScreen(
         }
     )
     {
+        if (lostInternet.value) {
+            LostInternet_ui(onDismissRequest = { notifier.notify(MyDataIds.onDissmiss) })
+        }
         Column(
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
         ) {
             Spacer(modifier = Modifier.height(24.dep))
-            LazyColumn(
-                modifier = Modifier
-                    .height(360.dep)
-                    .fillMaxWidth(),
-                contentPadding = PaddingValues(vertical = 10.dep),
-                verticalArrangement = Arrangement.spacedBy(20.dep)
-            ) {
-                itemsIndexed(paymentInList) {index,it->
-                    var comment by remember { mutableStateOf("") }
-                    Card(
-                        modifier = Modifier
-                            .padding(horizontal = 20.dep)
-                            .wrapContentHeight()
-                            .fillMaxWidth()
-                            .shadow(
-                                2.dep,
-                                RoundedCornerShape(8.dep),
-                                clip = true,
-                                DefaultShadowColor
-                            )
-                            .clip(RoundedCornerShape(8.dep))
-                            .clickable {
-                            },
-                        colors = CardDefaults.cardColors(Color.White),
-                        elevation = CardDefaults.cardElevation(
-                            defaultElevation = 8.dep,
-                            focusedElevation = 10.dep,
-                        ),
-                        shape = RoundedCornerShape(8.dep),
-                    ) {
-                        Spacer(modifier = Modifier.height(8.dep))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
+            if (paymentLoadingState.value) {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(bottom = 60.dep)
+                        .fillMaxSize()
+                ) {
+                    CircularProgressIndicator(
+                        color = Color(0XFFFF4155),
+                    )
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .height(360.dep)
+                        .fillMaxWidth(),
+                    contentPadding = PaddingValues(vertical = 10.dep),
+                    verticalArrangement = Arrangement.spacedBy(20.dep)
+                ) {
+                    itemsIndexed(paymentInList) { index, it ->
+                        var comment by remember { mutableStateOf("") }
+                        Card(
                             modifier = Modifier
-                                .padding(horizontal = 16.dep)
+                                .padding(horizontal = 20.dep)
+                                .wrapContentHeight()
                                 .fillMaxWidth()
+                                .shadow(
+                                    2.dep,
+                                    RoundedCornerShape(8.dep),
+                                    clip = true,
+                                    DefaultShadowColor
+                                )
+                                .clip(RoundedCornerShape(8.dep))
+                                .clickable {
+                                },
+                            colors = CardDefaults.cardColors(Color.White),
+                            elevation = CardDefaults.cardElevation(
+                                defaultElevation = 8.dep,
+                                focusedElevation = 10.dep,
+                            ),
+                            shape = RoundedCornerShape(8.dep),
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "Invoice #",
-                                    fontSize = 14.sep,
-                                    textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF222222)
-                                )
-
-                                Text(
-                                    text = it.id,
-                                    fontSize = 10.sep,
-                                    textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF222222)
-                                )
-                            }
-
-
-                            Text(
-                                text = "₹${it.total}",
-                                fontSize = 14.sep,
-                                textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Color(0xFF222222)
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(8.dep))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier
-                                .padding(horizontal = 16.dep)
-                                .fillMaxWidth()
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.DateRange,
-                                    contentDescription = "Date",
-                                    tint = Color(0xFFD62B2B),
-                                    modifier = Modifier
-                                        .width(16.dep)
-                                        .height(16.dep)
-                                )
-                                Spacer(modifier = Modifier.width(4.dep))
-                                Text(
-                                    text = it.date,
-                                    fontSize = 12.sep,
-                                    textAlign = TextAlign.Center,
-                                    color = Color(0xFF222222)
-                                )
-                            }
+                            Spacer(modifier = Modifier.height(8.dep))
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center,
+                                horizontalArrangement = Arrangement.SpaceBetween,
                                 modifier = Modifier
-                                    .background(
-                                        if (!it.payment_start) {
-                                            Color(0xFFFFEAEA)
-                                        } else {
-                                            Color(0xFFFFFDEB)
-                                        },
-                                        RoundedCornerShape(12.dep)
+                                    .padding(horizontal = 16.dep)
+                                    .fillMaxWidth()
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "Invoice #",
+                                        fontSize = 14.sep,
+                                        textAlign = TextAlign.Center,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFF222222)
                                     )
-                                    .border(
-                                        .5.dep,
-                                        if (!it.payment_start) {
+
+                                    Text(
+                                        text = it.id,
+                                        fontSize = 10.sep,
+                                        textAlign = TextAlign.Center,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFF222222)
+                                    )
+                                }
+
+
+                                Text(
+                                    text = "₹${it.total}",
+                                    fontSize = 14.sep,
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color(0xFF222222)
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(8.dep))
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dep)
+                                    .fillMaxWidth()
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.DateRange,
+                                        contentDescription = "Date",
+                                        tint = Color(0xFFD62B2B),
+                                        modifier = Modifier
+                                            .width(16.dep)
+                                            .height(16.dep)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dep))
+                                    Text(
+                                        text = it.date,
+                                        fontSize = 12.sep,
+                                        textAlign = TextAlign.Center,
+                                        color = Color(0xFF222222)
+                                    )
+                                }
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center,
+                                    modifier = Modifier
+                                        .background(
+                                            if (!it.payment_start) {
+                                                Color(0xFFFFEAEA)
+                                            } else {
+                                                Color(0xFFFFFDEB)
+                                            },
+                                            RoundedCornerShape(12.dep)
+                                        )
+                                        .border(
+                                            .5.dep,
+                                            if (!it.payment_start) {
+                                                Color(0xFFD62B2B)
+                                            } else {
+                                                Color(0xFFFAC800)
+                                            },
+                                            RoundedCornerShape(12.dep)
+                                        )
+                                        .padding(horizontal = 12.dep)
+                                        .padding(vertical = 4.dep)
+                                ) {
+                                    Text(
+                                        text = "${it.due_amount} ${it.status}",
+                                        fontSize = 12.sep,
+                                        textAlign = TextAlign.Center,
+                                        color = if (!it.payment_start) {
                                             Color(0xFFD62B2B)
                                         } else {
                                             Color(0xFFFAC800)
                                         },
-                                        RoundedCornerShape(12.dep)
                                     )
-                                    .padding(horizontal = 12.dep)
-                                    .padding(vertical = 4.dep)
-                            ) {
-                                Text(
-                                    text = "${it.due_amount} ${it.status}",
-                                    fontSize = 12.sep,
-                                    textAlign = TextAlign.Center,
-                                    color = if (!it.payment_start) {
-                                        Color(0xFFD62B2B)
-                                    } else {
-                                        Color(0xFFFAC800)
-                                    },
-                                )
+                                }
                             }
-                        }
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier
-                                .padding(horizontal = 16.dep)
-                                .fillMaxWidth()
-                        ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
                                 modifier = Modifier
-                                    .padding(bottom = 16.dep)
+                                    .padding(horizontal = 16.dep)
+                                    .fillMaxWidth()
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.AccessTime,
-                                    contentDescription = "Time",
-                                    tint = Color(0xFFD62B2B),
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier
-                                        .width(16.dep)
-                                        .height(16.dep)
-                                )
-                                Spacer(modifier = Modifier.width(4.dep))
-                                Text(
-                                    text = it.time,
-                                    fontSize = 12.sep,
-                                    textAlign = TextAlign.Center,
-                                    color = Color(0xFF222222)
+                                        .padding(bottom = 16.dep)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.AccessTime,
+                                        contentDescription = "Time",
+                                        tint = Color(0xFFD62B2B),
+                                        modifier = Modifier
+                                            .width(16.dep)
+                                            .height(16.dep)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dep))
+                                    Text(
+                                        text = it.time,
+                                        fontSize = 12.sep,
+                                        textAlign = TextAlign.Center,
+                                        color = Color(0xFF222222)
+                                    )
+                                }
+                                TextField(
+                                    value = comment,
+                                    onValueChange = {
+                                        comment = it
+                                        notifier.notify(MyDataIds.index, index)
+                                        notifier.notify(MyDataIds.comment, it)
+                                    },
+                                    modifier = Modifier
+                                        .padding(bottom = 12.dep, top = 8.dep)
+                                        .border(.5.dep, Color(0xFFDDDDDD))
+                                        .width(80.dep),
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Number,
+                                        imeAction = ImeAction.Done
+                                    ),
+                                    textStyle = MaterialTheme.typography.bodyMedium.copy(
+                                        fontSize = 12.sep
+                                    ),
+                                    placeholder = {
+                                        Text(
+                                            stringResource(id = R.string.amount),
+                                            color = Color.LightGray,
+                                            fontSize = 11.sep
+                                        )
+                                    },
+                                    singleLine = true,
+                                    colors = TextFieldDefaults.colors(
+                                        focusedContainerColor = Color.White,
+                                        unfocusedContainerColor = Color.White,
+                                        focusedIndicatorColor = Color(0xFFDDDDDD),
+                                        unfocusedIndicatorColor = Color(0xFFDDDDDD)
+                                    ),
                                 )
                             }
-                            TextField(
-                                value = comment,
-                                onValueChange = {
-                                    comment = it
-                                    notifier.notify(MyDataIds.index,index)
-                                    notifier.notify(MyDataIds.comment, it)
-                                },
-                                modifier = Modifier
-                                    .padding(bottom = 12.dep, top = 8.dep)
-                                    .border(.5.dep, Color(0xFFDDDDDD))
-                                    .width(80.dep),
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Number,
-                                    imeAction = ImeAction.Done
-                                ),
-                                textStyle = MaterialTheme.typography.bodyMedium.copy(
-                                    fontSize = 12.sep
-                                ),
-                                placeholder = {
-                                    Text(
-                                        stringResource(id = R.string.amount),
-                                        color = Color.LightGray,
-                                        fontSize = 11.sep
-                                    )
-                                },
-                                singleLine = true,
-                                colors = TextFieldDefaults.colors(
-                                    focusedContainerColor = Color.White,
-                                    unfocusedContainerColor = Color.White,
-                                    focusedIndicatorColor = Color(0xFFDDDDDD),
-                                    unfocusedIndicatorColor = Color(0xFFDDDDDD)
-                                ),
-                            )
                         }
                     }
                 }

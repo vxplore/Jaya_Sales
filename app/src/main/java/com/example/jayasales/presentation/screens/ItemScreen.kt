@@ -3,6 +3,7 @@ package com.example.jayasales.presentation.screens
 import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,7 +16,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -24,11 +27,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -40,6 +45,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -56,8 +62,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.debduttapanda.j3lib.NotificationService
+import com.debduttapanda.j3lib.boolState
 import com.debduttapanda.j3lib.dep
 import com.debduttapanda.j3lib.intState
 import com.debduttapanda.j3lib.listState
@@ -79,8 +89,62 @@ fun ItemScreen(
     selectedTabIndex: State<Int> = intState(key = MyDataIds.brandChange),
     categoryList: List<AllCategory.Category> = listState(key = MyDataIds.categories),
     selectedCategoryId: State<String> = stringState(key = MyDataIds.selectedCategoryId),
-    productData: List<Product> = listState(key = MyDataIds.filterProductData)
+    productData: List<Product> = listState(key = MyDataIds.filterProductData),
+    lostInternet: State<Boolean> = boolState(key = MyDataIds.lostInternet),
+    loadingState:State<Boolean> = boolState(key = MyDataIds.loadingState),
+    emptyDataDialog:State<Boolean> = boolState(key = MyDataIds.emptyDataDialog),
 ) {
+    val openDialog = remember { mutableStateOf(false) }
+    if (emptyDataDialog.value){
+        AlertDialog(
+            onDismissRequest = {
+                openDialog.value = false
+            },
+            title = {
+                Text(
+                    text = "No Data Available",
+                    fontSize = 16.sep,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF222222)
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        notifier.notify(MyDataIds.gotIt)
+                    },
+                    modifier = Modifier
+                        .padding(horizontal = 52.dep)
+                        .height(44.dep)
+                        .fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(Color(0xFFF22E4F)),
+                    elevation = ButtonDefaults.buttonElevation(
+                        defaultElevation = 8.dep,
+                        pressedElevation = 10.dep
+                    ),
+                    shape = RoundedCornerShape(4.dep)
+                ) {
+                    Text(
+                        text = "Got It",
+                        fontSize = 14.sep,
+                        color = Color.White,
+                    )
+                }
+            },
+           /* icon = {
+                Image(
+                    painter = painterResource(id = R.drawable.tick_mark),
+                    contentDescription = stringResource(id = R.string.Payment_received_successfully),
+                    modifier = Modifier
+                        .padding(start = 14.dep)
+                        .height(72.dp)
+                        .width(72.dp),
+                )
+            },*/
+            shape = RoundedCornerShape(4.dep)
+        )
+    }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -115,92 +179,122 @@ fun ItemScreen(
     )
     {
         var totalQuantity by remember { mutableStateOf(0) }
-        Box(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxSize(),
-        ) {
-            Column(
+        if (lostInternet.value) {
+            LostInternet_ui(onDismissRequest = { notifier.notify(MyDataIds.onDissmiss) })
+        }
+            Box(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .padding(it)
+                    .fillMaxSize(),
             ) {
-                Spacer(modifier = Modifier.height(12.dep))
-                ScrollableTabRow(
-                    selectedTabIndex = selectedTabIndex.value,
-                    contentColor = Color.Black,
-                    containerColor = Color.Transparent,
-                    edgePadding = 0.dep,
-                    modifier = Modifier.fillMaxWidth(),
-                    indicator = { tabPositions ->
-                        if (selectedTabIndex.value > -1 && tabPositions.isNotEmpty()) {
-                            TabRowDefaults.Indicator(
-                                modifier = Modifier.tabIndicatorOffset(
-                                    currentTabPosition = tabPositions[selectedTabIndex.value]
-                                ),
-                                color = Color.Red
-                            )
-                        }
-                    }
-                )
-                {
-                    brandTabItem.forEachIndexed { tabIndex, tab ->
-                        Tab(
-                            selected = selectedTabIndex.value == tabIndex,
-                            onClick = {
-                                notifier.notify(MyDataIds.brandChange, tabIndex)
-                            },
-                            text = {
-                                Text(
-                                    text = tab.name,
-                                    fontSize = 12.sep,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            },
-                            modifier = Modifier
-                                .weight(1f),
-                            selectedContentColor = Color.Red,
-                            unselectedContentColor = Color.Black
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.height(20.dep))
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dep)
+                        .fillMaxSize()
                 ) {
-                    ItemSearchField()
-                    Spacer(modifier = Modifier.height(20.dep))
-                    Text(
-                        text = stringResource(id = R.string.Categories),
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 16.sep
-                    )
-                    Spacer(modifier = Modifier.height(10.dep))
-                    LazyRow(
+                    Spacer(modifier = Modifier.height(12.dep))
+                    ScrollableTabRow(
+                        selectedTabIndex = selectedTabIndex.value,
+                        contentColor = Color.Black,
+                        containerColor = Color.Transparent,
+                        edgePadding = 0.dep,
                         modifier = Modifier.fillMaxWidth(),
-                        contentPadding = PaddingValues(horizontal = 8.dep),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dep)
-                    ) {
-                        itemsIndexed(categoryList) { index, it ->
-                            ItemCategoryTabItemUi(index, it, selectedCategoryId.value)
+                        indicator = { tabPositions ->
+                            if (selectedTabIndex.value > -1 && tabPositions.isNotEmpty()) {
+                                TabRowDefaults.Indicator(
+                                    modifier = Modifier.tabIndicatorOffset(
+                                        currentTabPosition = tabPositions[selectedTabIndex.value]
+                                    ),
+                                    color = Color.Red
+                                )
+                            }
+                        }
+                    )
+                    {
+                        brandTabItem.forEachIndexed { tabIndex, tab ->
+                            Tab(
+                                selected = selectedTabIndex.value == tabIndex,
+                                onClick = {
+                                    notifier.notify(MyDataIds.brandChange, tabIndex)
+                                },
+                                text = {
+                                    Text(
+                                        text = tab.name,
+                                        fontSize = 12.sep,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                },
+                                modifier = Modifier
+                                    .weight(1f),
+                                selectedContentColor = Color.Red,
+                                unselectedContentColor = Color.Black
+                            )
                         }
                     }
-                    Spacer(modifier = Modifier.height(24.dep))
-                    LazyColumn(
+                    Spacer(modifier = Modifier.height(20.dep))
+                    Column(
                         modifier = Modifier
-                            //.padding(bottom = 80.dep)
-                            .fillMaxSize(),
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dep)
                     ) {
-                        items(productData) {
-                            ItemProductList(
-                                noOfItem = totalQuantity,
-                                it,
-                                onQuantityChange = { newQuantity ->
-                                    totalQuantity += newQuantity
+                        ItemSearchField()
+                        Spacer(modifier = Modifier.height(20.dep))
+                        Text(
+                            text = stringResource(id = R.string.Categories),
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 16.sep
+                        )
+                        Spacer(modifier = Modifier.height(10.dep))
+                        LazyRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentPadding = PaddingValues(horizontal = 8.dep),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dep)
+                        ) {
+                            itemsIndexed(categoryList) { index, it ->
+                                ItemCategoryTabItemUi(index, it, selectedCategoryId.value)
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(24.dep))
+                        if (loadingState.value) {
+                            Column (
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .padding(bottom = 60.dep)
+                                    .fillMaxSize()
+                            ){
+                                CircularProgressIndicator(
+                                    color = Color(0XFFFF4155),
+                                )
+                            }
+                        } else {
+                        LazyColumn(
+                            modifier = Modifier
+                                //.padding(bottom = 80.dep)
+                                .fillMaxSize(),
+                        ) {
+                            if (productData.isEmpty()) {
+                                item {
+                                    Text(
+                                        text = "No data available",
+                                        fontSize = 16.sep,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dep)
+                                    )
                                 }
-                            )
+                            } else {
+                                items(productData) {
+                                    ItemProductList(
+                                        noOfItem = totalQuantity,
+                                        it,
+                                        onQuantityChange = { newQuantity ->
+                                            totalQuantity += newQuantity
+                                        }
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -420,4 +514,90 @@ fun ItemSearchField(
         }, modifier = Modifier
             .fillMaxWidth()
     )
+}
+
+@Composable
+fun LostInternet_ui(
+    onDismissRequest: () -> Unit,
+    notifier: NotificationService = rememberNotifier(),
+    lostInternet: State<Boolean> = boolState(key = MyDataIds.lostInternet)
+) {
+
+
+    Dialog(
+        onDismissRequest = { onDismissRequest() }
+    ) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .background(Color.White)
+        ) {
+
+            Spacer(modifier = Modifier.height(24.dep))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+
+                    ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.no_internet),
+                        contentDescription = "",
+                        modifier = Modifier
+
+                            .height(70.dep)
+                            .width(70.dep)
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .height(10.dep)
+                    )
+                    Text(
+                        "Please check your connection",
+                        fontSize = 20.sp,
+                        color = Color(0xFF222222),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .padding(horizontal = 20.dep)
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .height(32.dep)
+                    )
+                    TextButton(
+                        onClick = {
+                            notifier.notify(MyDataIds.tryagain)
+                        },
+                        colors = ButtonDefaults.buttonColors(Color(0xFFD62B2B)),
+                        modifier = Modifier
+                            //.padding(horizontal = 20.dep)
+                    ) {
+                        Text(
+                            "Try again",
+                            fontSize = 16.sep,
+                            color = Color.White,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .padding(horizontal = 8.dep)
+                        )
+                    }
+
+                    Spacer(
+                        modifier = Modifier
+                            .height(32.dep)
+                    )
+
+                }
+            }
+        }
+    }
 }

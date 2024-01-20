@@ -13,12 +13,15 @@ import com.debduttapanda.j3lib.models.EventBusDescription
 import com.debduttapanda.j3lib.models.Route
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.Routes
+import com.example.jayasales.di.NoConnectivityException
 import com.example.jayasales.model.OrderList
 import com.example.jayasales.model.PaymentList
 import com.example.jayasales.model.Store
 import com.example.jayasales.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 enum class TransactionTab {
@@ -40,6 +43,8 @@ class StoreDetailsViewModel @Inject constructor(
     private val due = mutableStateOf("")
     private val address = mutableStateOf("")
     private val phoneNumber = mutableStateOf("")
+    private val storeDtlsLoadingState = mutableStateOf(false)
+    private val lostInternet = mutableStateOf(false)
     val storeNameState: State<String> get() = storeName
     val dueState: State<String> get() = due
     val addressState: State<String> get() = address
@@ -86,6 +91,12 @@ class StoreDetailsViewModel @Inject constructor(
                     navigate(Routes.markVisit.full)
                 }
             }
+            MyDataIds.tryagain->{
+                lostInternet.value = false
+                storeDtls()
+                storeDtlsOrders()
+                storeDtlsPayments()
+            }
         }
     }
 
@@ -103,11 +114,19 @@ class StoreDetailsViewModel @Inject constructor(
             MyDataIds.phoneNumberState to phoneNumberState,
             MyDataIds.storeDetailsOrderList to storeDetailsOrderList,
             MyDataIds.storeDetailsPaymentList to storeDetailsPaymentList,
+            MyDataIds.storeDtlsLoadingState to storeDtlsLoadingState,
+            MyDataIds.lostInternet to lostInternet
         )
         setStatusBarColor(Color(0xFFFFEB56), true)
         storeDtls()
         storeDtlsOrders()
         storeDtlsPayments()
+    }
+
+    private suspend fun handleNoConnectivity() {
+        withContext(Dispatchers.Main) {
+            lostInternet.value = true
+        }
     }
     private fun storeDtls(){
         viewModelScope.launch {
@@ -128,13 +147,15 @@ class StoreDetailsViewModel @Inject constructor(
                         phoneNumber.value = list.phone
                     }
                 }
-            }catch (e: Exception) {
+            }catch (e: NoConnectivityException) {
+                handleNoConnectivity()
                 Log.e("ghb", "${e.message}")
             }
         }
     }
 
     private fun storeDtlsOrders() {
+        storeDtlsLoadingState.value = true
         viewModelScope.launch {
             storeId.value = repo.getUId()!!
             Log.d("fvbdf", "$storeId")
@@ -157,13 +178,18 @@ class StoreDetailsViewModel @Inject constructor(
                         }
                     }
                 }
-            } catch (e: Exception) {
+            } catch (e: NoConnectivityException) {
+                handleNoConnectivity()
                 Log.e("fvfr", "${e.message}")
+            }
+            finally {
+                storeDtlsLoadingState.value = false
             }
         }
     }
 
     private fun storeDtlsPayments() {
+        storeDtlsLoadingState.value = true
         viewModelScope.launch {
             storeId.value = repo.getUId()!!
             Log.d("fvbdf", "$storeId")
@@ -186,8 +212,12 @@ class StoreDetailsViewModel @Inject constructor(
                         }
                     }
                 }
-            } catch (e: Exception) {
+            } catch (e: NoConnectivityException) {
+                handleNoConnectivity()
                 Log.e("fvfr", "${e.message}")
+            }
+            finally {
+                storeDtlsLoadingState.value = false
             }
         }
     }

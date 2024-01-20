@@ -14,11 +14,14 @@ import com.debduttapanda.j3lib.models.EventBusDescription
 import com.debduttapanda.j3lib.models.Route
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.Routes
+import com.example.jayasales.di.NoConnectivityException
 import com.example.jayasales.model.Cart
 import com.example.jayasales.model.ReviewCartDataResponse
 import com.example.jayasales.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,6 +39,8 @@ class ReviewCartViewModel @Inject constructor(
     private val gst = mutableStateOf("")
     private val total = mutableStateOf("")
     private val totalQuantity = mutableStateOf("")
+    private val reviewLoadingState = mutableStateOf(false)
+    private val lostInternet = mutableStateOf(false)
 
     val taxAmountState: State<String> get() = taxAmount
     val cgstState: State<String> get() = cgst
@@ -71,8 +76,13 @@ class ReviewCartViewModel @Inject constructor(
                     navigate(Routes.parties.full)
                 }
             }
-            MyDataIds.remove->{
 
+            MyDataIds.remove -> {
+            }
+
+            MyDataIds.tryagain -> {
+                lostInternet.value = false
+                reviewCart()
             }
         }
     }
@@ -91,42 +101,58 @@ class ReviewCartViewModel @Inject constructor(
             MyDataIds.gstState to gstState,
             MyDataIds.totalState to totalState,
             MyDataIds.totalQuantityState to totalQuantityState,
+            MyDataIds.reviewLoadingState to reviewLoadingState,
+            MyDataIds.lostInternet to lostInternet,
         )
         setStatusBarColor(Color(0xFFFFEB56), true)
         setSoftInputMode(SoftInputMode.adjustPan)
         reviewCart()
     }
 
+    private suspend fun handleNoConnectivity() {
+        withContext(Dispatchers.Main) {
+            lostInternet.value = true
+        }
+    }
+
     private fun reviewCart() {
+        reviewLoadingState.value = true
         viewModelScope.launch {
-            userId.value = "USER_78u88isit6yhadolutedd"
-            storeId.value = repo.getUId()!!
-            val response = repo.reviewCart(userId.value, storeId.value)
-            if (response?.status == true) {
-                taxAmount.value = response.sub_total
-                cgst.value = response.cgst
-                gst.value = response.gst
-                total.value = response.total
-                totalQuantity.value = response.data.size.toString()
-                Log.d("hvfmvf",totalQuantity.value)
-                reviewCart.clear()
-                reviewCart.addAll(response.data)
-                val cartId = reviewCart.map { it.cart_id }
-                val orderIdsString = cartId.joinToString(", ")
-                repo.setCartId(orderIdsString)
-                Log.d("fgfgf", orderIdsString)
+            try {
+                userId.value = "USER_78u88isit6yhadolutedd"
+                storeId.value = repo.getUId()!!
+                val response = repo.reviewCart(userId.value, storeId.value)
+                if (response?.status == true) {
+                    taxAmount.value = response.sub_total
+                    cgst.value = response.cgst
+                    gst.value = response.gst
+                    total.value = response.total
+                    totalQuantity.value = response.data.size.toString()
+                    Log.d("hvfmvf", totalQuantity.value)
+                    reviewCart.clear()
+                    reviewCart.addAll(response.data)
+                    val cartId = reviewCart.map { it.cart_id }
+                    val orderIdsString = cartId.joinToString(", ")
+                    repo.setCartId(orderIdsString)
+                    Log.d("fgfgf", orderIdsString)
+                }
+            } catch (e: NoConnectivityException) {
+                handleNoConnectivity()
+                Log.e("hjvh", "${e.message}")
+            } finally {
+                reviewLoadingState.value = false
             }
         }
     }
 
-    private fun placeOrder(){
+    private fun placeOrder() {
         viewModelScope.launch {
             userId.value = "USER_78u88isit6yhadolutedd"
             storeId.value = repo.getUId()!!
-            val response = repo.placeOrder(userId.value,storeId.value)
-            if (response?.status == true){
+            val response = repo.placeOrder(userId.value, storeId.value)
+            if (response?.status == true) {
                 reviewCartDialog.value = !reviewCartDialog.value
-            }else{
+            } else {
                 if (response != null) {
                     toast(response.message)
                 }

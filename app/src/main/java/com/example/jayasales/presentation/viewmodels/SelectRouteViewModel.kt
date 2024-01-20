@@ -14,7 +14,9 @@ import com.example.jayasales.MyDataIds
 import com.example.jayasales.model.Datum
 import com.example.jayasales.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,6 +27,8 @@ class SelectRouteViewModel @Inject constructor(
     private val routeList = mutableStateListOf<Datum>()
     private val data = mutableStateOf("routes-lists")
     private val isSearchResultEmpty = mutableStateOf(false)
+    private val routeLoadingState = mutableStateOf(false)
+    private val lostInternet = mutableStateOf(false)
 
     override fun eventBusDescription(): EventBusDescription? {
         return null
@@ -46,6 +50,11 @@ class SelectRouteViewModel @Inject constructor(
                 routeSearch.value = arg as String
                 searchRoute()
             }
+            MyDataIds.tryagain->{
+                lostInternet.value = false
+                routeDetail()
+                searchRoute()
+            }
         }
     }
 
@@ -56,13 +65,22 @@ class SelectRouteViewModel @Inject constructor(
         mapData(
             MyDataIds.routeSearch to routeSearch,
             MyDataIds.routeList to routeList,
-            MyDataIds.isSearchResultEmpty to isSearchResultEmpty
+            MyDataIds.isSearchResultEmpty to isSearchResultEmpty,
+            MyDataIds.routeLoadingState to routeLoadingState,
+            MyDataIds.lostInternet to lostInternet,
         )
         setStatusBarColor(Color(0xFFFFEB56), true)
         routeDetail()
     }
 
+    private suspend fun handleNoConnectivity() {
+        withContext(Dispatchers.Main) {
+            lostInternet.value = true
+        }
+    }
+
     private fun routeDetail() {
+        routeLoadingState.value = true
         val data = data.value
         viewModelScope.launch {
             try {
@@ -75,7 +93,11 @@ class SelectRouteViewModel @Inject constructor(
                     //filter()
                 }
             } catch (e: Exception) {
+                handleNoConnectivity()
                 Log.e("jxdhdcd", "${e.message}")
+            }
+            finally {
+                routeLoadingState.value = false
             }
         }
     }

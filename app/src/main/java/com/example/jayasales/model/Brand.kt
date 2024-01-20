@@ -12,6 +12,6 @@ data class AllBrandDataResponse(
     )
 
     companion object {
-        val All = Brand("", "All")
+        val All = Brand("All", "All")
     }
 }
