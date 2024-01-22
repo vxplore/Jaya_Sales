@@ -1,10 +1,12 @@
 package com.example.jayasales.repository
 
 import android.annotation.SuppressLint
+import android.util.Log
 import com.example.jayasales.model.AddStoreDataResponse
 import com.example.jayasales.model.AllBrandDataResponse
 import com.example.jayasales.model.AllCategory
 import com.example.jayasales.model.AllProduct
+import com.example.jayasales.model.AllProducts
 import com.example.jayasales.model.AttendanceDataResponse
 import com.example.jayasales.model.CheckInOutDataResponse
 import com.example.jayasales.model.GetOtpResponse
@@ -13,6 +15,7 @@ import com.example.jayasales.model.MarkVisitDataResponse
 import com.example.jayasales.model.PartiesDataResponse
 import com.example.jayasales.model.PaymentInList
 import com.example.jayasales.model.PlaceOrderDataResponse
+import com.example.jayasales.model.Product
 import com.example.jayasales.model.ReceivePaymentInList
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
@@ -142,13 +145,13 @@ class MockRepositoryImpl @Inject constructor(
     override suspend fun viewCart(
         userId: String,
         storeId: String,
-        productId: String,
-        quantity: String
+        products: List<AllProducts>
     ): ViewCartDataResponse? {
-        val response = apiHelper.viewCart(userId, storeId, productId, quantity)
+        val response = apiHelper.viewCart(ApiInterface.ViewCartRequest(userId, storeId, products))
         return if (response.isSuccessful){
             response.body()
         }else{
+            Log.e("Repository", "Error: ${response.code()}")
             null
         }
     }
@@ -292,7 +295,7 @@ class MockRepositoryImpl @Inject constructor(
         return myPref.getIsLoggedIn()
     }
 
-    override fun saveUser(userId: LoginDataResponse?) {
+    override fun saveUser(userId: String?) {
         myPref.setUserId(userId)
     }
 

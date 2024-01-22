@@ -124,7 +124,8 @@ class PartiesViewModel @Inject constructor(
         partiesLoadingState.value = true
         viewModelScope.launch {
             //val partiesData = partiesData.value
-            userId.value = "USER_78u88isit6yhadolutedd"
+            userId.value = repo.getUserId()!!
+            Log.d("chdb",userId.value)
             routeId.value = "ROUTE_003"
             val searchText = ""
             try {

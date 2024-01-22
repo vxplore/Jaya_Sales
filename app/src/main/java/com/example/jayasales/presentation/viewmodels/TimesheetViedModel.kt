@@ -73,7 +73,7 @@ class TimesheetViedModel @Inject constructor(
         timeSheetLoadingState.value = true
         viewModelScope.launch {
             try {
-                userId.value = "USER_78u88isit6yhadolutedd"
+                userId.value = repo.getUserId()!!
                 val response = repo.timeSheet(userId.value)
                 Log.d("jxdhdcd", "$response")
                 if (response?.status == true) {

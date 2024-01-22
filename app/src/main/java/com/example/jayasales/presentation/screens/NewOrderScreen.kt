@@ -70,6 +70,7 @@ import com.debduttapanda.j3lib.listState
 import com.debduttapanda.j3lib.rememberNotifier
 import com.debduttapanda.j3lib.sep
 import com.debduttapanda.j3lib.stringState
+import com.example.jayasales.App.Companion.cart
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
 import com.example.jayasales.model.AllBrandDataResponse
@@ -404,6 +405,7 @@ fun ProductList(
                                     if (quantity > 0) {
                                         quantity--
                                         onQuantityChange(-1)
+                                        cart.add(it.uid, -1)
                                     }
                                 }
                                 .clip(RoundedCornerShape(0.dep))
@@ -450,6 +452,7 @@ fun ProductList(
                                     notifier.notify(MyDataIds.orderIndex,index)
                                     quantity++
                                     onQuantityChange(1)
+                                    cart.add(it.uid, 1)
                                 }
                                 .clip(RoundedCornerShape(0.dep))
                         ){

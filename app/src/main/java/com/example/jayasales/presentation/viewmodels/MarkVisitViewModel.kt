@@ -110,7 +110,7 @@ class MarkVisitViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             storeId.value = repo.getUId()!!
             Log.d("fvbdf", "$storeId")
-            userId.value = "USER_78u88isit6yhadolutedd"
+            userId.value = repo.getUserId()!!
             val response = repo.markVisit(
                 userId.value,
                 storeId.value,

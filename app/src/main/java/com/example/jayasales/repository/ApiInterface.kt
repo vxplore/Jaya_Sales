@@ -5,6 +5,7 @@ import com.example.jayasales.model.AddStoreDataResponse
 import com.example.jayasales.model.AllBrandDataResponse
 import com.example.jayasales.model.AllCategory
 import com.example.jayasales.model.AllProduct
+import com.example.jayasales.model.AllProducts
 import com.example.jayasales.model.AttendanceDataResponse
 import com.example.jayasales.model.CheckInOutDataResponse
 import com.example.jayasales.model.GetOtpResponse
@@ -13,6 +14,7 @@ import com.example.jayasales.model.MarkVisitDataResponse
 import com.example.jayasales.model.PartiesDataResponse
 import com.example.jayasales.model.PaymentInList
 import com.example.jayasales.model.PlaceOrderDataResponse
+import com.example.jayasales.model.Product
 import com.example.jayasales.model.ReceivePaymentInList
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
@@ -27,6 +29,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -167,14 +170,18 @@ interface ApiInterface {
         @Field("lng") lng: String,
         @Field("comment") comment: String,
         ): Response<MarkVisitDataResponse>
-    @FormUrlEncoded
+    //@FormUrlEncoded
     @POST("sells/add_to_cart")
     suspend fun viewCart(
-        @Field("user_id") userId: String,
-        @Field("store_id") storeId: String,
-        @Field("product_id") productId: String,
-        @Field("quantity") quantity: String,
-        ): Response<ViewCartDataResponse>
+        @Body request: ViewCartRequest
+    ): Response<ViewCartDataResponse>
+    data class ViewCartRequest(
+        @Field("user_id") val user_id: String,
+        @Field("store_id") val store_id: String,
+        @Field("products") val products: List<AllProducts>
+    )
+
+
 
     @FormUrlEncoded
     @POST("sells/review_cart")

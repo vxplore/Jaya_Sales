@@ -119,7 +119,7 @@ class ReviewCartViewModel @Inject constructor(
         reviewLoadingState.value = true
         viewModelScope.launch {
             try {
-                userId.value = "USER_78u88isit6yhadolutedd"
+                userId.value = repo.getUserId()!!
                 storeId.value = repo.getUId()!!
                 val response = repo.reviewCart(userId.value, storeId.value)
                 if (response?.status == true) {
@@ -147,7 +147,7 @@ class ReviewCartViewModel @Inject constructor(
 
     private fun placeOrder() {
         viewModelScope.launch {
-            userId.value = "USER_78u88isit6yhadolutedd"
+            userId.value = repo.getUserId()!!
             storeId.value = repo.getUId()!!
             val response = repo.placeOrder(userId.value, storeId.value)
             if (response?.status == true) {

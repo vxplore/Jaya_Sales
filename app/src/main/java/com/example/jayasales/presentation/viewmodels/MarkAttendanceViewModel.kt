@@ -99,7 +99,7 @@ class MarkAttendanceViewModel @Inject constructor(
 
     private fun markAttendance() {
         viewModelScope.launch(Dispatchers.IO) {
-            userId.value = "USER_78u88isit6yhadolutedd"
+            userId.value = repo.getUserId()!!
             try {
                 val response = repo.checkInOut(
                     userId.value,

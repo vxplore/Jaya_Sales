@@ -12,6 +12,8 @@ import com.debduttapanda.j3lib.models.EventBusDescription
 import com.debduttapanda.j3lib.models.Route
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.Routes
+import com.example.jayasales.model.Data
+import com.example.jayasales.model.PartiesDatum
 import com.example.jayasales.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -35,6 +37,7 @@ class LoginViewModel @Inject constructor(
     private val otpInput = mutableStateOf("")
     private val loading = mutableStateOf(false)
     private val recoverLoading = mutableStateOf(false)
+    private val userId = mutableStateOf("")
     override fun eventBusDescription(): EventBusDescription? {
         return null
     }
@@ -101,6 +104,7 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun onClickedSignIn() {
+
         if (!username.value.matches("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})\$".toRegex())) {
             toast("Enter valid email")
             return
@@ -109,6 +113,7 @@ class LoginViewModel @Inject constructor(
             toast("Please provide password")
             return
         }
+
         userLogin()
     }
 
@@ -179,7 +184,7 @@ class LoginViewModel @Inject constructor(
                             repo.setIsLoggedIn(true)
                             repo.setLogUId(response.data.name)
                             repo.setLogEmail(response.data.email)
-                            repo.saveUser(response)
+                            repo.saveUser(response.data.user_id)
                             navigation {
                                 navigate(Routes.home.full)
                             }

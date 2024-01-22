@@ -8,7 +8,7 @@ interface PrefRepository {
 
     fun getIsLoggedIn(): Boolean
 
-    fun setUserId(userId: LoginDataResponse?)
+    fun setUserId(userId: String?)
 
     fun getUserId(): String?
     fun setUId(userId: String?)

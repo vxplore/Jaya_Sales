@@ -132,7 +132,7 @@ class StoreDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             storeId.value = repo.getUId()!!
             Log.d("fvbdf","$storeId")
-            userId.value = "USER_78u88isit6yhadolutedd"
+            userId.value = repo.getUserId()!!
             try {
                 val response = repo.storeDetails(storeId.value,userId.value)
                 if (response?.status == true) {
@@ -159,7 +159,7 @@ class StoreDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             storeId.value = repo.getUId()!!
             Log.d("fvbdf", "$storeId")
-            userId.value = "USER_78u88isit6yhadolutedd"
+            userId.value = repo.getUserId()!!
             try {
                 val response = repo.storeDetails(storeId.value, userId.value)
                 if (response?.status == true) {
@@ -193,7 +193,7 @@ class StoreDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             storeId.value = repo.getUId()!!
             Log.d("fvbdf", "$storeId")
-            userId.value = "USER_78u88isit6yhadolutedd"
+            userId.value = repo.getUserId()!!
             try {
                 val response = repo.storeDetails(storeId.value, userId.value)
                 if (response?.status == true) {

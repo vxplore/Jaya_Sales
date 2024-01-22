@@ -4,6 +4,7 @@ import com.example.jayasales.model.AddStoreDataResponse
 import com.example.jayasales.model.AllBrandDataResponse
 import com.example.jayasales.model.AllCategory
 import com.example.jayasales.model.AllProduct
+import com.example.jayasales.model.AllProducts
 import com.example.jayasales.model.AttendanceDataResponse
 import com.example.jayasales.model.CheckInOutDataResponse
 import com.example.jayasales.model.GetOtpResponse
@@ -12,6 +13,7 @@ import com.example.jayasales.model.MarkVisitDataResponse
 import com.example.jayasales.model.PartiesDataResponse
 import com.example.jayasales.model.PaymentInList
 import com.example.jayasales.model.PlaceOrderDataResponse
+import com.example.jayasales.model.Product
 import com.example.jayasales.model.ReceivePaymentInList
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
@@ -45,8 +47,7 @@ interface Repository {
     suspend fun viewCart(
         userId: String,
         storeId: String,
-        productId: String,
-        quantity: String,
+        products: List<AllProducts>
     ): ViewCartDataResponse?
 
     suspend fun checkInOut(
@@ -74,7 +75,7 @@ interface Repository {
 
     fun getIsLoggedIn(): Boolean
 
-    fun saveUser(userId: LoginDataResponse?)
+    fun saveUser(userId: String?)
 
     fun getUserId(): String?
     fun getUId(): String?

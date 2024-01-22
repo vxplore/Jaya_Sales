@@ -139,7 +139,7 @@ class PaymentInViewModel @Inject constructor(
         paymentLoadingState.value = true
         viewModelScope.launch(Dispatchers.Main) {
             try {
-                userId.value = "USER_78u88isit6yhadolutedd"
+                userId.value = repo.getUserId()!!
                 storeId.value = repo.getUId()!!
                 Log.d("dc", storeId.value)
                 val response = repo.paymentIn(userId.value, storeId.value)
@@ -168,7 +168,7 @@ class PaymentInViewModel @Inject constructor(
     private fun receivePayment() {
         viewModelScope.launch(Dispatchers.Main) {
             try {
-                userId.value = "USER_78u88isit6yhadolutedd"
+                userId.value = repo.getUserId()!!
                 storeId.value = repo.getUId()!!
                 Log.d("vffvv", storeId.value)
                 orderId.value = repo.getOrderId()!!

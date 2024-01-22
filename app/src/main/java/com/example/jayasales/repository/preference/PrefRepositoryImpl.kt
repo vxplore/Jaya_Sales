@@ -34,7 +34,7 @@ class PrefRepositoryImpl @Inject constructor(
         return  myPref.getBoolean(isLoggedInKey,false)
     }
 
-    override fun setUserId(userId: LoginDataResponse?) {
+    override fun setUserId(userId: String?) {
         myPref.edit().putString(userIdKey, userId.toString()).apply()
     }
 
