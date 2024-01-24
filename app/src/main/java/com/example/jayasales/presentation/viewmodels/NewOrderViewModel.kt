@@ -173,6 +173,7 @@ class NewOrdersViewModel @Inject constructor(
                         Log.d("dcdscx", categoryId)
                     }
                     fetchProducts()
+                    filterProducts()
                 }
             } catch (e: NoConnectivityException) {
                 handleNoConnectivity()

@@ -44,6 +44,7 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -223,7 +224,6 @@ fun NewOrdersPage(
                         ) {
                             if (productData.isEmpty()) {
                                 item {
-                                    // Display a message when the list is empty
                                     Text(
                                         text = "No data available",
                                         fontSize = 16.sep,
@@ -322,6 +322,14 @@ fun ProductList(
     notifier: NotificationService = rememberNotifier(),
 ) {
     var quantity by remember { mutableStateOf(0) }
+
+    LaunchedEffect(key1 = it.uid) {0
+        val savedQuantity = cart.getQuantity(it.uid)
+        if (savedQuantity != null) {
+            quantity = savedQuantity
+            onQuantityChange(quantity)
+        }
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth(),

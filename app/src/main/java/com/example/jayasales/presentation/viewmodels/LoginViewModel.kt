@@ -12,8 +12,6 @@ import com.debduttapanda.j3lib.models.EventBusDescription
 import com.debduttapanda.j3lib.models.Route
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.Routes
-import com.example.jayasales.model.Data
-import com.example.jayasales.model.PartiesDatum
 import com.example.jayasales.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +35,6 @@ class LoginViewModel @Inject constructor(
     private val otpInput = mutableStateOf("")
     private val loading = mutableStateOf(false)
     private val recoverLoading = mutableStateOf(false)
-    private val userId = mutableStateOf("")
     override fun eventBusDescription(): EventBusDescription? {
         return null
     }

@@ -145,4 +145,6 @@ enum class MyDataIds {
     timeSheetLoadingState,
     emptyDataDialog,
     gotIt,
+    routeId,
+    routeState,
 }

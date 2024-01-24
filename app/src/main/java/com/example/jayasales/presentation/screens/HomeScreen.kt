@@ -72,7 +72,8 @@ fun HomeScreen(
     notifier: NotificationService = rememberNotifier(),
     openLogoutDialog: Boolean = boolState(key = MyDataIds.opendialog).value,
     nameState : State<String> = stringState(key = MyDataIds.nameState),
-    emailState: State<String> = stringState(key = MyDataIds.emailState)
+    emailState: State<String> = stringState(key = MyDataIds.emailState),
+    routeState: State<String> = stringState(key = MyDataIds.routeState),
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -339,7 +340,7 @@ fun HomeScreen(
                         )
                         Spacer(modifier = Modifier.width(12.dep))
                         Text(
-                            text = stringResource(id = R.string.route),
+                            text = routeState.value,
                             fontSize = 14.sep,
                             color = Color.White
                         )

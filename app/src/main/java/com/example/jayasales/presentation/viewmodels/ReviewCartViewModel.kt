@@ -34,6 +34,7 @@ class ReviewCartViewModel @Inject constructor(
     private val reviewCartDetails = mutableStateListOf<ReviewCartDataResponse>()
     private val userId = mutableStateOf("")
     private val storeId = mutableStateOf("")
+    private val cartId = mutableStateOf("")
     private val taxAmount = mutableStateOf("")
     private val cgst = mutableStateOf("")
     private val gst = mutableStateOf("")
@@ -41,6 +42,7 @@ class ReviewCartViewModel @Inject constructor(
     private val totalQuantity = mutableStateOf("")
     private val reviewLoadingState = mutableStateOf(false)
     private val lostInternet = mutableStateOf(false)
+    private val index = mutableStateOf(0)
 
     val taxAmountState: State<String> get() = taxAmount
     val cgstState: State<String> get() = cgst
@@ -78,6 +80,10 @@ class ReviewCartViewModel @Inject constructor(
             }
 
             MyDataIds.remove -> {
+                remove()
+                index.value = arg as Int
+                repo.setCartId(reviewCart[index.value].cart_id)
+                reviewCart()
             }
 
             MyDataIds.tryagain -> {
@@ -131,11 +137,8 @@ class ReviewCartViewModel @Inject constructor(
                     Log.d("hvfmvf", totalQuantity.value)
                     reviewCart.clear()
                     reviewCart.addAll(response.data)
-                    val cartId = reviewCart.map { it.cart_id }
-                    val orderIdsString = cartId.joinToString(", ")
-                    repo.setCartId(orderIdsString)
-                    Log.d("fgfgf", orderIdsString)
                 }
+                remove()
             } catch (e: NoConnectivityException) {
                 handleNoConnectivity()
                 Log.e("hjvh", "${e.message}")
@@ -144,6 +147,28 @@ class ReviewCartViewModel @Inject constructor(
             }
         }
     }
+
+    private fun remove() {
+        reviewLoadingState.value = true
+        viewModelScope.launch {
+            try {
+                userId.value = repo.getUserId()!!
+                storeId.value = repo.getUId()!!
+                cartId.value = repo.getCartId()!!
+                val response = repo.remove(userId.value, storeId.value, cartId.value)
+                if (response?.status == true) {
+                    val removedProductId = reviewCart[index.value].cart_id
+                    reviewCart.removeAll { it.cart_id == removedProductId }
+                    toast(response.message)
+                }
+            } catch (e: NoConnectivityException) {
+                handleNoConnectivity()
+            } finally {
+                reviewLoadingState.value = false
+            }
+        }
+    }
+
 
     private fun placeOrder() {
         viewModelScope.launch {

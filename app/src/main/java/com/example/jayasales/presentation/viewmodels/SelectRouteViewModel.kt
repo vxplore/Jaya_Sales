@@ -11,6 +11,7 @@ import com.debduttapanda.j3lib.WirelessViewModel
 import com.debduttapanda.j3lib.models.EventBusDescription
 import com.debduttapanda.j3lib.models.Route
 import com.example.jayasales.MyDataIds
+import com.example.jayasales.Routes
 import com.example.jayasales.model.Datum
 import com.example.jayasales.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,6 +30,8 @@ class SelectRouteViewModel @Inject constructor(
     private val isSearchResultEmpty = mutableStateOf(false)
     private val routeLoadingState = mutableStateOf(false)
     private val lostInternet = mutableStateOf(false)
+    private val index = mutableStateOf(0)
+    private val indexRouteId = mutableStateOf(0)
 
     override fun eventBusDescription(): EventBusDescription? {
         return null
@@ -55,6 +58,14 @@ class SelectRouteViewModel @Inject constructor(
                 routeDetail()
                 searchRoute()
             }
+            MyDataIds.routeId->{
+                indexRouteId.value = arg as Int
+                repo.setRouteId(routeList[indexRouteId.value].uid)
+                repo.setRouteName(routeList[indexRouteId.value].name)
+               navigation {
+                   navigate(Routes.parties.full)
+               }
+            }
         }
     }
 
@@ -68,6 +79,7 @@ class SelectRouteViewModel @Inject constructor(
             MyDataIds.isSearchResultEmpty to isSearchResultEmpty,
             MyDataIds.routeLoadingState to routeLoadingState,
             MyDataIds.lostInternet to lostInternet,
+            MyDataIds.routeId to indexRouteId,
         )
         setStatusBarColor(Color(0xFFFFEB56), true)
         routeDetail()
@@ -90,7 +102,13 @@ class SelectRouteViewModel @Inject constructor(
                     routeList.clear()
                     routeList.addAll(response.data)
                     isSearchResultEmpty.value = routeList.isEmpty()
-                    //filter()
+                    /*val routeId = response.data[index.value]
+                    if (routeId != null) {
+                        repo.setRouteId(routeId.uid)
+                        Log.d("juhnfg",routeId.toString())
+                    }*/
+                        //repo.setRouteId(routeList[indexRouteId.value].uid)
+
                 }
             } catch (e: Exception) {
                 handleNoConnectivity()

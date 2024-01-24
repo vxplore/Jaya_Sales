@@ -57,6 +57,9 @@ class Cart {
         }
         productQuantity[id] = newQuantity
     }
+    fun getQuantity(id: String): Int {
+        return productQuantity[id] ?: 0
+    }
 
     fun get(id: String): Int{
         return productQuantity[id]?:0

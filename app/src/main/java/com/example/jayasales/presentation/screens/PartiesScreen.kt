@@ -48,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.DefaultShadowColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import com.debduttapanda.j3lib.NotificationService
 import com.debduttapanda.j3lib.boolState
 import com.debduttapanda.j3lib.dep
@@ -317,6 +318,18 @@ fun PartiesScreen(
                                     }
                                 }
                             }
+                        }
+                    }
+                    if (partiesList.isEmpty()) {
+                        item {
+                            Text(
+                                text = "No Parties available",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dep),
+                                textAlign = TextAlign.Center,
+                                color = Color.Black
+                            )
                         }
                     }
                 }

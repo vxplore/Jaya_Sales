@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -233,7 +234,7 @@ fun ReviewCartScreen(
                             .fillMaxWidth()
                             .heightIn(max = 300.dep),
                     ) {
-                        items(reviewCart) {
+                        itemsIndexed(reviewCart) {index,it->
                             Divider(
                                 modifier = Modifier.height(0.3.dep),
                                 color = Color(0XFFADA9A9)
@@ -259,7 +260,7 @@ fun ReviewCartScreen(
                                     )
                                     TextButton(
                                         onClick = {
-                                            notifier.notify(MyDataIds.remove)
+                                            notifier.notify(MyDataIds.remove,index)
                                         },
                                         modifier = Modifier
                                     ) {

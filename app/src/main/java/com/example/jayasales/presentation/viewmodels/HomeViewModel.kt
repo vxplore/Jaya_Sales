@@ -23,6 +23,7 @@ class HomeViewModel @Inject constructor(
     private val opendialog = mutableStateOf(false)
     private val nameState = mutableStateOf("")
     private val emailState = mutableStateOf("")
+    private val routeState = mutableStateOf("")
     override fun eventBusDescription(): EventBusDescription? {
         return null
     }
@@ -103,6 +104,7 @@ class HomeViewModel @Inject constructor(
             MyDataIds.opendialog to opendialog,
             MyDataIds.nameState to nameState,
             MyDataIds.emailState to emailState,
+            MyDataIds.routeState to routeState,
         )
         setStatusBarColor(Color(0xFFFFEB56), true)
 
@@ -110,6 +112,7 @@ class HomeViewModel @Inject constructor(
             Log.d("hnvfn", "${repo.getLogUId()}")
             nameState.value = repo.getLogUId()!!
             emailState.value = repo.getLogEmail()!!
+            routeState.value = repo.getRouteName()!!
         }
     }
 

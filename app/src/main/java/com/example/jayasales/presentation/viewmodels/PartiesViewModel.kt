@@ -37,9 +37,9 @@ class PartiesViewModel @Inject constructor(
     private val selectedTab = mutableStateOf(PartiesTab.All)
     private val effectivePartiesList = mutableStateListOf<PartiesDatum>()
     private val allPartiesList = mutableStateListOf<PartiesDatum>()
-    //private val partiesData = mutableStateOf("parties-search")
     private val partiesLoadingState = mutableStateOf(false)
     private val lostInternet = mutableStateOf(false)
+    private val radioButtonRouteId = mutableStateOf("")
     override fun eventBusDescription(): EventBusDescription? {
         return null
     }
@@ -111,6 +111,7 @@ class PartiesViewModel @Inject constructor(
             MyDataIds.partiesList to effectivePartiesList,
             MyDataIds.partiesLoadingState to partiesLoadingState,
             MyDataIds.lostInternet to lostInternet,
+            MyDataIds.routeId to radioButtonRouteId
         )
         setStatusBarColor(Color(0xFFFFEB56), true)
         pendingPartiesList()
@@ -126,7 +127,7 @@ class PartiesViewModel @Inject constructor(
             //val partiesData = partiesData.value
             userId.value = repo.getUserId()!!
             Log.d("chdb",userId.value)
-            routeId.value = "ROUTE_003"
+            routeId.value =repo.getRouteId()!!
             val searchText = ""
             try {
                 val response = repo.parties(userId.value,routeId.value,searchText)

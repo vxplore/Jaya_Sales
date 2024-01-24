@@ -170,9 +170,9 @@ class MarkAttendanceViewModel @Inject constructor(
                 toast("${location?.latitude},${location?.longitude}")
                 Log.d("kibjbk", "latitude ${location?.latitude}, longitude ${location?.longitude}")
                 if (location != null) {
-                    currentLat.value = location?.latitude.toString()!!
-                    currentLong.value = location?.longitude.toString()!!
-                    Log.d("bgbgg", "${currentLat.value}")
+                    currentLat.value = location.latitude.toString()
+                    currentLong.value = location.longitude.toString()
+                    Log.d("bgbgg", currentLat.value)
                 }
             }
     }

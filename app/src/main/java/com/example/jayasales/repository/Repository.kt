@@ -15,6 +15,7 @@ import com.example.jayasales.model.PaymentInList
 import com.example.jayasales.model.PlaceOrderDataResponse
 import com.example.jayasales.model.Product
 import com.example.jayasales.model.ReceivePaymentInList
+import com.example.jayasales.model.RemoveResponse
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
 import com.example.jayasales.model.RouteDataResponse
@@ -44,6 +45,11 @@ interface Repository {
         lng: String,
         comment: String
     ): MarkVisitDataResponse?
+    suspend fun remove(
+        userId: String,
+        storeId: String,
+        cartId: String,
+    ): RemoveResponse?
     suspend fun viewCart(
         userId: String,
         storeId: String,
@@ -82,6 +88,10 @@ interface Repository {
     fun setUId(UId: String?)
     fun getBrand(): String?
     fun setBrand(brand: String?)
+    fun getRouteId(): String?
+    fun setRouteId(routeId: String?)
+    fun getRouteName(): String?
+    fun setRouteName(routeName: String?)
     fun getCategory(): String?
     fun setCategory(category: String?)
     fun getOrderId(): String?

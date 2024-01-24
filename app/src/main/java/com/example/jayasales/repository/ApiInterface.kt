@@ -16,6 +16,7 @@ import com.example.jayasales.model.PaymentInList
 import com.example.jayasales.model.PlaceOrderDataResponse
 import com.example.jayasales.model.Product
 import com.example.jayasales.model.ReceivePaymentInList
+import com.example.jayasales.model.RemoveResponse
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
 import com.example.jayasales.model.RouteDataResponse
@@ -181,14 +182,20 @@ interface ApiInterface {
         @Field("products") val products: List<AllProducts>
     )
 
-
-
     @FormUrlEncoded
     @POST("sells/review_cart")
     suspend fun reviewCart(
         @Field("user_id") userId: String,
         @Field("store_id") storeId: String,
     ): Response<ReviewCartDataResponse>
+
+    @FormUrlEncoded
+    @POST("sells/remove_cart_product")
+    suspend fun remove(
+        @Field("user_id") userId: String,
+        @Field("store_id") storeId: String,
+        @Field("cart_id") cartId: String,
+    ): Response<RemoveResponse>
 
     @FormUrlEncoded
     @POST("sells/attendance")

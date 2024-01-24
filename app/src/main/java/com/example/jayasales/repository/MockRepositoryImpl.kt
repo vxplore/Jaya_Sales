@@ -17,6 +17,7 @@ import com.example.jayasales.model.PaymentInList
 import com.example.jayasales.model.PlaceOrderDataResponse
 import com.example.jayasales.model.Product
 import com.example.jayasales.model.ReceivePaymentInList
+import com.example.jayasales.model.RemoveResponse
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
 import com.example.jayasales.model.RouteDataResponse
@@ -138,6 +139,15 @@ class MockRepositoryImpl @Inject constructor(
         return if (response.isSuccessful) {
             response.body()
         } else {
+            null
+        }
+    }
+
+    override suspend fun remove(userId: String, storeId: String, cartId: String): RemoveResponse? {
+        val response = apiHelper.remove(userId,storeId,cartId)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
             null
         }
     }
@@ -317,6 +327,22 @@ class MockRepositoryImpl @Inject constructor(
 
     override fun setBrand(brand: String?) {
         myPref.setBrand(brand)
+    }
+
+    override fun getRouteId(): String? {
+        return myPref.getRouteId()
+    }
+
+    override fun setRouteId(routeId: String?) {
+        myPref.setRouteId(routeId)
+    }
+
+    override fun getRouteName(): String? {
+        return myPref.getRouteName()
+    }
+
+    override fun setRouteName(routeName: String?) {
+       myPref.setRouteName(routeName)
     }
 
     override fun getCategory(): String? {

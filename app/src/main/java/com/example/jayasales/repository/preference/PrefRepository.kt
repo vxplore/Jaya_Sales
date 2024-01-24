@@ -14,6 +14,10 @@ interface PrefRepository {
     fun setUId(userId: String?)
     fun getBrand(): String?
     fun setBrand(brand: String?)
+    fun getRouteId(): String?
+    fun setRouteId(routeId: String?)
+    fun getRouteName(): String?
+    fun setRouteName(routeName: String?)
     fun getCategory(): String?
     fun setCategory(category: String?)
 

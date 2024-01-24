@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -47,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import com.debduttapanda.j3lib.NotificationService
 import com.debduttapanda.j3lib.boolState
 import com.debduttapanda.j3lib.dep
@@ -128,7 +130,7 @@ fun SelectRouteScreen(
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    items(routeList) { item ->
+                    itemsIndexed(routeList) { index, item ->
                         Spacer(modifier = Modifier.height(8.dep))
                         Card(
                             modifier = Modifier
@@ -187,6 +189,7 @@ fun SelectRouteScreen(
                                         }
                                         routeList.clear()
                                         routeList.addAll(updatedList)
+                                        notifier.notify(MyDataIds.routeId, index)
                                     },
                                     colors = RadioButtonDefaults.colors(
                                         selectedColor = Color(0XFFD62B2B),
@@ -198,6 +201,19 @@ fun SelectRouteScreen(
                             }
                         }
                         Spacer(modifier = Modifier.height(10.dep))
+                    }
+
+                    if (routeList.isEmpty()) {
+                        item {
+                            Text(
+                                text = "No Routes Found",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dep),
+                                textAlign = TextAlign.Center,
+                                color = Color.Black
+                            )
+                        }
                     }
                 }
             }
