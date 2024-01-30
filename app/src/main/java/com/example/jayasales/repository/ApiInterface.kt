@@ -8,6 +8,7 @@ import com.example.jayasales.model.AllProduct
 import com.example.jayasales.model.AllProducts
 import com.example.jayasales.model.AttendanceDataResponse
 import com.example.jayasales.model.CheckInOutDataResponse
+import com.example.jayasales.model.DashboardDataResponse
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
 import com.example.jayasales.model.MarkVisitDataResponse
@@ -161,6 +162,11 @@ interface ApiInterface {
         @Field("search_text") searchText: String,
 
         ): Response<PartiesDataResponse>
+    @FormUrlEncoded
+    @POST("sells/dashboard")
+    suspend fun dashboard(
+        @Field("user_id") userId: String,
+        ): Response<DashboardDataResponse>
 
     @FormUrlEncoded
     @POST("sells/mark_visit")

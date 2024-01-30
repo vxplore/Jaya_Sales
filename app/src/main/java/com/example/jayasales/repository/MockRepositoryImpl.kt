@@ -9,6 +9,7 @@ import com.example.jayasales.model.AllProduct
 import com.example.jayasales.model.AllProducts
 import com.example.jayasales.model.AttendanceDataResponse
 import com.example.jayasales.model.CheckInOutDataResponse
+import com.example.jayasales.model.DashboardDataResponse
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
 import com.example.jayasales.model.MarkVisitDataResponse
@@ -84,6 +85,15 @@ class MockRepositoryImpl @Inject constructor(
         return if (response.isSuccessful) {
             response.body()
         } else {
+            null
+        }
+    }
+
+    override suspend fun dashboard(userId: String): DashboardDataResponse? {
+        val response = apiHelper.dashboard(userId)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
             null
         }
     }

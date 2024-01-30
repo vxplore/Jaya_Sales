@@ -2,6 +2,8 @@ package com.example.jayasales.presentation.viewmodels
 
 import android.os.Bundle
 import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewModelScope
@@ -11,9 +13,13 @@ import com.debduttapanda.j3lib.models.EventBusDescription
 import com.debduttapanda.j3lib.models.Route
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.Routes
+import com.example.jayasales.di.NoConnectivityException
+import com.example.jayasales.model.DashBoardData
 import com.example.jayasales.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,6 +30,14 @@ class HomeViewModel @Inject constructor(
     private val nameState = mutableStateOf("")
     private val emailState = mutableStateOf("")
     private val routeState = mutableStateOf("")
+    private val userId  = mutableStateOf("")
+    private val dashboardPaymentList = mutableStateListOf<DashBoardData>()
+    private val payments = mutableStateOf("")
+    private val sells = mutableStateOf("")
+    private val lostInternet = mutableStateOf(false)
+    private val storeDtlsLoadingState = mutableStateOf(false)
+    val paymentState: State<String> get() = payments
+    val sellState: State<String> get() = sells
     override fun eventBusDescription(): EventBusDescription? {
         return null
     }
@@ -105,8 +119,12 @@ class HomeViewModel @Inject constructor(
             MyDataIds.nameState to nameState,
             MyDataIds.emailState to emailState,
             MyDataIds.routeState to routeState,
+            MyDataIds.paymentState to paymentState,
+            MyDataIds.sellState to sellState,
+            MyDataIds.lostInternet to lostInternet,
         )
         setStatusBarColor(Color(0xFFFFEB56), true)
+        dashboard()
 
         viewModelScope.launch {
             Log.d("hnvfn", "${repo.getLogUId()}")
@@ -123,6 +141,35 @@ class HomeViewModel @Inject constructor(
             navigate(Routes.login.full) {
                 popUpTo(Routes.home.full)
             }
+        }
+    }
+    private fun dashboard(){
+        storeDtlsLoadingState.value = true
+        viewModelScope.launch {
+            userId.value = repo.getUserId()!!
+            try {
+                val response = repo.dashboard(userId.value)
+                if (response?.status == true){
+                    val list = response.data
+                    mainScope {
+                        dashboardPaymentList.clear()
+                        dashboardPaymentList.addAll(listOf(list))
+                        payments.value = list.payments
+                        sells.value = list.sells.toString()
+                    }
+                }
+            } catch (e: NoConnectivityException) {
+                handleNoConnectivity()
+                Log.e("fvfr", "${e.message}")
+            }
+            finally {
+                storeDtlsLoadingState.value = false
+            }
+        }
+    }
+    private suspend fun handleNoConnectivity() {
+        withContext(Dispatchers.Main) {
+            lostInternet.value = true
         }
     }
 }

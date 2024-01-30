@@ -219,24 +219,30 @@ class LoginViewModel @Inject constructor(
 
     private fun resetPassword() {
         viewModelScope.launch {
-            val response =
-                repo.resetPassword(
+            try {
+                val response = repo.resetPassword(
                     recoverUsername.value,
                     otpInput.value,
                     confirmPassword.value,
                 )
-            Log.d("dbbdk", response.toString())
-            if (response?.status == true) {
-                withContext(Dispatchers.Main) {
-                    recoverPasswordDialog.value = false
-                    username.value = recoverUsername.value
-                    toast(response!!.message)
-                    clearRecoverInputField()
+                Log.d("dbbdk", response.toString())
+                if (response?.status == true) {
+                    withContext(Dispatchers.Main) {
+                        recoverPasswordDialog.value = false
+                        username.value = recoverUsername.value
+                        toast(response!!.message)
+                        clearRecoverInputField()
+                    }
+                } else {
+                    toast("Invalid OTP")
                 }
-            } else {
+            } catch (e: Exception) {
+                Log.e("dbbdk", "Error: ${e.message}")
+                toast("Error occurred while resetting password. Please try again.")
             }
         }
     }
+
 
     private fun clearRecoverInputField() {
         recoverUsername.value = ""

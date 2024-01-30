@@ -7,6 +7,7 @@ import com.example.jayasales.model.AllProduct
 import com.example.jayasales.model.AllProducts
 import com.example.jayasales.model.AttendanceDataResponse
 import com.example.jayasales.model.CheckInOutDataResponse
+import com.example.jayasales.model.DashboardDataResponse
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
 import com.example.jayasales.model.MarkVisitDataResponse
@@ -34,6 +35,7 @@ interface Repository {
     suspend fun timeSheet(userId: String): TimeSheetDataResponse?
     suspend fun attendance(data: String): AttendanceDataResponse?
     suspend fun searchRoute(query: String): SearchRouteDataResponse?
+    suspend fun dashboard(userId: String): DashboardDataResponse?
     suspend fun parties(userId: String, routeId: String, searchText: String): PartiesDataResponse?
     suspend fun storeDetails(storeId: String, userId: String): StoreDetailsDataResponse?
     suspend fun reviewCart(userId: String, storeId: String): ReviewCartDataResponse?

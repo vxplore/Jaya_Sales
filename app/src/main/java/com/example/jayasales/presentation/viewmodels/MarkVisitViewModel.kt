@@ -123,7 +123,7 @@ class MarkVisitViewModel @Inject constructor(
             Log.d("jhyhjy", comments.value)
             Log.d("jhyhjy", storeId.value)
             Log.d("jhyhjy", userId.value)
-            if (response?.status == false) {
+            if (response?.status == true) {
                 Log.d("hgbj", response.toString())
                 toast(response.message)
             } else {

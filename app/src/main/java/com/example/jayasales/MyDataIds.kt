@@ -147,4 +147,6 @@ enum class MyDataIds {
     gotIt,
     routeId,
     routeState,
+    paymentState,
+    sellState,
 }

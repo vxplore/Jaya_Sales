@@ -18,7 +18,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.ArrowDropDown
@@ -74,6 +73,9 @@ fun HomeScreen(
     nameState : State<String> = stringState(key = MyDataIds.nameState),
     emailState: State<String> = stringState(key = MyDataIds.emailState),
     routeState: State<String> = stringState(key = MyDataIds.routeState),
+    paymentState: State<String> = stringState(key = MyDataIds.paymentState),
+    sellState: State<String> = stringState(key = MyDataIds.sellState),
+    lostInternet: State<Boolean> = boolState(key = MyDataIds.lostInternet),
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -311,6 +313,9 @@ fun HomeScreen(
             },
         )
         {
+            if (lostInternet.value) {
+                LostInternet_ui(onDismissRequest = { notifier.notify(MyDataIds.onDissmiss) })
+            }
             Column(
                 modifier = Modifier
                     .padding(it)
@@ -368,7 +373,7 @@ fun HomeScreen(
                             .weight(.5f)
                     ) {
                         Text(
-                            text = "₹15,000",
+                            text = paymentState.value,
                             fontSize = 26.sep,
                             fontWeight = FontWeight.Bold,
                             color = Color.White,
@@ -391,7 +396,7 @@ fun HomeScreen(
                             .weight(.5f)
                     ) {
                         Text(
-                            text = "1,000",
+                            text = sellState.value,
                             fontSize = 26.sep,
                             fontWeight = FontWeight.Bold,
                             color = Color.White,
