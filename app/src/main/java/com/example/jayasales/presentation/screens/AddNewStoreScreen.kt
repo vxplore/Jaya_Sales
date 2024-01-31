@@ -66,6 +66,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import com.debduttapanda.j3lib.NotificationService
@@ -77,7 +78,11 @@ import com.debduttapanda.j3lib.sep
 import com.debduttapanda.j3lib.stringState
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
+import com.example.jayasales.model.CityDatum
+import com.example.jayasales.model.Datum
 import com.example.jayasales.model.SelectedFile
+import com.example.jayasales.model.StateDatum
+import com.example.jayasales.presentation.viewmodels.AddNewStoreViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -87,6 +92,7 @@ fun AddNewStoreScreen(
     pin: State<String> = stringState(key = MyDataIds.pin),
     address: State<String> = stringState(key = MyDataIds.address),
 ) {
+    val yourViewModel: AddNewStoreViewModel = viewModel()
     var currentLatitude by remember { mutableStateOf(0.0) }
     var currentLongitude by remember { mutableStateOf(0.0) }
     Scaffold(
@@ -176,7 +182,7 @@ fun AddNewStoreScreen(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                ImagePickerScreen()
+                ImagePickerScreen(viewModel = yourViewModel)
             }
             Spacer(modifier = Modifier.height(16.dep))
             Row(
@@ -378,6 +384,7 @@ fun AddNewStoreScreen(
 
 @Composable
 fun ImagePickerScreen(
+    viewModel: AddNewStoreViewModel
 ) {
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
     val selectedFileName = remember { mutableStateOf<String?>(null) }
@@ -389,6 +396,7 @@ fun ImagePickerScreen(
             isPDFFile = selectedFileName.value?.endsWith(".pdf", ignoreCase = true) == true
             val selectedFile = SelectedFile(uri)
             selectedFiles.add(selectedFile)
+            viewModel.setSelectedImageUri(uri)
         }
     }
     val openFileIntentLauncher =
@@ -475,7 +483,8 @@ fun LoadSelectedImages(uri: Uri) {
 
 @Composable
 fun CityDropDown(
-    city: SnapshotStateList<String> = listState(key = MyDataIds.city)
+    city: SnapshotStateList<CityDatum> = listState(key = MyDataIds.city),
+    notifier: NotificationService = rememberNotifier()
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf("Enter City") }
@@ -520,9 +529,10 @@ fun CityDropDown(
             ) {
                 city.forEach { item ->
                     DropdownMenuItem(
-                        { Text(text = item, fontSize = 14.sep, color = Color(0xFF222222)) },
+                        { Text(text = item.name, fontSize = 14.sep, color = Color(0xFF222222)) },
                         onClick = {
-                            selectedItem = item
+                            notifier.notify(MyDataIds.cityId,item.id)
+                            selectedItem = item.name
                             expanded = false
                         }
                     )
@@ -534,10 +544,11 @@ fun CityDropDown(
 
 @Composable
 fun StateDropDown(
-    state: SnapshotStateList<String> = listState(key = MyDataIds.state)
+    state: SnapshotStateList<StateDatum> = listState(key = MyDataIds.state),
+    notifier: NotificationService = rememberNotifier()
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf("Enter City") }
+    var selectedItem by remember { mutableStateOf("Enter State") }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -577,11 +588,12 @@ fun StateDropDown(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                state.forEach { item ->
+                state.forEachIndexed { index,item ->
                     DropdownMenuItem(
-                        { Text(text = item, fontSize = 14.sep, color = Color(0xFF222222)) },
+                        { Text(text = item.name, fontSize = 14.sep, color = Color(0xFF222222)) },
                         onClick = {
-                            selectedItem = item
+                            notifier.notify(MyDataIds.stateId,item.id)
+                            selectedItem = item.name
                             expanded = false
                         }
                     )
@@ -593,7 +605,8 @@ fun StateDropDown(
 
 @Composable
 fun RouteDropDown(
-    addRoute: SnapshotStateList<String> = listState(key = MyDataIds.addRoute)
+    addRoute: SnapshotStateList<Datum> = listState(key = MyDataIds.addRoute),
+    notifier: NotificationService = rememberNotifier()
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf("Enter Route") }
@@ -638,9 +651,10 @@ fun RouteDropDown(
             ) {
                 addRoute.forEach { item ->
                     DropdownMenuItem(
-                        { Text(text = item, fontSize = 14.sep, color = Color(0xFF222222)) },
+                        { Text(text = item.name, fontSize = 14.sep, color = Color(0xFF222222)) },
                         onClick = {
-                            selectedItem = item
+                            notifier.notify(MyDataIds.routeIds,item.uid)
+                            selectedItem = item.name
                             expanded = false
                         }
                     )

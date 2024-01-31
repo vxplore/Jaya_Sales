@@ -149,4 +149,10 @@ enum class MyDataIds {
     routeState,
     paymentState,
     sellState,
+    stateId,
+    routeIds,
+    cityId,
+    productName,
+    storeNames,
+    searchStoreName,
 }

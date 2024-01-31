@@ -1,6 +1,5 @@
 package com.example.jayasales.repository.preference
 
-import com.example.jayasales.model.LoginDataResponse
 
 interface PrefRepository {
 
@@ -20,7 +19,12 @@ interface PrefRepository {
     fun setRouteName(routeName: String?)
     fun getCategory(): String?
     fun setCategory(category: String?)
-
+    fun getState(): String?
+    fun setState(state: String?)
+    fun getAddRoute(): String?
+    fun setAddRoute(addRoute: String?)
+    fun getCity(): String?
+    fun setCity(city: String?)
     fun getOrderId(): String?
     fun setOrderId(orderId: String)
     fun getCartId(): String?

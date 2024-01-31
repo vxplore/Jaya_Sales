@@ -8,6 +8,7 @@ import com.example.jayasales.model.AllProduct
 import com.example.jayasales.model.AllProducts
 import com.example.jayasales.model.AttendanceDataResponse
 import com.example.jayasales.model.CheckInOutDataResponse
+import com.example.jayasales.model.CityDataResponse
 import com.example.jayasales.model.DashboardDataResponse
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
@@ -15,16 +16,18 @@ import com.example.jayasales.model.MarkVisitDataResponse
 import com.example.jayasales.model.PartiesDataResponse
 import com.example.jayasales.model.PaymentInList
 import com.example.jayasales.model.PlaceOrderDataResponse
-import com.example.jayasales.model.Product
 import com.example.jayasales.model.ReceivePaymentInList
 import com.example.jayasales.model.RemoveResponse
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
 import com.example.jayasales.model.RouteDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
+import com.example.jayasales.model.StateDataResponse
 import com.example.jayasales.model.StoreDetailsDataResponse
 import com.example.jayasales.model.TimeSheetDataResponse
 import com.example.jayasales.model.ViewCartDataResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,7 +38,9 @@ import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Query
 import java.io.File
 
@@ -113,6 +118,16 @@ interface ApiInterface {
         @Query("query") query: String,
 
         ): Response<SearchRouteDataResponse>
+    @GET("sells/states")
+    suspend fun state(
+        @Query("states") states: String,
+
+        ): Response<StateDataResponse>
+    @GET("sells/cities")
+    suspend fun city(
+        @Query("state_id") city: String,
+
+        ): Response<CityDataResponse>
 
     @FormUrlEncoded
     @POST("sells/store_details")
@@ -139,6 +154,22 @@ interface ApiInterface {
         @Field("payment_type") paymentType: String,
         @Field("instruction") instruction: String,
     ): Response<ReceivePaymentInList>
+    @Multipart
+    @POST("sells/add_store")
+    suspend fun addStore(
+        @Part image: MultipartBody.Part,
+        @Part("user_id") userId: RequestBody,
+        @Part("store_name") storeName: RequestBody,
+        @Part("city_id") cityId: RequestBody,
+        @Part("state_id") stateId: RequestBody,
+        @Part("postal_code") postalCode: RequestBody,
+        @Part("address") address: RequestBody,
+        @Part("route_id") routeId: RequestBody,
+        @Part("lat") lat: RequestBody,
+        @Part("lng") lng: RequestBody,
+    ): Response<AddStoreDataResponse>
+
+
 
     @FormUrlEncoded
     @POST("sells/invoice_list")

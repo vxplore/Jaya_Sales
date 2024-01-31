@@ -22,6 +22,9 @@ class PrefRepositoryImpl @Inject constructor(
     private val cartIdKey = "cartIdKey"
     private val routeIdKey = "routeIdKey"
     private val routeNameKey = "routeNameKey"
+    private val stateKey = "stateKey"
+    private val addRouteKey = "addRouteKey"
+    private val cityKey = "cityKey"
 
     private lateinit var myPref : SharedPreferences
     init {
@@ -78,6 +81,30 @@ class PrefRepositoryImpl @Inject constructor(
 
     override fun setCategory(category: String?) {
        myPref.edit().putString(categoryKey,category.toString()).apply()
+    }
+
+    override fun getState(): String? {
+        return myPref.getString(stateKey,"")
+    }
+
+    override fun setState(state: String?) {
+      myPref.edit().putString(stateKey,state.toString()).apply()
+    }
+
+    override fun getAddRoute(): String? {
+        return myPref.getString(addRouteKey,"")
+    }
+
+    override fun setAddRoute(addRoute: String?) {
+       myPref.edit().putString(addRouteKey,addRoute.toString()).apply()
+    }
+
+    override fun getCity(): String? {
+        return myPref.getString(cityKey,"")
+    }
+
+    override fun setCity(city: String?) {
+     myPref.edit().putString(cityKey,city.toString()).apply()
     }
 
     override fun getOrderId(): String? {

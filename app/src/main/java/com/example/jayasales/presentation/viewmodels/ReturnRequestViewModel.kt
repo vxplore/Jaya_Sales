@@ -18,10 +18,13 @@ class ReturnRequestViewModel @Inject constructor(
 ) : WirelessViewModel() {
     private val product = mutableStateOf("")
     private val brandName = mutableStateListOf<String>()
+    private val productName = mutableStateListOf<String>()
     private val category = mutableStateListOf<String>()
     private val lot = mutableStateOf("")
     private val reason = mutableStateListOf<String>()
     private val message = mutableStateOf("")
+    private val storeNames = mutableStateListOf<String>()
+    private val searchStoreName = mutableStateOf("")
     override fun eventBusDescription(): EventBusDescription? {
         return null
     }
@@ -49,6 +52,9 @@ class ReturnRequestViewModel @Inject constructor(
             MyDataIds.message -> {
                 message.value = arg as String
             }
+            MyDataIds.searchStoreName->{
+                searchStoreName.value = arg as String
+            }
         }
     }
 
@@ -63,6 +69,9 @@ class ReturnRequestViewModel @Inject constructor(
             MyDataIds.lot to lot,
             MyDataIds.reason to reason,
             MyDataIds.message to message,
+            MyDataIds.productName to productName,
+            MyDataIds.storeNames to storeNames,
+            MyDataIds.searchStoreName to searchStoreName,
         )
         setStatusBarColor(Color(0xFFFFEB56), true)
         setSoftInputMode(SoftInputMode.adjustPan)
@@ -80,5 +89,16 @@ class ReturnRequestViewModel @Inject constructor(
         reason.addAll(listOf("R2"))
         reason.addAll(listOf("R3"))
         reason.addAll(listOf("R4"))
+
+        productName.addAll(listOf("P1"))
+        productName.addAll(listOf("P2"))
+        productName.addAll(listOf("P3"))
+        productName.addAll(listOf("P4"))
+
+        storeNames.addAll(listOf("Bikram Vandari"))
+        storeNames.addAll(listOf("Bikrimart"))
+        storeNames.addAll(listOf("Vxplore Technologies"))
+        storeNames.addAll(listOf("Jaya"))
+        storeNames.addAll(listOf("Burger King"))
     }
 }

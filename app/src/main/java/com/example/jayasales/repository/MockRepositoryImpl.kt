@@ -1,6 +1,5 @@
 package com.example.jayasales.repository
 
-import android.annotation.SuppressLint
 import android.util.Log
 import com.example.jayasales.model.AddStoreDataResponse
 import com.example.jayasales.model.AllBrandDataResponse
@@ -9,6 +8,7 @@ import com.example.jayasales.model.AllProduct
 import com.example.jayasales.model.AllProducts
 import com.example.jayasales.model.AttendanceDataResponse
 import com.example.jayasales.model.CheckInOutDataResponse
+import com.example.jayasales.model.CityDataResponse
 import com.example.jayasales.model.DashboardDataResponse
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
@@ -16,18 +16,21 @@ import com.example.jayasales.model.MarkVisitDataResponse
 import com.example.jayasales.model.PartiesDataResponse
 import com.example.jayasales.model.PaymentInList
 import com.example.jayasales.model.PlaceOrderDataResponse
-import com.example.jayasales.model.Product
 import com.example.jayasales.model.ReceivePaymentInList
 import com.example.jayasales.model.RemoveResponse
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
 import com.example.jayasales.model.RouteDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
+import com.example.jayasales.model.StateDataResponse
 import com.example.jayasales.model.StoreDetailsDataResponse
 import com.example.jayasales.model.TimeSheetDataResponse
 import com.example.jayasales.model.ViewCartDataResponse
 import com.example.jayasales.repository.preference.PrefRepository
-import java.io.File
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
 
@@ -85,6 +88,24 @@ class MockRepositoryImpl @Inject constructor(
         return if (response.isSuccessful) {
             response.body()
         } else {
+            null
+        }
+    }
+
+    override suspend fun state(states: String): StateDataResponse? {
+        val response = apiHelper.state(states)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
+
+    override suspend fun city(city: String): CityDataResponse? {
+        val response = apiHelper.city(city)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
             null
         }
     }
@@ -204,42 +225,6 @@ class MockRepositoryImpl @Inject constructor(
         }
     }
 
-    @SuppressLint("SuspiciousIndentation")
-    override suspend fun addCustomer(
-        storeName: String,
-        image: File,
-        cityId: String,
-        stateId: String,
-        postalCode: Int,
-        address: String,
-        routeId: String,
-        gpsLocation: String,
-        contactName: String,
-        contactNumber: Int,
-        contactEmail: String,
-        gst: String
-    ): AddStoreDataResponse? {
-        val response = apiHelper.addCustomer(
-            storeName,
-            image,
-            cityId,
-            stateId,
-            postalCode,
-            address,
-            routeId,
-            gpsLocation,
-            contactName,
-            contactNumber,
-            contactEmail,
-            gst
-        )
-        return if (response.isSuccessful) {
-            response.body()
-        } else {
-            null
-        }
-    }
-
 
     override fun setIsLoggedIn(done: Boolean) {
         myPref.setIsLoggedIn(done)
@@ -311,6 +296,51 @@ class MockRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun addStore(
+        image: MultipartBody.Part,
+        userId: String,
+        storeName: String,
+        cityId: String,
+        stateId: String,
+        postalCode: String,
+        address: String,
+        routeId: String,
+        lat: String,
+        lng: String
+    ): AddStoreDataResponse? {
+        val userIdBody = userId.toRequestBody("text/plain".toMediaTypeOrNull())
+        val storeNameBody = storeName.toRequestBody("text/plain".toMediaTypeOrNull())
+        val cityIdBody = cityId.toRequestBody("text/plain".toMediaTypeOrNull())
+        val stateIdBody = stateId.toRequestBody("text/plain".toMediaTypeOrNull())
+        val postalCodeBody = postalCode.toRequestBody("text/plain".toMediaTypeOrNull())
+        val addressBody = address.toRequestBody("text/plain".toMediaTypeOrNull())
+        val routeIdBody = routeId.toRequestBody("text/plain".toMediaTypeOrNull())
+        val latBody = lat.toRequestBody("text/plain".toMediaTypeOrNull())
+        val lngBody = lng.toRequestBody("text/plain".toMediaTypeOrNull())
+
+        val response = apiHelper.addStore(
+            image,
+            userIdBody,
+            storeNameBody,
+            cityIdBody,
+            stateIdBody,
+            postalCodeBody,
+            addressBody,
+            routeIdBody,
+            latBody,
+            lngBody
+        )
+        return if (response.isSuccessful) {
+            response.body()
+        } else {
+            null
+        }
+    }
+
+
+
+
+
     override fun getIsLoggedIn(): Boolean {
         return myPref.getIsLoggedIn()
     }
@@ -337,6 +367,30 @@ class MockRepositoryImpl @Inject constructor(
 
     override fun setBrand(brand: String?) {
         myPref.setBrand(brand)
+    }
+
+    override fun getAddRoute(): String? {
+        return myPref.getAddRoute()
+    }
+
+    override fun setAddRoute(addRoute: String?) {
+       myPref.setAddRoute(addRoute)
+    }
+
+    override fun getCity(): String? {
+        return myPref.getCity()
+    }
+
+    override fun setCity(city: String?) {
+        myPref.setCity(city)
+    }
+
+    override fun getState(): String? {
+        return myPref.getState()
+    }
+
+    override fun setState(state: String?) {
+       myPref.setState(state)
     }
 
     override fun getRouteId(): String? {

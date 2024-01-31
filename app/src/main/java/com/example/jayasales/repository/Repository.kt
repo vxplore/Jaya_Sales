@@ -7,6 +7,7 @@ import com.example.jayasales.model.AllProduct
 import com.example.jayasales.model.AllProducts
 import com.example.jayasales.model.AttendanceDataResponse
 import com.example.jayasales.model.CheckInOutDataResponse
+import com.example.jayasales.model.CityDataResponse
 import com.example.jayasales.model.DashboardDataResponse
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
@@ -14,17 +15,17 @@ import com.example.jayasales.model.MarkVisitDataResponse
 import com.example.jayasales.model.PartiesDataResponse
 import com.example.jayasales.model.PaymentInList
 import com.example.jayasales.model.PlaceOrderDataResponse
-import com.example.jayasales.model.Product
 import com.example.jayasales.model.ReceivePaymentInList
 import com.example.jayasales.model.RemoveResponse
 import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
 import com.example.jayasales.model.RouteDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
+import com.example.jayasales.model.StateDataResponse
 import com.example.jayasales.model.StoreDetailsDataResponse
 import com.example.jayasales.model.TimeSheetDataResponse
 import com.example.jayasales.model.ViewCartDataResponse
-import java.io.File
+import okhttp3.MultipartBody
 
 interface Repository {
 
@@ -35,6 +36,8 @@ interface Repository {
     suspend fun timeSheet(userId: String): TimeSheetDataResponse?
     suspend fun attendance(data: String): AttendanceDataResponse?
     suspend fun searchRoute(query: String): SearchRouteDataResponse?
+    suspend fun state(states: String): StateDataResponse?
+    suspend fun city(city: String): CityDataResponse?
     suspend fun dashboard(userId: String): DashboardDataResponse?
     suspend fun parties(userId: String, routeId: String, searchText: String): PartiesDataResponse?
     suspend fun storeDetails(storeId: String, userId: String): StoreDetailsDataResponse?
@@ -81,6 +84,19 @@ interface Repository {
         instruction: String
     ): ReceivePaymentInList?
 
+    suspend fun addStore(
+        image: MultipartBody.Part,
+        userId: String,
+        storeName: String,
+        cityId: String,
+        stateId: String,
+        postalCode: String,
+        address: String,
+        routeId: String,
+        lat: String,
+        lng: String,
+    ): AddStoreDataResponse?
+
     fun getIsLoggedIn(): Boolean
 
     fun saveUser(userId: String?)
@@ -90,6 +106,12 @@ interface Repository {
     fun setUId(UId: String?)
     fun getBrand(): String?
     fun setBrand(brand: String?)
+    fun getAddRoute(): String?
+    fun setAddRoute(addRoute: String?)
+    fun getCity(): String?
+    fun setCity(city: String?)
+    fun getState(): String?
+    fun setState(state: String?)
     fun getRouteId(): String?
     fun setRouteId(routeId: String?)
     fun getRouteName(): String?
@@ -116,20 +138,5 @@ interface Repository {
         confirmPassword: String,
         otp: String
     ): ResetDataResponse?
-
-    suspend fun addCustomer(
-        storeName: String,
-        image: File,
-        cityId: String,
-        stateId: String,
-        postalCode: Int,
-        address: String,
-        routeId: String,
-        gpsLocation: String,
-        contactName: String,
-        contactNumber: Int,
-        contactEmail: String,
-        gst: String
-    ): AddStoreDataResponse?
 
 }

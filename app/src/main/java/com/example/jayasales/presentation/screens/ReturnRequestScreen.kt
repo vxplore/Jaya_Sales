@@ -20,12 +20,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.DateRange
@@ -93,10 +97,11 @@ import java.util.Locale
 @Composable
 fun ReturnRequestScreen(
     notifier: NotificationService = rememberNotifier(),
-    product: State<String> = stringState(key = MyDataIds.product),
     lot: State<String> = stringState(key = MyDataIds.lot),
     message: State<String> = stringState(key = MyDataIds.message),
+    storeNames: SnapshotStateList<String> = listState(key = MyDataIds.storeNames),
 ) {
+    var selectedItem by remember { mutableStateOf("") }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -135,38 +140,9 @@ fun ReturnRequestScreen(
                 .padding(it)
                 .padding(horizontal = 20.dep)
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
             Spacer(modifier = Modifier.height(24.dep))
-            OutlinedTextField(
-                value = product.value,
-                onValueChange = {
-                    notifier.notify(MyDataIds.product, it)
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                ),
-                placeholder = {
-                    Text(
-                        stringResource(id = R.string.Product_Name),
-                        color = Color(0xFF666666),
-                        fontSize = 14.sep
-                    )
-                },
-                modifier = Modifier
-                    .background(Color.White)
-                    .fillMaxWidth(),
-                textStyle = TextStyle(
-                    color = Color(0xFF222222),
-                    fontSize = 14.sep
-                ),
-                colors = TextFieldDefaults.colors(
-                    unfocusedIndicatorColor = Color(0xFFB9B9B9),
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                ),
-            )
-            Spacer(modifier = Modifier.height(12.dep))
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -195,6 +171,92 @@ fun ReturnRequestScreen(
                 }
             }
             Spacer(modifier = Modifier.height(12.dep))
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .background(Color.White, RoundedCornerShape(5.dep))
+                    .border(1.dep, Color(0xFFB9B9B9), RoundedCornerShape(5.dep))
+                    .height(54.dep)
+                    .fillMaxWidth()
+            ) {
+                ProductDropDown()
+            }
+            Spacer(modifier = Modifier.height(12.dep))
+            var expanded by remember { mutableStateOf(false) }
+            val suggestions = storeNames.filter { it.contains(selectedItem, ignoreCase = true) }
+                OutlinedTextField(
+                    value = selectedItem,
+                    onValueChange = {
+                        selectedItem = it
+                        notifier.notify(MyDataIds.searchStoreName, it)
+                    },
+                    maxLines = 1,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Done
+                    ),
+                    placeholder = {
+                        Text(
+                            "Select Store",
+                            color = Color(0xFF959595),
+                            fontSize = 14.sep
+                        )
+                    },
+                    trailingIcon = {
+                        IconButton(
+                            onClick = {
+                                expanded = true
+                            },
+                            modifier = Modifier
+                                .padding(end = 16.dep)
+                                .height(24.dep)
+                                .width(24.dep)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowDropDown,
+                                contentDescription = stringResource(id = R.string.ArrowDropDown),
+                                tint = Color(0xFF666666)
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .background(Color.White)
+                        //.weight(.8f)
+                        .fillMaxSize(),
+                    textStyle = TextStyle(
+                        color = Color(0xFF2C323A),
+                        fontSize = 14.sep
+                    ),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        unfocusedBorderColor = Color(0xFF959595)
+                    )
+                )
+            if (expanded) {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.BottomEnd
+                ) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .background(Color.White)
+                            .height(120.dep)
+                    ) {
+                        items(suggestions) { item ->
+                            Text(
+                                text = item,
+                                modifier = Modifier
+                                    .clickable {
+                                        selectedItem = item
+                                        expanded = false
+                                    }
+                                    .padding(8.dp)
+                            )
+                        }
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(12.dep))
+
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -367,6 +429,70 @@ fun BrandDropDown(
                 onDismissRequest = { expanded = false }
             ) {
                 brandName.forEach { item ->
+                    DropdownMenuItem(
+                        {
+                            Text(
+                                text = item,
+                                fontSize = 14.sep,
+                                color = Color(0xFF222222)
+                            )
+                        },
+                        onClick = {
+                            selectedItem = item
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+@Composable
+fun ProductDropDown(
+    productName: SnapshotStateList<String> = listState(key = MyDataIds.productName)
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var selectedItem by remember { mutableStateOf("product Name") }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .clickable { expanded = true }
+            .fillMaxWidth()
+    ) {
+        Text(
+            text = selectedItem,
+            fontSize = 14.sep,
+            color = Color(0xFF222222),
+            modifier = Modifier
+                .padding(start = 10.dep)
+        )
+        IconButton(
+            onClick = {
+                expanded = true
+            },
+            modifier = Modifier
+                .padding(end = 16.dep)
+                .height(24.dep)
+                .width(24.dep)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowDropDown,
+                contentDescription = stringResource(id = R.string.ArrowDropDown),
+                tint = Color(0xFF666666)
+            )
+        }
+    }
+    if (expanded) {
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.BottomEnd
+        ) {
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                productName.forEach { item ->
                     DropdownMenuItem(
                         {
                             Text(
