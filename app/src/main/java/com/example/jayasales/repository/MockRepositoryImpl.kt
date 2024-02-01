@@ -10,6 +10,7 @@ import com.example.jayasales.model.AttendanceDataResponse
 import com.example.jayasales.model.CheckInOutDataResponse
 import com.example.jayasales.model.CityDataResponse
 import com.example.jayasales.model.DashboardDataResponse
+import com.example.jayasales.model.DeleteStoreDataResponse
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
 import com.example.jayasales.model.MarkVisitDataResponse
@@ -25,11 +26,12 @@ import com.example.jayasales.model.SearchRouteDataResponse
 import com.example.jayasales.model.StateDataResponse
 import com.example.jayasales.model.StoreDetailsDataResponse
 import com.example.jayasales.model.TimeSheetDataResponse
+import com.example.jayasales.model.UpdateStoreDataResponse
 import com.example.jayasales.model.ViewCartDataResponse
 import com.example.jayasales.repository.preference.PrefRepository
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
@@ -296,8 +298,34 @@ class MockRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateStore(
+        userId: String,
+        storeId: String,
+        owner: String,
+        phone: String,
+        email: String,
+        gst: String
+    ): UpdateStoreDataResponse? {
+        val response = apiHelper.updateStore(userId,storeId,owner,phone,email,gst)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
+
+    override suspend fun deleteStore(userId: String, storeId: String): DeleteStoreDataResponse? {
+        val response = apiHelper.deleteStore(userId,storeId)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
+
+
     override suspend fun addStore(
-        image: MultipartBody.Part,
+        images: MultipartBody.Part,
         userId: String,
         storeName: String,
         cityId: String,
@@ -308,27 +336,25 @@ class MockRepositoryImpl @Inject constructor(
         lat: String,
         lng: String
     ): AddStoreDataResponse? {
-        val userIdBody = userId.toRequestBody("text/plain".toMediaTypeOrNull())
-        val storeNameBody = storeName.toRequestBody("text/plain".toMediaTypeOrNull())
-        val cityIdBody = cityId.toRequestBody("text/plain".toMediaTypeOrNull())
-        val stateIdBody = stateId.toRequestBody("text/plain".toMediaTypeOrNull())
-        val postalCodeBody = postalCode.toRequestBody("text/plain".toMediaTypeOrNull())
-        val addressBody = address.toRequestBody("text/plain".toMediaTypeOrNull())
-        val routeIdBody = routeId.toRequestBody("text/plain".toMediaTypeOrNull())
-        val latBody = lat.toRequestBody("text/plain".toMediaTypeOrNull())
-        val lngBody = lng.toRequestBody("text/plain".toMediaTypeOrNull())
+        val requestFile: RequestBody? = images.body
+        val multipartImage = requestFile?.let {
+            MultipartBody.Part.createFormData("images[]", images.toString(), it)
+        }
+        fun String.requestBody(): RequestBody {
+            return RequestBody.create("text/plain".toMediaTypeOrNull(), this)
+        }
 
         val response = apiHelper.addStore(
-            image,
-            userIdBody,
-            storeNameBody,
-            cityIdBody,
-            stateIdBody,
-            postalCodeBody,
-            addressBody,
-            routeIdBody,
-            latBody,
-            lngBody
+            multipartImage!!,
+            userId.requestBody(),
+            storeName.requestBody(),
+            cityId.requestBody(),
+            stateId.requestBody(),
+            postalCode.requestBody(),
+            address.requestBody(),
+            routeId.requestBody(),
+            lat.requestBody(),
+            lng.requestBody()
         )
         return if (response.isSuccessful) {
             response.body()
@@ -336,6 +362,7 @@ class MockRepositoryImpl @Inject constructor(
             null
         }
     }
+
 
 
 
@@ -391,6 +418,22 @@ class MockRepositoryImpl @Inject constructor(
 
     override fun setState(state: String?) {
        myPref.setState(state)
+    }
+
+    override fun getCategoryId(): String? {
+        return myPref.getCategoryId()
+    }
+
+    override fun setCategoryId(categoryId: String?) {
+        myPref.setCategoryId(categoryId)
+    }
+
+    override fun getReturnBrand(): String? {
+        return myPref.getReturnBrand()
+    }
+
+    override fun setReturnBrand(returnBrand: String?) {
+       myPref.setReturnBrand(returnBrand)
     }
 
     override fun getRouteId(): String? {
@@ -449,6 +492,15 @@ class MockRepositoryImpl @Inject constructor(
     override fun setLogUId(logUId: String?) {
         myPref.setLogUId(logUId)
     }
+
+    override fun getAddStoreId(): String? {
+        return myPref.getAddStoreId()
+    }
+
+    override fun setAddStoreId(addStoreId: String?) {
+        myPref.setAddStoreId(addStoreId)
+    }
+
 
     override fun getLogEmail(): String? {
         return myPref.getLogEmail()

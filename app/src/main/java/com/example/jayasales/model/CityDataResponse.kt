@@ -7,6 +7,6 @@ data class CityDataResponse (
 )
 
 data class CityDatum (
-    val id: String,
+    val uid: String,
     val name: String
 )

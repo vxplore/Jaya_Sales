@@ -106,6 +106,10 @@ class HomeViewModel @Inject constructor(
                     navigate(Routes.notification.full)
                 }
             }
+            MyDataIds.tryagain -> {
+                lostInternet.value = false
+                dashboard()
+            }
         }
     }
 

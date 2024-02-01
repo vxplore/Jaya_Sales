@@ -245,7 +245,7 @@ fun ContactInformationScreen(
                     notifier.notify(MyDataIds.email, it)
                 },
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
+                    keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Next
                 ),
                 placeholder = {
@@ -282,7 +282,7 @@ fun ContactInformationScreen(
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next
+                    imeAction = ImeAction.Done
                 ),
                 placeholder = {
                     Text(

@@ -7,6 +7,6 @@ data class StateDataResponse (
 )
 
 data class StateDatum (
-    val id: String,
+    val uid: String,
     val name: String
 )

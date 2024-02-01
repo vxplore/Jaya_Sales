@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -70,6 +71,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import com.debduttapanda.j3lib.NotificationService
+import com.debduttapanda.j3lib.boolState
 import com.debduttapanda.j3lib.dep
 import com.debduttapanda.j3lib.depx
 import com.debduttapanda.j3lib.listState
@@ -91,10 +93,25 @@ fun AddNewStoreScreen(
     storeName: State<String> = stringState(key = MyDataIds.storeName),
     pin: State<String> = stringState(key = MyDataIds.pin),
     address: State<String> = stringState(key = MyDataIds.address),
+    loadingState: State<Boolean> = boolState(key = MyDataIds.loadingState),
+    lostInternet: State<Boolean> = boolState(key = MyDataIds.lostInternet),
 ) {
     val yourViewModel: AddNewStoreViewModel = viewModel()
     var currentLatitude by remember { mutableStateOf(0.0) }
     var currentLongitude by remember { mutableStateOf(0.0) }
+    if (loadingState.value) {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .padding(bottom = 60.dep)
+                .fillMaxSize()
+        ) {
+            CircularProgressIndicator(
+                color = Color(0XFFFF4155),
+            )
+        }
+    } else {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -128,6 +145,9 @@ fun AddNewStoreScreen(
         }
     )
     {
+        if (lostInternet.value) {
+            LostInternet_ui(onDismissRequest = { notifier.notify(MyDataIds.onDissmiss) })
+        }
         Column(
             modifier = Modifier
                 .padding(it)
@@ -136,247 +156,249 @@ fun AddNewStoreScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            Spacer(modifier = Modifier.height(12.dep))
-            Text(
-                text = stringResource(id = R.string.Store_Name),
-                fontSize = 14.sep,
-                color = Color(0xFF222222)
-            )
-            Spacer(modifier = Modifier.height(8.dep))
-            OutlinedTextField(
-                value = storeName.value,
-                onValueChange = {
-                    notifier.notify(MyDataIds.storeName, it)
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                ),
-                placeholder = {
-                    Text(
-                        stringResource(id = R.string.Store_name),
-                        color = Color(0xFF666666),
-                        fontSize = 14.sep
-                    )
-                },
-                modifier = Modifier
-                    .background(Color.White)
-                    .fillMaxWidth(),
-                textStyle = TextStyle(
-                    color = Color(0xFF222222),
-                    fontSize = 14.sep
-                ),
-                colors = TextFieldDefaults.colors(
-                    unfocusedIndicatorColor = Color(0xFFDDDDDD),
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                ),
-            )
-            Spacer(modifier = Modifier.height(16.dep))
-            Text(
-                text = stringResource(id = R.string.shop_image),
-                fontSize = 14.sep,
-                color = Color(0xFF222222)
-            )
-            Spacer(modifier = Modifier.height(8.dep))
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                ImagePickerScreen(viewModel = yourViewModel)
-            }
-            Spacer(modifier = Modifier.height(16.dep))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier
-                        .weight(.5f)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.City),
-                        fontSize = 14.sep,
-                        color = Color(0xFF222222)
-                    )
-                    Spacer(modifier = Modifier.height(8.dep))
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .background(Color.White, RoundedCornerShape(5.dep))
-                            .border(1.dep, Color(0xFFB9B9B9), RoundedCornerShape(5.dep))
-                            .height(54.dep)
-                            .fillMaxWidth()
-                    ) {
-                        CityDropDown()
-                    }
-                }
-                Spacer(modifier = Modifier.width(12.dep))
-                Column(
-                    modifier = Modifier
-                        .weight(.5f)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.State),
-                        fontSize = 14.sep,
-                        color = Color(0xFF222222)
-                    )
-                    Spacer(modifier = Modifier.height(8.dep))
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .background(Color.White, RoundedCornerShape(5.dep))
-                            .border(1.dep, Color(0xFFB9B9B9), RoundedCornerShape(5.dep))
-                            .height(54.dep)
-                            .fillMaxWidth()
-                    ) {
-                        StateDropDown()
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(16.dep))
-            Text(
-                text = stringResource(id = R.string.Postal_Code),
-                fontSize = 14.sep,
-                color = Color(0xFF222222)
-            )
-            Spacer(modifier = Modifier.height(8.dep))
-            OutlinedTextField(
-                value = pin.value,
-                onValueChange = {
-                    notifier.notify(MyDataIds.pin, it)
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next
-                ),
-                placeholder = {
-                    Text(
-                        stringResource(id = R.string.postalCode),
-                        color = Color(0xFF666666),
-                        fontSize = 14.sep
-                    )
-                },
-                modifier = Modifier
-                    .background(Color.White)
-                    .fillMaxWidth(),
-                textStyle = TextStyle(
-                    color = Color(0xFF222222),
-                    fontSize = 14.sep
-                ),
-                colors = TextFieldDefaults.colors(
-                    unfocusedIndicatorColor = Color(0xFFDDDDDD),
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                ),
-            )
-            Spacer(modifier = Modifier.height(16.dep))
-            Text(
-                text = stringResource(id = R.string.Address),
-                fontSize = 14.sep,
-                color = Color(0xFF222222)
-            )
-            Spacer(modifier = Modifier.height(8.dep))
-            OutlinedTextField(
-                value = address.value,
-                onValueChange = {
-                    notifier.notify(MyDataIds.address, it)
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
-                ),
-                placeholder = {
-                    Text(
-                        stringResource(id = R.string.EnterAddress),
-                        color = Color(0xFF666666),
-                        fontSize = 14.sep
-                    )
-                },
-                modifier = Modifier
-                    .background(Color.White)
-                    .fillMaxWidth(),
-                textStyle = TextStyle(
-                    color = Color(0xFF222222),
-                    fontSize = 14.sep
-                ),
-                colors = TextFieldDefaults.colors(
-                    unfocusedIndicatorColor = Color(0xFFDDDDDD),
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                ),
-            )
-            Spacer(modifier = Modifier.height(16.dep))
-            Text(
-                text = stringResource(id = R.string.addRoute),
-                fontSize = 14.sep,
-                color = Color(0xFF222222)
-            )
-            Spacer(modifier = Modifier.height(8.dep))
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .background(Color.White, RoundedCornerShape(5.dep))
-                    .border(1.dep, Color(0xFFB9B9B9), RoundedCornerShape(5.dep))
-                    .height(54.dep)
-                    .fillMaxWidth()
-            ) {
-                RouteDropDown()
-            }
-            Spacer(modifier = Modifier.height(16.dep))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(144.dep)
-            ) {
-                GoogleMapSection(
-                    latitude = currentLatitude,
-                    longitude = currentLongitude,
-                    onLocationChanged = { newLatitude, newLongitude ->
-                        currentLatitude = newLatitude
-                        currentLongitude = newLongitude
-                    }
-                )
-            }
-            Spacer(modifier = Modifier.height(20.dep))
-            Button(
-                onClick = {
-                },
-                modifier = Modifier
-                    .height(54.dep)
-                    .fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(Color.White),
-                border = BorderStroke(1.dep, Color(0xFF1FB574)),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 8.dep,
-                    pressedElevation = 10.dep
-                ),
-                shape = RoundedCornerShape(4.dep)
-            ) {
+
+                Spacer(modifier = Modifier.height(12.dep))
                 Text(
-                    text = stringResource(id = R.string.GET_LOCATION),
-                    fontSize = 16.sep,
-                    color = Color(0xFF1FB574)
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dep))
-            Button(
-                onClick = { notifier.notify(MyDataIds.contactInformation) },
-                modifier = Modifier
-                    .height(54.dep)
-                    .fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(Color(0xFFFFEB56)),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 8.dep,
-                    pressedElevation = 10.dep
-                ),
-                shape = RoundedCornerShape(4.dep)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.NEXT),
-                    fontSize = 16.sep,
+                    text = stringResource(id = R.string.Store_Name),
+                    fontSize = 14.sep,
                     color = Color(0xFF222222)
                 )
+                Spacer(modifier = Modifier.height(8.dep))
+                OutlinedTextField(
+                    value = storeName.value,
+                    onValueChange = {
+                        notifier.notify(MyDataIds.storeName, it)
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    ),
+                    placeholder = {
+                        Text(
+                            stringResource(id = R.string.Store_name),
+                            color = Color(0xFF666666),
+                            fontSize = 14.sep
+                        )
+                    },
+                    modifier = Modifier
+                        .background(Color.White)
+                        .fillMaxWidth(),
+                    textStyle = TextStyle(
+                        color = Color(0xFF222222),
+                        fontSize = 14.sep
+                    ),
+                    colors = TextFieldDefaults.colors(
+                        unfocusedIndicatorColor = Color(0xFFDDDDDD),
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                    ),
+                )
+                Spacer(modifier = Modifier.height(16.dep))
+                Text(
+                    text = stringResource(id = R.string.shop_image),
+                    fontSize = 14.sep,
+                    color = Color(0xFF222222)
+                )
+                Spacer(modifier = Modifier.height(8.dep))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    ImagePickerScreen(viewModel = yourViewModel)
+                }
+                Spacer(modifier = Modifier.height(16.dep))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .weight(.5f)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.City),
+                            fontSize = 14.sep,
+                            color = Color(0xFF222222)
+                        )
+                        Spacer(modifier = Modifier.height(8.dep))
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .background(Color.White, RoundedCornerShape(5.dep))
+                                .border(1.dep, Color(0xFFB9B9B9), RoundedCornerShape(5.dep))
+                                .height(54.dep)
+                                .fillMaxWidth()
+                        ) {
+                            CityDropDown()
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(12.dep))
+                    Column(
+                        modifier = Modifier
+                            .weight(.5f)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.State),
+                            fontSize = 14.sep,
+                            color = Color(0xFF222222)
+                        )
+                        Spacer(modifier = Modifier.height(8.dep))
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .background(Color.White, RoundedCornerShape(5.dep))
+                                .border(1.dep, Color(0xFFB9B9B9), RoundedCornerShape(5.dep))
+                                .height(54.dep)
+                                .fillMaxWidth()
+                        ) {
+                            StateDropDown()
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dep))
+                Text(
+                    text = stringResource(id = R.string.Postal_Code),
+                    fontSize = 14.sep,
+                    color = Color(0xFF222222)
+                )
+                Spacer(modifier = Modifier.height(8.dep))
+                OutlinedTextField(
+                    value = pin.value,
+                    onValueChange = {
+                        notifier.notify(MyDataIds.pin, it)
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    ),
+                    placeholder = {
+                        Text(
+                            stringResource(id = R.string.postalCode),
+                            color = Color(0xFF666666),
+                            fontSize = 14.sep
+                        )
+                    },
+                    modifier = Modifier
+                        .background(Color.White)
+                        .fillMaxWidth(),
+                    textStyle = TextStyle(
+                        color = Color(0xFF222222),
+                        fontSize = 14.sep
+                    ),
+                    colors = TextFieldDefaults.colors(
+                        unfocusedIndicatorColor = Color(0xFFDDDDDD),
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                    ),
+                )
+                Spacer(modifier = Modifier.height(16.dep))
+                Text(
+                    text = stringResource(id = R.string.Address),
+                    fontSize = 14.sep,
+                    color = Color(0xFF222222)
+                )
+                Spacer(modifier = Modifier.height(8.dep))
+                OutlinedTextField(
+                    value = address.value,
+                    onValueChange = {
+                        notifier.notify(MyDataIds.address, it)
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
+                    placeholder = {
+                        Text(
+                            stringResource(id = R.string.EnterAddress),
+                            color = Color(0xFF666666),
+                            fontSize = 14.sep
+                        )
+                    },
+                    modifier = Modifier
+                        .background(Color.White)
+                        .fillMaxWidth(),
+                    textStyle = TextStyle(
+                        color = Color(0xFF222222),
+                        fontSize = 14.sep
+                    ),
+                    colors = TextFieldDefaults.colors(
+                        unfocusedIndicatorColor = Color(0xFFDDDDDD),
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                    ),
+                )
+                Spacer(modifier = Modifier.height(16.dep))
+                Text(
+                    text = stringResource(id = R.string.addRoute),
+                    fontSize = 14.sep,
+                    color = Color(0xFF222222)
+                )
+                Spacer(modifier = Modifier.height(8.dep))
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .background(Color.White, RoundedCornerShape(5.dep))
+                        .border(1.dep, Color(0xFFB9B9B9), RoundedCornerShape(5.dep))
+                        .height(54.dep)
+                        .fillMaxWidth()
+                ) {
+                    RouteDropDown()
+                }
+                Spacer(modifier = Modifier.height(16.dep))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(144.dep)
+                ) {
+                    GoogleMapSection(
+                        latitude = currentLatitude,
+                        longitude = currentLongitude,
+                        onLocationChanged = { newLatitude, newLongitude ->
+                            currentLatitude = newLatitude
+                            currentLongitude = newLongitude
+                        }
+                    )
+                }
+                Spacer(modifier = Modifier.height(20.dep))
+                Button(
+                    onClick = {
+                    },
+                    modifier = Modifier
+                        .height(54.dep)
+                        .fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(Color.White),
+                    border = BorderStroke(1.dep, Color(0xFF1FB574)),
+                    elevation = ButtonDefaults.buttonElevation(
+                        defaultElevation = 8.dep,
+                        pressedElevation = 10.dep
+                    ),
+                    shape = RoundedCornerShape(4.dep)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.GET_LOCATION),
+                        fontSize = 16.sep,
+                        color = Color(0xFF1FB574)
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dep))
+                Button(
+                    onClick = { notifier.notify(MyDataIds.contactInformation) },
+                    modifier = Modifier
+                        .height(54.dep)
+                        .fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(Color(0xFFFFEB56)),
+                    elevation = ButtonDefaults.buttonElevation(
+                        defaultElevation = 8.dep,
+                        pressedElevation = 10.dep
+                    ),
+                    shape = RoundedCornerShape(4.dep)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.NEXT),
+                        fontSize = 16.sep,
+                        color = Color(0xFF222222)
+                    )
+                }
             }
         }
     }
@@ -531,7 +553,7 @@ fun CityDropDown(
                     DropdownMenuItem(
                         { Text(text = item.name, fontSize = 14.sep, color = Color(0xFF222222)) },
                         onClick = {
-                            notifier.notify(MyDataIds.cityId,item.id)
+                            notifier.notify(MyDataIds.cityId, item.uid)
                             selectedItem = item.name
                             expanded = false
                         }
@@ -588,11 +610,11 @@ fun StateDropDown(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                state.forEachIndexed { index,item ->
+                state.forEach { item ->
                     DropdownMenuItem(
                         { Text(text = item.name, fontSize = 14.sep, color = Color(0xFF222222)) },
                         onClick = {
-                            notifier.notify(MyDataIds.stateId,item.id)
+                            notifier.notify(MyDataIds.stateId, item.uid)
                             selectedItem = item.name
                             expanded = false
                         }
@@ -653,7 +675,7 @@ fun RouteDropDown(
                     DropdownMenuItem(
                         { Text(text = item.name, fontSize = 14.sep, color = Color(0xFF222222)) },
                         onClick = {
-                            notifier.notify(MyDataIds.routeIds,item.uid)
+                            notifier.notify(MyDataIds.routeIds, item.uid)
                             selectedItem = item.name
                             expanded = false
                         }

@@ -155,4 +155,6 @@ enum class MyDataIds {
     productName,
     storeNames,
     searchStoreName,
+    brandId,
+    categoryId,
 }

@@ -21,6 +21,10 @@ interface PrefRepository {
     fun setCategory(category: String?)
     fun getState(): String?
     fun setState(state: String?)
+    fun getCategoryId(): String?
+    fun setCategoryId(categoryId: String?)
+    fun getReturnBrand(): String?
+    fun setReturnBrand(returnBrand: String?)
     fun getAddRoute(): String?
     fun setAddRoute(addRoute: String?)
     fun getCity(): String?
@@ -31,6 +35,8 @@ interface PrefRepository {
     fun setCartId(cartId: String)
     fun getProductId(): String?
     fun setProductId(productId: String)
+    fun getAddStoreId(): String?
+    fun setAddStoreId(addStoreId: String?)
 
     fun getUId(): String?
 

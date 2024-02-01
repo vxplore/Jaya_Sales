@@ -87,6 +87,8 @@ import com.debduttapanda.j3lib.sep
 import com.debduttapanda.j3lib.stringState
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
+import com.example.jayasales.model.AllBrandDataResponse
+import com.example.jayasales.model.AllCategory
 import com.example.jayasales.model.SelectedFile
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -385,7 +387,8 @@ fun ReturnRequestScreen(
 
 @Composable
 fun BrandDropDown(
-    brandName: SnapshotStateList<String> = listState(key = MyDataIds.brandName)
+    brandName: List<AllBrandDataResponse.Brand> = listState(key = MyDataIds.brandName),
+    notifier: NotificationService = rememberNotifier()
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf("Brand Name") }
@@ -432,13 +435,14 @@ fun BrandDropDown(
                     DropdownMenuItem(
                         {
                             Text(
-                                text = item,
+                                text = item.name,
                                 fontSize = 14.sep,
                                 color = Color(0xFF222222)
                             )
                         },
                         onClick = {
-                            selectedItem = item
+                            notifier.notify(MyDataIds.brandId,item.uid)
+                            selectedItem = item.name
                             expanded = false
                         }
                     )
@@ -514,7 +518,8 @@ fun ProductDropDown(
 
 @Composable
 fun BrandCategoryDropDown(
-    productCategory: SnapshotStateList<String> = listState(key = MyDataIds.productCategory)
+    productCategory: List<AllCategory.Category> = listState(key = MyDataIds.productCategory),
+    notifier: NotificationService = rememberNotifier()
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf("Category") }
@@ -559,9 +564,13 @@ fun BrandCategoryDropDown(
             ) {
                 productCategory.forEach { item ->
                     DropdownMenuItem(
-                        { Text(text = item, fontSize = 14.sep, color = Color(0xFF222222)) },
+                        { Text(text = item.name,
+                            fontSize = 14.sep,
+                            color = Color(0xFF222222)
+                        ) },
                         onClick = {
-                            selectedItem = item
+                            notifier.notify(MyDataIds.categoryId,item.uid)
+                            selectedItem = item.name
                             expanded = false
                         }
                     )

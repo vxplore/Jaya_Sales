@@ -9,6 +9,7 @@ import com.example.jayasales.model.AttendanceDataResponse
 import com.example.jayasales.model.CheckInOutDataResponse
 import com.example.jayasales.model.CityDataResponse
 import com.example.jayasales.model.DashboardDataResponse
+import com.example.jayasales.model.DeleteStoreDataResponse
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
 import com.example.jayasales.model.MarkVisitDataResponse
@@ -24,6 +25,7 @@ import com.example.jayasales.model.SearchRouteDataResponse
 import com.example.jayasales.model.StateDataResponse
 import com.example.jayasales.model.StoreDetailsDataResponse
 import com.example.jayasales.model.TimeSheetDataResponse
+import com.example.jayasales.model.UpdateStoreDataResponse
 import com.example.jayasales.model.ViewCartDataResponse
 import okhttp3.MultipartBody
 
@@ -84,8 +86,21 @@ interface Repository {
         instruction: String
     ): ReceivePaymentInList?
 
+    suspend fun updateStore(
+        userId: String,
+        storeId: String,
+        owner: String,
+        phone: String,
+        email: String,
+        gst: String
+    ): UpdateStoreDataResponse?
+    suspend fun deleteStore(
+        userId: String,
+        storeId: String,
+    ): DeleteStoreDataResponse?
+
     suspend fun addStore(
-        image: MultipartBody.Part,
+        images: MultipartBody.Part,
         userId: String,
         storeName: String,
         cityId: String,
@@ -96,6 +111,7 @@ interface Repository {
         lat: String,
         lng: String,
     ): AddStoreDataResponse?
+
 
     fun getIsLoggedIn(): Boolean
 
@@ -112,6 +128,10 @@ interface Repository {
     fun setCity(city: String?)
     fun getState(): String?
     fun setState(state: String?)
+    fun getCategoryId(): String?
+    fun setCategoryId(categoryId: String?)
+    fun getReturnBrand(): String?
+    fun setReturnBrand(returnBrand: String?)
     fun getRouteId(): String?
     fun setRouteId(routeId: String?)
     fun getRouteName(): String?
@@ -127,6 +147,8 @@ interface Repository {
 
     fun getLogUId(): String?
     fun setLogUId(logUId: String?)
+    fun getAddStoreId(): String?
+    fun setAddStoreId(addStoreId: String?)
 
     fun getLogEmail(): String?
     fun setLogEmail(logEmail: String?)

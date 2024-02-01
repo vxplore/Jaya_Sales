@@ -10,6 +10,7 @@ import com.example.jayasales.model.AttendanceDataResponse
 import com.example.jayasales.model.CheckInOutDataResponse
 import com.example.jayasales.model.CityDataResponse
 import com.example.jayasales.model.DashboardDataResponse
+import com.example.jayasales.model.DeleteStoreDataResponse
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
 import com.example.jayasales.model.MarkVisitDataResponse
@@ -25,6 +26,7 @@ import com.example.jayasales.model.SearchRouteDataResponse
 import com.example.jayasales.model.StateDataResponse
 import com.example.jayasales.model.StoreDetailsDataResponse
 import com.example.jayasales.model.TimeSheetDataResponse
+import com.example.jayasales.model.UpdateStoreDataResponse
 import com.example.jayasales.model.ViewCartDataResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -157,7 +159,7 @@ interface ApiInterface {
     @Multipart
     @POST("sells/add_store")
     suspend fun addStore(
-        @Part image: MultipartBody.Part,
+        @Part images: MultipartBody.Part,
         @Part("user_id") userId: RequestBody,
         @Part("store_name") storeName: RequestBody,
         @Part("city_id") cityId: RequestBody,
@@ -169,7 +171,23 @@ interface ApiInterface {
         @Part("lng") lng: RequestBody,
     ): Response<AddStoreDataResponse>
 
+    @FormUrlEncoded
+    @POST("sells/update_store")
+    suspend fun updateStore(
+        @Field("user_id") userId: String,
+        @Field("store_id") storeId: String,
+        @Field("owner") owner: String,
+        @Field("phone") phone: String,
+        @Field("email") email: String,
+        @Field("gst") gst: String,
+    ): Response<UpdateStoreDataResponse>
 
+    @FormUrlEncoded
+    @POST("sells/delete_store")
+    suspend fun deleteStore(
+        @Field("user_id") userId: String,
+        @Field("store_id") storeId: String,
+    ): Response<DeleteStoreDataResponse>
 
     @FormUrlEncoded
     @POST("sells/invoice_list")
