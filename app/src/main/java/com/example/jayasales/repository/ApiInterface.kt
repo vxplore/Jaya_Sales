@@ -17,9 +17,11 @@ import com.example.jayasales.model.MarkVisitDataResponse
 import com.example.jayasales.model.PartiesDataResponse
 import com.example.jayasales.model.PaymentInList
 import com.example.jayasales.model.PlaceOrderDataResponse
+import com.example.jayasales.model.ReasonDataResponse
 import com.example.jayasales.model.ReceivePaymentInList
 import com.example.jayasales.model.RemoveResponse
 import com.example.jayasales.model.ResetDataResponse
+import com.example.jayasales.model.ReturnRequestDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
 import com.example.jayasales.model.RouteDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
@@ -123,13 +125,16 @@ interface ApiInterface {
     @GET("sells/states")
     suspend fun state(
         @Query("states") states: String,
-
         ): Response<StateDataResponse>
     @GET("sells/cities")
     suspend fun city(
         @Query("state_id") city: String,
-
         ): Response<CityDataResponse>
+
+    @GET("sells/return_request_reason")
+    suspend fun reason(
+        @Query("return_request_reason") reason: String,
+    ): Response<ReasonDataResponse>
 
     @FormUrlEncoded
     @POST("sells/store_details")
@@ -181,6 +186,20 @@ interface ApiInterface {
         @Field("email") email: String,
         @Field("gst") gst: String,
     ): Response<UpdateStoreDataResponse>
+    @Multipart
+    @POST("sells/return_request")
+    suspend fun returnRequest(
+        @Part("user_id") userId: RequestBody,
+        @Part("store_id") storeId: RequestBody,
+        @Part("product_id") productId: RequestBody,
+        @Part("category_id") categoryId: RequestBody,
+        @Part("brand_id") brandId: RequestBody,
+        @Part("packed_on") packedOn: RequestBody,
+        @Part("lot_number") lot: RequestBody,
+        @Part("reason_id") reasonId: RequestBody,
+        @Part("message") message: RequestBody,
+        @Part images: MultipartBody.Part,
+    ): Response<ReturnRequestDataResponse>
 
     @FormUrlEncoded
     @POST("sells/delete_store")

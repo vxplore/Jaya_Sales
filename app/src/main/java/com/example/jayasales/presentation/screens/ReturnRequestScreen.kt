@@ -33,9 +33,11 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
@@ -75,10 +77,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import com.debduttapanda.j3lib.NotificationService
+import com.debduttapanda.j3lib.boolState
 import com.debduttapanda.j3lib.dep
 import com.debduttapanda.j3lib.depx
 import com.debduttapanda.j3lib.listState
@@ -89,7 +94,13 @@ import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
 import com.example.jayasales.model.AllBrandDataResponse
 import com.example.jayasales.model.AllCategory
+import com.example.jayasales.model.PartiesDatum
+import com.example.jayasales.model.Product
+import com.example.jayasales.model.ReasonDatum
 import com.example.jayasales.model.SelectedFile
+import com.example.jayasales.model.Store
+import com.example.jayasales.presentation.viewmodels.AddNewStoreViewModel
+import com.example.jayasales.presentation.viewmodels.ReturnRequestViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -101,91 +112,162 @@ fun ReturnRequestScreen(
     notifier: NotificationService = rememberNotifier(),
     lot: State<String> = stringState(key = MyDataIds.lot),
     message: State<String> = stringState(key = MyDataIds.message),
-    storeNames: SnapshotStateList<String> = listState(key = MyDataIds.storeNames),
+    storeNames: SnapshotStateList<PartiesDatum> = listState(key = MyDataIds.storeNames),
+    returnDialog: Boolean = boolState(key = MyDataIds.returnDialog).value,
+    loadingState: State<Boolean> = boolState(key = MyDataIds.loadingState),
 ) {
-    var selectedItem by remember { mutableStateOf("") }
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
+    if (loadingState.value) {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .padding(bottom = 60.dep)
+                .fillMaxSize()
+        ) {
+            CircularProgressIndicator(
+                color = Color(0XFFFF4155),
+            )
+        }
+    } else {
+        var selectedItem by remember { mutableStateOf("") }
+        val yourViewModel: ReturnRequestViewModel = viewModel()
+        val openDialog = remember { mutableStateOf(false) }
+        if (returnDialog) {
+            AlertDialog(
+                onDismissRequest = {
+                    openDialog.value = false
+                },
                 title = {
                     Text(
-                        text = stringResource(id = R.string. Return_Request),
-                        fontSize = 20.sep,
+                        text = stringResource(id = R.string.return_request),
+                        fontSize = 16.sep,
+                        textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF2B2B2B),
+                        color = Color(0xFF222222)
                     )
                 },
-                navigationIcon = {
-                    IconButton(
+                confirmButton = {
+                    Button(
                         onClick = {
-                            notifier.notify(
-                                MyDataIds.back
-                            )
-                        }
+                            notifier.notify(MyDataIds.backHome)
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 52.dep)
+                            .height(44.dep)
+                            .fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(Color(0xFFF22E4F)),
+                        elevation = ButtonDefaults.buttonElevation(
+                            defaultElevation = 8.dep,
+                            pressedElevation = 10.dep
+                        ),
+                        shape = RoundedCornerShape(4.dep)
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBackIosNew,
-                            contentDescription = "ArrowBackIosNew",
-                            tint = Color.Black
+                        Text(
+                            text = stringResource(id = R.string.BackHome),
+                            fontSize = 14.sep,
+                            color = Color.White,
+                            modifier = Modifier
+
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFFFEB56)
-                )
+                icon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.tick_mark),
+                        contentDescription = stringResource(id = R.string.Payment_received_successfully),
+                        modifier = Modifier
+                            .padding(start = 14.dep)
+                            .height(72.dp)
+                            .width(72.dp),
+                    )
+                },
+                shape = RoundedCornerShape(4.dep)
             )
         }
-    )
-    {
-        Column(
-            modifier = Modifier
-                .padding(it)
-                .padding(horizontal = 20.dep)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-        ) {
-            Spacer(modifier = Modifier.height(24.dep))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+        Scaffold(
+            topBar = {
+                CenterAlignedTopAppBar(
+                    title = {
+                        Text(
+                            text = stringResource(id = R.string.Return_Request),
+                            fontSize = 20.sep,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF2B2B2B),
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(
+                            onClick = {
+                                notifier.notify(
+                                    MyDataIds.back
+                                )
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBackIosNew,
+                                contentDescription = "ArrowBackIosNew",
+                                tint = Color.Black
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color(0xFFFFEB56)
+                    )
+                )
+            }
+        )
+        {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .padding(it)
+                    .padding(horizontal = 20.dep)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
             ) {
+                Spacer(modifier = Modifier.height(24.dep))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .background(Color.White, RoundedCornerShape(5.dep))
+                            .border(1.dep, Color(0xFFB9B9B9), RoundedCornerShape(5.dep))
+                            .height(54.dep)
+                            .weight(.5f)
+                    ) {
+                        BrandDropDown()
+                    }
+                    Spacer(modifier = Modifier.width(12.dep))
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .background(Color.White, RoundedCornerShape(5.dep))
+                            .border(1.dep, Color(0xFFB9B9B9), RoundedCornerShape(5.dep))
+                            .height(54.dep)
+                            .weight(.5f)
+                    ) {
+                        BrandCategoryDropDown()
+                    }
+                }
+                Spacer(modifier = Modifier.height(12.dep))
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .background(Color.White, RoundedCornerShape(5.dep))
                         .border(1.dep, Color(0xFFB9B9B9), RoundedCornerShape(5.dep))
                         .height(54.dep)
-                        .weight(.5f)
+                        .fillMaxWidth()
                 ) {
-                    BrandDropDown()
+                    ProductDropDown()
                 }
-                Spacer(modifier = Modifier.width(12.dep))
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .background(Color.White, RoundedCornerShape(5.dep))
-                        .border(1.dep, Color(0xFFB9B9B9), RoundedCornerShape(5.dep))
-                        .height(54.dep)
-                        .weight(.5f)
-                ) {
-                    BrandCategoryDropDown()
-                }
-            }
-            Spacer(modifier = Modifier.height(12.dep))
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .background(Color.White, RoundedCornerShape(5.dep))
-                    .border(1.dep, Color(0xFFB9B9B9), RoundedCornerShape(5.dep))
-                    .height(54.dep)
-                    .fillMaxWidth()
-            ) {
-                ProductDropDown()
-            }
-            Spacer(modifier = Modifier.height(12.dep))
-            var expanded by remember { mutableStateOf(false) }
-            val suggestions = storeNames.filter { it.contains(selectedItem, ignoreCase = true) }
+                Spacer(modifier = Modifier.height(12.dep))
+                var expanded by remember { mutableStateOf(false) }
+                // val suggestions = storeNames.filter { it.contains(selectedItem, ignoreCase = true) }
+                val suggestions =
+                    storeNames.filter { it.store_name.contains(selectedItem, ignoreCase = true) }
                 OutlinedTextField(
                     value = selectedItem,
                     onValueChange = {
@@ -233,63 +315,107 @@ fun ReturnRequestScreen(
                         unfocusedBorderColor = Color(0xFF959595)
                     )
                 )
-            if (expanded) {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.BottomEnd
-                ) {
-                    LazyColumn(
-                        modifier = Modifier
-                            .background(Color.White)
-                            .height(120.dep)
+                if (expanded) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.BottomEnd
                     ) {
-                        items(suggestions) { item ->
-                            Text(
-                                text = item,
-                                modifier = Modifier
-                                    .clickable {
-                                        selectedItem = item
-                                        expanded = false
-                                    }
-                                    .padding(8.dp)
-                            )
+                        LazyColumn(
+                            modifier = Modifier
+                                .background(Color.White)
+                                .height(120.dep)
+                        ) {
+                            items(suggestions) { item ->
+                                Text(
+                                    text = item.store_name,
+                                    modifier = Modifier
+                                        .clickable {
+                                            notifier.notify(MyDataIds.storeId, item.uid)
+                                            selectedItem = item.store_name
+                                            expanded = false
+                                        }
+                                        .padding(8.dp)
+                                )
+                            }
                         }
                     }
                 }
-            }
-            Spacer(modifier = Modifier.height(12.dep))
+                Spacer(modifier = Modifier.height(12.dep))
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
                 Row(
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .weight(.5f)
+                        .fillMaxWidth()
                 ) {
-                    ReturnDatePicker()
+                    Row(
+                        modifier = Modifier
+                            .weight(.5f)
+                    ) {
+                        ReturnDatePicker(viewModel = yourViewModel)
+                    }
+                    Spacer(modifier = Modifier.width(12.dep))
+                    OutlinedTextField(
+                        value = lot.value,
+                        onValueChange = {
+                            notifier.notify(MyDataIds.lot, it)
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
+                        placeholder = {
+                            Text(
+                                stringResource(id = R.string.Lot_No),
+                                color = Color(0xFF666666),
+                                fontSize = 14.sep
+                            )
+                        },
+                        modifier = Modifier
+                            .background(Color.White)
+                            .weight(.5f),
+                        textStyle = TextStyle(
+                            color = Color(0xFF222222),
+                            fontSize = 14.sep
+                        ),
+                        colors = TextFieldDefaults.colors(
+                            unfocusedIndicatorColor = Color(0xFFB9B9B9),
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+                        ),
+                    )
                 }
-                Spacer(modifier = Modifier.width(12.dep))
+                Spacer(modifier = Modifier.height(12.dep))
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .background(Color.White, RoundedCornerShape(5.dep))
+                        .border(1.dep, Color(0xFFB9B9B9), RoundedCornerShape(5.dep))
+                        .height(54.dep)
+                        .fillMaxWidth()
+                ) {
+                    ReasonDropDown()
+                }
+                Spacer(modifier = Modifier.height(12.dep))
                 OutlinedTextField(
-                    value = lot.value,
+                    value = message.value,
                     onValueChange = {
-                        notifier.notify(MyDataIds.lot, it)
+                        notifier.notify(MyDataIds.message, it)
                     },
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
+                        keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next
                     ),
                     placeholder = {
                         Text(
-                            stringResource(id = R.string.Lot_No),
+                            stringResource(id = R.string.Message),
                             color = Color(0xFF666666),
                             fontSize = 14.sep
                         )
                     },
                     modifier = Modifier
                         .background(Color.White)
-                        .weight(.5f),
+                        .height(136.dep)
+                        .fillMaxWidth(),
                     textStyle = TextStyle(
                         color = Color(0xFF222222),
                         fontSize = 14.sep
@@ -300,86 +426,44 @@ fun ReturnRequestScreen(
                         unfocusedContainerColor = Color.White,
                     ),
                 )
-            }
-            Spacer(modifier = Modifier.height(12.dep))
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .background(Color.White, RoundedCornerShape(5.dep))
-                    .border(1.dep, Color(0xFFB9B9B9), RoundedCornerShape(5.dep))
-                    .height(54.dep)
-                    .fillMaxWidth()
-            ) {
-                ReasonDropDown()
-            }
-            Spacer(modifier = Modifier.height(12.dep))
-            OutlinedTextField(
-                value = message.value,
-                onValueChange = {
-                    notifier.notify(MyDataIds.message, it)
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                ),
-                placeholder = {
-                    Text(
-                        stringResource(id = R.string.Message),
-                        color = Color(0xFF666666),
-                        fontSize = 14.sep
-                    )
-                },
-                modifier = Modifier
-                    .background(Color.White)
-                    .height(136.dep)
-                    .fillMaxWidth(),
-                textStyle = TextStyle(
-                    color = Color(0xFF222222),
-                    fontSize = 14.sep
-                ),
-                colors = TextFieldDefaults.colors(
-                    unfocusedIndicatorColor = Color(0xFFB9B9B9),
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                ),
-            )
-            Spacer(modifier = Modifier.height(12.dep))
-            Text(
-                stringResource(id = R.string.Upload_Photo),
-                color = Color(0xFF666666),
-                fontSize = 14.sep
-            )
-            Spacer(modifier = Modifier.height(8.dep))
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                FilePickerScreen()
-            }
-        }
-        Box(
-            contentAlignment = Alignment.BottomCenter,
-            modifier = Modifier
-                .padding(horizontal = 24.dep)
-                .padding(bottom = 20.dep)
-                .fillMaxSize()
-        ) {
-            Button(
-                onClick = { notifier.notify(MyDataIds.signUpClick,it) },
-                modifier = Modifier
-                    .height(54.dep)
-                    .fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(Color(0xFFFFEB56)),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 8.dep,
-                    pressedElevation = 10.dep
-                ),
-                shape = RoundedCornerShape(4.dep)
-            ) {
+                Spacer(modifier = Modifier.height(12.dep))
                 Text(
-                    text = stringResource(id = R.string.Submit),
-                    fontSize = 18.sep,
-                    color = Color(0xFF222222)
+                    stringResource(id = R.string.Upload_Photo),
+                    color = Color(0xFF666666),
+                    fontSize = 14.sep
                 )
+                Spacer(modifier = Modifier.height(8.dep))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    ImagePickerScreen(viewModel = yourViewModel)
+                }
+            }
+            Box(
+                contentAlignment = Alignment.BottomCenter,
+                modifier = Modifier
+                    .padding(horizontal = 24.dep)
+                    .padding(bottom = 20.dep)
+                    .fillMaxSize()
+            ) {
+                Button(
+                    onClick = { notifier.notify(MyDataIds.submit, it) },
+                    modifier = Modifier
+                        .height(54.dep)
+                        .fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(Color(0xFFFFEB56)),
+                    elevation = ButtonDefaults.buttonElevation(
+                        defaultElevation = 8.dep,
+                        pressedElevation = 10.dep
+                    ),
+                    shape = RoundedCornerShape(4.dep)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.Submit),
+                        fontSize = 18.sep,
+                        color = Color(0xFF222222)
+                    )
+                }
             }
         }
     }
@@ -441,7 +525,7 @@ fun BrandDropDown(
                             )
                         },
                         onClick = {
-                            notifier.notify(MyDataIds.brandId,item.uid)
+                            notifier.notify(MyDataIds.brandId, item.uid)
                             selectedItem = item.name
                             expanded = false
                         }
@@ -451,9 +535,11 @@ fun BrandDropDown(
         }
     }
 }
+
 @Composable
 fun ProductDropDown(
-    productName: SnapshotStateList<String> = listState(key = MyDataIds.productName)
+    productName: SnapshotStateList<Product> = listState(key = MyDataIds.productName),
+    notifier: NotificationService = rememberNotifier()
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf("product Name") }
@@ -500,13 +586,14 @@ fun ProductDropDown(
                     DropdownMenuItem(
                         {
                             Text(
-                                text = item,
+                                text = item.name,
                                 fontSize = 14.sep,
                                 color = Color(0xFF222222)
                             )
                         },
                         onClick = {
-                            selectedItem = item
+                            notifier.notify(MyDataIds.productId, item.uid)
+                            selectedItem = item.name
                             expanded = false
                         }
                     )
@@ -564,12 +651,15 @@ fun BrandCategoryDropDown(
             ) {
                 productCategory.forEach { item ->
                     DropdownMenuItem(
-                        { Text(text = item.name,
-                            fontSize = 14.sep,
-                            color = Color(0xFF222222)
-                        ) },
+                        {
+                            Text(
+                                text = item.name,
+                                fontSize = 14.sep,
+                                color = Color(0xFF222222)
+                            )
+                        },
                         onClick = {
-                            notifier.notify(MyDataIds.categoryId,item.uid)
+                            notifier.notify(MyDataIds.categoryId, item.uid)
                             selectedItem = item.name
                             expanded = false
                         }
@@ -582,10 +672,11 @@ fun BrandCategoryDropDown(
 
 @Composable
 fun ReasonDropDown(
-    reason: SnapshotStateList<String> = listState(key = MyDataIds.reason)
+    reason: SnapshotStateList<ReasonDatum> = listState(key = MyDataIds.reason),
+    notifier: NotificationService = rememberNotifier()
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf("Select Rason") }
+    var selectedItem by remember { mutableStateOf("Select Reason") }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -627,9 +718,16 @@ fun ReasonDropDown(
             ) {
                 reason.forEach { item ->
                     DropdownMenuItem(
-                        { Text(text = item, fontSize = 14.sep, color = Color(0xFF222222)) },
+                        {
+                            Text(
+                                text = item.value,
+                                fontSize = 14.sep,
+                                color = Color(0xFF222222)
+                            )
+                        },
                         onClick = {
-                            selectedItem = item
+                            notifier.notify(MyDataIds.reasonId, item.uid)
+                            selectedItem = item.value
                             expanded = false
                         }
                     )
@@ -642,9 +740,11 @@ fun ReasonDropDown(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReturnDatePicker(
+    viewModel: ReturnRequestViewModel
 ) {
     val calendar = Calendar.getInstance()
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = calendar.timeInMillis)
+    val datePickerState =
+        rememberDatePickerState(initialSelectedDateMillis = calendar.timeInMillis)
     var showDatePicker by remember {
         mutableStateOf(false)
     }
@@ -659,9 +759,9 @@ fun ReturnDatePicker(
             confirmButton = {
                 TextButton(onClick = {
                     showDatePicker = false
-                    selectedDate = datePickerState.selectedDateMillis!!
-                }
-                ) {
+                    selectedDate = datePickerState.selectedDateMillis ?: calendar.timeInMillis
+                    viewModel.setSelectedDate(selectedDate) // Update the view model with the selected date
+                }) {
                     Text(text = "Confirm")
                 }
             },
@@ -678,6 +778,7 @@ fun ReturnDatePicker(
             )
         }
     }
+
     val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)
     val date = formatter.format(Date(selectedDate))
     Row(
@@ -716,21 +817,23 @@ val stroke = Stroke(
 )
 
 @Composable
-fun FilePickerScreen()
-{
+fun ImagePickerScreen(
+    viewModel: ReturnRequestViewModel
+) {
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
     val selectedFileName = remember { mutableStateOf<String?>(null) }
     var isPDFFile by remember { mutableStateOf(false) }
     var selectedFiles by remember { mutableStateOf<MutableList<SelectedFile>>(mutableListOf()) }
-    val context = LocalContext.current
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let {
-            selectedFileUri = it
-            isPDFFile = selectedFileName.value?.endsWith(".pdf", ignoreCase = true) == true
-            val selectedFile = SelectedFile(uri)
-            selectedFiles.add(selectedFile)
+    val launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let {
+                selectedFileUri = it
+                isPDFFile = selectedFileName.value?.endsWith(".pdf", ignoreCase = true) == true
+                val selectedFile = SelectedFile(uri)
+                selectedFiles.add(selectedFile)
+                viewModel.setSelectedImageUri(uri)
+            }
         }
-    }
     val openFileIntentLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         }
@@ -738,8 +841,8 @@ fun FilePickerScreen()
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .height(64.dep)
-            .width(52.dep)
+            .height(64.dp)
+            .width(52.dp)
             .clip(MaterialTheme.shapes.small)
             .clickable {
                 launcher.launch("*/*")
@@ -781,19 +884,15 @@ fun FilePickerScreen()
                         }
                 ) {
                     Row {
-                        LoadSelectedImage(selectedFile.uri)
+                        LoadReturnSelectedImages(selectedFile.uri)
                         Image(
                             painter = painterResource(id = R.drawable.cancel),
                             contentDescription = "Cancel Icon",
                             modifier = Modifier
                                 .background(Color.White, CircleShape)
-                                .size(16.dep)
+                                .size(16.dp)
                                 .clickable {
-                                    val indexToRemove =
-                                        selectedFiles.indexOfFirst { it.uri == selectedFile.uri }
-                                    if (indexToRemove != -1) {
-                                        selectedFiles.removeAt(indexToRemove)
-                                    }
+                                    selectedFiles.remove(selectedFile)
                                 }
                         )
                     }
@@ -805,7 +904,7 @@ fun FilePickerScreen()
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun LoadSelectedImage(uri: Uri) {
+fun LoadReturnSelectedImages(uri: Uri) {
     val selectedImage = rememberImagePainter(data = uri)
     Image(
         painter = selectedImage,

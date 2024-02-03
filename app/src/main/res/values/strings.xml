@@ -103,4 +103,6 @@
     <string name="Dismiss">Dismiss</string>
     <string name="Have_Question">Have Question ? Message us on\n987-654-3210</string>
     <string name="Mark_Attendance">Mark Attendance</string>
+    <string name="return_request">Return Request submit successfully</string>
+    <string name="BackHome">Back to Home</string>
 </resources>

@@ -157,4 +157,10 @@ enum class MyDataIds {
     searchStoreName,
     brandId,
     categoryId,
+    productId,
+    storeId,
+    reasonId,
+    submit,
+    returnDialog,
+    backHome,
 }

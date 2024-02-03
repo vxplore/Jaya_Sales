@@ -240,7 +240,7 @@ class AddNewStoreViewModel @Inject constructor(
 
                         if (response?.status == true) {
                             Log.d("addStore", "Store added successfully.")
-                            toast("Store added successfully.")
+                            toast(response.message)
                             val storeId = response?.store_id ?: ""
                             repo.setAddStoreId(storeId)
                             Log.d(" cvfcv ", storeId)

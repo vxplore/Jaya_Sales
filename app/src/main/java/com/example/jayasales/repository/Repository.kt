@@ -16,9 +16,11 @@ import com.example.jayasales.model.MarkVisitDataResponse
 import com.example.jayasales.model.PartiesDataResponse
 import com.example.jayasales.model.PaymentInList
 import com.example.jayasales.model.PlaceOrderDataResponse
+import com.example.jayasales.model.ReasonDataResponse
 import com.example.jayasales.model.ReceivePaymentInList
 import com.example.jayasales.model.RemoveResponse
 import com.example.jayasales.model.ResetDataResponse
+import com.example.jayasales.model.ReturnRequestDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
 import com.example.jayasales.model.RouteDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
@@ -40,6 +42,7 @@ interface Repository {
     suspend fun searchRoute(query: String): SearchRouteDataResponse?
     suspend fun state(states: String): StateDataResponse?
     suspend fun city(city: String): CityDataResponse?
+    suspend fun reason(reason: String): ReasonDataResponse?
     suspend fun dashboard(userId: String): DashboardDataResponse?
     suspend fun parties(userId: String, routeId: String, searchText: String): PartiesDataResponse?
     suspend fun storeDetails(storeId: String, userId: String): StoreDetailsDataResponse?
@@ -112,6 +115,19 @@ interface Repository {
         lng: String,
     ): AddStoreDataResponse?
 
+    suspend fun returnRequest(
+        userId: String,
+        storeId: String,
+        productId: String,
+        categoryId: String,
+        brandId: String,
+        packedOn: String,
+        lot: String,
+        reasonId: String,
+        message: String,
+        images: MultipartBody.Part,
+    ): ReturnRequestDataResponse?
+
 
     fun getIsLoggedIn(): Boolean
 
@@ -128,6 +144,13 @@ interface Repository {
     fun setCity(city: String?)
     fun getState(): String?
     fun setState(state: String?)
+    fun getReturnProductId(): String?
+    fun setReturnProductId(returnProductId: String?)
+    fun getReasonId(): String?
+    fun setReasonId(reasonId: String?)
+
+    fun getReturnStoreId(): String?
+    fun setReturnStoreId(returnStoreId: String?)
     fun getCategoryId(): String?
     fun setCategoryId(categoryId: String?)
     fun getReturnBrand(): String?

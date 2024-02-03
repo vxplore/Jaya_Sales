@@ -17,9 +17,11 @@ import com.example.jayasales.model.MarkVisitDataResponse
 import com.example.jayasales.model.PartiesDataResponse
 import com.example.jayasales.model.PaymentInList
 import com.example.jayasales.model.PlaceOrderDataResponse
+import com.example.jayasales.model.ReasonDataResponse
 import com.example.jayasales.model.ReceivePaymentInList
 import com.example.jayasales.model.RemoveResponse
 import com.example.jayasales.model.ResetDataResponse
+import com.example.jayasales.model.ReturnRequestDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
 import com.example.jayasales.model.RouteDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
@@ -105,6 +107,15 @@ class MockRepositoryImpl @Inject constructor(
 
     override suspend fun city(city: String): CityDataResponse? {
         val response = apiHelper.city(city)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
+
+    override suspend fun reason(reason: String): ReasonDataResponse? {
+        val response = apiHelper.reason(reason)
         return if (response.isSuccessful){
             response.body()
         }else{
@@ -363,9 +374,43 @@ class MockRepositoryImpl @Inject constructor(
         }
     }
 
-
-
-
+    override suspend fun returnRequest(
+        userId: String,
+        storeId: String,
+        productId: String,
+        categoryId: String,
+        brandId: String,
+        packedOn: String,
+        lot: String,
+        reasonId: String,
+        message: String,
+        images: MultipartBody.Part
+    ): ReturnRequestDataResponse? {
+        val requestFile: RequestBody? = images.body
+        val multipartImage = requestFile?.let {
+            MultipartBody.Part.createFormData("images[]", images.toString(), it)
+        }
+        fun String.requestBody(): RequestBody {
+            return RequestBody.create("text/plain".toMediaTypeOrNull(), this)
+        }
+        val response = apiHelper.returnRequest(
+            userId.requestBody(),
+            storeId.requestBody(),
+            productId.requestBody(),
+            categoryId.requestBody(),
+            brandId.requestBody(),
+            packedOn.requestBody(),
+            lot.requestBody(),
+            reasonId.requestBody(),
+            message.requestBody(),
+            multipartImage!!
+        )
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
 
 
     override fun getIsLoggedIn(): Boolean {
@@ -418,6 +463,30 @@ class MockRepositoryImpl @Inject constructor(
 
     override fun setState(state: String?) {
        myPref.setState(state)
+    }
+
+    override fun getReturnProductId(): String? {
+        return myPref.getReturnProductId()
+    }
+
+    override fun setReturnProductId(returnProductId: String?) {
+        myPref.setReturnProductId(returnProductId)
+    }
+
+    override fun getReasonId(): String? {
+        return myPref.getReasonId()
+    }
+
+    override fun setReasonId(reasonId: String?) {
+       myPref.setReasonId(reasonId)
+    }
+
+    override fun getReturnStoreId(): String? {
+        return myPref.getReturnStoreId()
+    }
+
+    override fun setReturnStoreId(returnStoreId: String?) {
+        myPref.setReturnStoreId(returnStoreId)
     }
 
     override fun getCategoryId(): String? {

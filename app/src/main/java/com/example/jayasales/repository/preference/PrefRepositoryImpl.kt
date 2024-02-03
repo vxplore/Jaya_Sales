@@ -28,6 +28,9 @@ class PrefRepositoryImpl @Inject constructor(
     private val addStoreIdKey = "addStoreIdKey"
     private val returnBrandKey = "returnBrandKey"
     private val categoryIdKey = "categoryIdKey"
+    private val returnProductIdKey = "returnProductIdKey"
+    private val returnStoreIdKey = "returnStoreIdKey"
+    private val reasonIdKey = "reasonIdKey"
 
 
     private lateinit var myPref : SharedPreferences
@@ -93,6 +96,30 @@ class PrefRepositoryImpl @Inject constructor(
 
     override fun setState(state: String?) {
       myPref.edit().putString(stateKey,state.toString()).apply()
+    }
+
+    override fun getReturnProductId(): String? {
+        return myPref.getString(returnProductIdKey,"")
+    }
+
+    override fun setReturnProductId(returnProductId: String?) {
+       myPref.edit().putString(returnProductIdKey,returnProductId.toString()).apply()
+    }
+
+    override fun getReasonId(): String? {
+        return myPref.getString(reasonIdKey,"")
+    }
+
+    override fun setReasonId(reasonId: String?) {
+       myPref.edit().putString(reasonIdKey,reasonId.toString()).apply()
+    }
+
+    override fun getReturnStoreId(): String? {
+        return myPref.getString(returnStoreIdKey,"")
+    }
+
+    override fun setReturnStoreId(returnStoreId: String?) {
+        myPref.edit().putString(returnStoreIdKey,returnStoreId.toString()).apply()
     }
 
     override fun getCategoryId(): String? {
