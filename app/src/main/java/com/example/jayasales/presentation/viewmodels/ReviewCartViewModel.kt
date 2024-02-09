@@ -160,6 +160,7 @@ class ReviewCartViewModel @Inject constructor(
                     val removedProductId = reviewCart[index.value].cart_id
                     reviewCart.removeAll { it.cart_id == removedProductId }
                     toast(response.message)
+                    reviewCart()
                 }
             } catch (e: NoConnectivityException) {
                 handleNoConnectivity()

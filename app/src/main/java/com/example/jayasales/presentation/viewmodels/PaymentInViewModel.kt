@@ -196,7 +196,7 @@ class PaymentInViewModel @Inject constructor(
                     }
 
                 }
-            }catch (e:NoConnectivityException){
+            }catch (e:Exception){
                 handleNoConnectivity()
             }
         }
