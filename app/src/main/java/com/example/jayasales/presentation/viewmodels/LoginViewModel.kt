@@ -2,6 +2,7 @@ package com.example.jayasales.presentation.viewmodels
 
 import android.os.Bundle
 import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewModelScope
@@ -12,6 +13,8 @@ import com.debduttapanda.j3lib.models.EventBusDescription
 import com.debduttapanda.j3lib.models.Route
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.Routes
+import com.example.jayasales.model.Datum
+import com.example.jayasales.presentation.screens.Type
 import com.example.jayasales.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -35,6 +38,7 @@ class LoginViewModel @Inject constructor(
     private val otpInput = mutableStateOf("")
     private val loading = mutableStateOf(false)
     private val recoverLoading = mutableStateOf(false)
+    private val type = mutableStateListOf<Type>()
     override fun eventBusDescription(): EventBusDescription? {
         return null
     }
@@ -148,6 +152,8 @@ class LoginViewModel @Inject constructor(
 
     init {
         setUp()
+        type.addAll(listOf(Type("Sales Man")))
+        type.addAll(listOf(Type("Sales Manager")))
     }
 
     private fun setUp() {
@@ -162,6 +168,7 @@ class LoginViewModel @Inject constructor(
             MyDataIds.recoverPassword to recoverPassword,
             MyDataIds.loading to loading,
             MyDataIds.recoverLoading to recoverLoading,
+            MyDataIds.type to type
         )
         setStatusBarColor(Color(0xFFD62B2B), true)
         setSoftInputMode(SoftInputMode.adjustPan)

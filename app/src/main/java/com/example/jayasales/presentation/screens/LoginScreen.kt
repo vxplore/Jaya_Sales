@@ -21,12 +21,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,6 +42,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,12 +58,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
 import com.debduttapanda.j3lib.NotificationService
 import com.debduttapanda.j3lib.dep
+import com.debduttapanda.j3lib.listState
 import com.debduttapanda.j3lib.rememberBoolState
 import com.debduttapanda.j3lib.rememberNotifier
 import com.debduttapanda.j3lib.rememberStringState
 import com.debduttapanda.j3lib.sep
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.R
+import com.example.jayasales.model.Datum
 import com.example.jayasales.openSans
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -166,6 +172,24 @@ fun LoginScreen(
             }
             Spacer(modifier = Modifier.height(24.dep))
             Text(
+                text = "Type",
+                modifier = Modifier,
+                fontSize = 12.sep,
+                color = Color(0xFF677591)
+            )
+            Spacer(modifier = Modifier.height(6.dep))
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .background(Color(0xFFF7F9FB), RoundedCornerShape(12.dep))
+                    .border(1.dep, Color(0xFFADBDD8), RoundedCornerShape(12.dep))
+                    .height(54.dep)
+                    .fillMaxWidth()
+            ) {
+                TypeDropDown()
+            }
+            Spacer(modifier = Modifier.height(16.dep))
+            Text(
                 text = stringResource(id = R.string.username),
                 modifier = Modifier,
                 fontSize = 12.sep,
@@ -248,13 +272,13 @@ fun LoginScreen(
             contentAlignment = Alignment.BottomCenter,
             modifier = Modifier
                 .padding(horizontal = 24.dep)
-                .padding(bottom = 80.dep)
+                .padding(bottom = 60.dep)
                 .fillMaxSize()
         ) {
             Button(
                 onClick = { notifier.notify(MyDataIds.signUpClick,) },
                 modifier = Modifier
-                    .height(60.dep)
+                    .height(50.dep)
                     .fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(Color(0xFFFFEB56)),
                 elevation = ButtonDefaults.buttonElevation(
@@ -280,7 +304,7 @@ fun LoginScreen(
             contentAlignment = Alignment.BottomCenter,
             modifier = Modifier
                 .padding(horizontal = 24.dep)
-                .padding(bottom = 20.dep)
+                .padding(bottom = 12.dep)
                 .fillMaxSize()
         ) {
             Text(
@@ -554,3 +578,69 @@ private fun OtpField(
     )
     Spacer(modifier = Modifier.height(16.dep))
 }
+
+
+@Composable
+fun TypeDropDown(
+    type: SnapshotStateList<Type> = listState(key = MyDataIds.type),
+    notifier: NotificationService = rememberNotifier()
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var selectedItem by remember { mutableStateOf("Sales Man") }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .clickable { expanded = true }
+            .fillMaxWidth()
+    ) {
+        Text(
+            text = selectedItem,
+            fontSize = 14.sep,
+            color = Color(0xFF222222),
+            modifier = Modifier
+                .padding(start = 10.dep)
+        )
+        IconButton(
+            onClick = {
+                expanded = true
+            },
+            modifier = Modifier
+                .padding(end = 16.dep)
+                .height(24.dep)
+                .width(24.dep)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowDropDown,
+                contentDescription = stringResource(id = R.string.ArrowDropDown),
+                tint = Color(0xFF666666)
+            )
+        }
+    }
+    if (expanded) {
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.BottomEnd
+        ) {
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                type.forEach { item ->
+                    DropdownMenuItem(
+                        { Text(text = item.name, fontSize = 14.sep, color = Color(0xFF222222)) },
+                        onClick = {
+                            notifier.notify(MyDataIds.routeIds,)
+                            selectedItem = item.name
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+data class Type(
+    val name : String
+)

@@ -21,4 +21,5 @@ object Routes {
     val markAttendance = Route("markAttendance")
     val timeSheet = Route("timeSheet")
     val notification = Route("notification")
+    val managerHome = Route("managerHome")
 }

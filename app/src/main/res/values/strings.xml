@@ -3,9 +3,9 @@
     <string name="login">Log In to your Account.</string>
     <string name="wellcome">Welcome
         Back!</string>
-    <string name="username">EMAIL OR USERNAME</string>
+    <string name="username">EMAIL</string>
     <string name="password">PASSWORD</string>
-    <string name="recoverPassword">Recover Password?</string>
+    <string name="recoverPassword">Forget Password?</string>
     <string name="rights">All Rights Reserved by Jaya Industries Pvt Ltd</string>
     <string name="splash">Jaya Sales</string>
     <string name="logo">logo</string>
@@ -63,8 +63,8 @@
     <string name="BACK">BACK</string>
     <string name="ADD_NOW">ADD NOW</string>
     <string name="Sign_In">Sign In</string>
-    <string name="Recover_Password">Recover Password</string>
-    <string name="USERNAME">EMAIL OR USERNAME</string>
+    <string name="Recover_Password">Forget Password</string>
+    <string name="USERNAME">Enter EMAIL</string>
     <string name="Timesheets">View Timesheets</string>
     <string name="New_Order">New Order</string>
     <string name="Categories">Categories</string>

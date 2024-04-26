@@ -10,6 +10,7 @@ import com.example.jayasales.presentation.screens.ContactInformationScreen
 import com.example.jayasales.presentation.screens.HomeScreen
 import com.example.jayasales.presentation.screens.ItemScreen
 import com.example.jayasales.presentation.screens.LoginScreen
+import com.example.jayasales.presentation.screens.ManagerHomeScreen
 import com.example.jayasales.presentation.screens.MarkAttendanceScreen
 import com.example.jayasales.presentation.screens.MarkVisitScreen
 import com.example.jayasales.presentation.screens.NewOrdersPage
@@ -26,6 +27,7 @@ import com.example.jayasales.presentation.viewmodels.AddNewStoreViewModel
 import com.example.jayasales.presentation.viewmodels.ContactInformationViewModel
 import com.example.jayasales.presentation.viewmodels.HomeViewModel
 import com.example.jayasales.presentation.viewmodels.LoginViewModel
+import com.example.jayasales.presentation.viewmodels.ManagerHomeViewModel
 import com.example.jayasales.presentation.viewmodels.MarkAttendanceViewModel
 import com.example.jayasales.presentation.viewmodels.MarkVisitViewModel
 import com.example.jayasales.presentation.viewmodels.NewOrdersViewModel
@@ -45,7 +47,7 @@ fun MyApp() {
     val navController = rememberNavController()
     NavHost(
         navController,
-        startDestination = Routes.splash.full
+        startDestination = Routes.managerHome.full
     ) {
         MyScreen(
             navController, Routes.splash,
@@ -58,6 +60,12 @@ fun MyApp() {
             wirelessViewModel = { hiltViewModel<LoginViewModel>() }
         ) {
             LoginScreen()
+        }
+        MyScreen(
+            navController, Routes.managerHome,
+            wirelessViewModel = { hiltViewModel<ManagerHomeViewModel>() }
+        ) {
+            ManagerHomeScreen()
         }
         MyScreen(
             navController, Routes.home,

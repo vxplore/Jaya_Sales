@@ -163,4 +163,9 @@ enum class MyDataIds {
     submit,
     returnDialog,
     backHome,
+    type,
+    managerLogout,
+    managerConfirm,
+    managerDismiss,
+    managerOpendialog,
 }
