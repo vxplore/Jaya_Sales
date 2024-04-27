@@ -22,4 +22,6 @@ object Routes {
     val timeSheet = Route("timeSheet")
     val notification = Route("notification")
     val managerHome = Route("managerHome")
+    val managerOrder = Route("managerOrder")
+    val salesMen = Route("salesMen")
 }

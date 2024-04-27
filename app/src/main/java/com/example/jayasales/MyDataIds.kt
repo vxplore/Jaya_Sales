@@ -168,4 +168,6 @@ enum class MyDataIds {
     managerConfirm,
     managerDismiss,
     managerOpendialog,
+    distributorOrder,
+    order,
 }

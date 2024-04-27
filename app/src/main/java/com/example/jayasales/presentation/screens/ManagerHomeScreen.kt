@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -55,6 +56,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.DefaultShadowColor
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -73,7 +75,7 @@ import kotlinx.coroutines.launch
 fun ManagerHomeScreen(
     notifier: NotificationService = rememberNotifier(),
     openLogoutDialog: Boolean = boolState(key = MyDataIds.managerOpendialog).value,
-){
+) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     ModalNavigationDrawer(
@@ -166,28 +168,28 @@ fun ManagerHomeScreen(
                         .background(color = Color.LightGray)
                 )
                 Spacer(modifier = Modifier.height(20.dep))
-               /* Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .height(40.dep)
-                        .fillMaxWidth()
-                        .clickable {
-                            notifier.notify(MyDataIds.returnRequest)
-                        }
-                ) {
-                    Icon(
-                        painterResource(id = R.drawable.returnrequest),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .padding(start = 16.dp)
-                    )
-                    Spacer(Modifier.width(8.dep))
-                    Text(
-                        text = stringResource(id = R.string.Return),
-                        fontSize = 14.sep,
-                        color = Color(0xFF222222)
-                    )
-                }*/
+                /* Row(
+                     verticalAlignment = Alignment.CenterVertically,
+                     modifier = Modifier
+                         .height(40.dep)
+                         .fillMaxWidth()
+                         .clickable {
+                             notifier.notify(MyDataIds.returnRequest)
+                         }
+                 ) {
+                     Icon(
+                         painterResource(id = R.drawable.returnrequest),
+                         contentDescription = "",
+                         modifier = Modifier
+                             .padding(start = 16.dp)
+                     )
+                     Spacer(Modifier.width(8.dep))
+                     Text(
+                         text = stringResource(id = R.string.Return),
+                         fontSize = 14.sep,
+                         color = Color(0xFF222222)
+                     )
+                 }*/
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -293,7 +295,7 @@ fun ManagerHomeScreen(
                     actions = {
                         IconButton(
                             onClick = {
-                               // notifier.notify(MyDataIds.notification)
+                                // notifier.notify(MyDataIds.notification)
                             },
                             modifier = Modifier
                                 .height(36.dep)
@@ -315,7 +317,7 @@ fun ManagerHomeScreen(
                     .padding(it)
                     .padding(horizontal = 20.dep)
                     .fillMaxSize()
-            ){
+            ) {
                 Spacer(modifier = Modifier.height(20.dep))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -329,15 +331,17 @@ fun ManagerHomeScreen(
                             .background(Color(0xFFD62B2B), RoundedCornerShape(4.dep))
                             .height(112.dep)
                             .weight(.5f)
+                            .clip(RoundedCornerShape(4.dep))
+                            .clickable { notifier.notify(MyDataIds.order) }
                             .padding(horizontal = 12.dep)
                             .padding(vertical = 12.dep)
                     ) {
-                        Row (
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
-                        ){
+                        ) {
                             Text(
                                 text = "Order",
                                 fontSize = 16.sep,
@@ -347,6 +351,7 @@ fun ManagerHomeScreen(
                             )
                             IconButton(
                                 onClick = {
+                                    notifier.notify(MyDataIds.order)
                                 },
                                 modifier = Modifier
                                     .background(Color.White, CircleShape)
@@ -361,12 +366,12 @@ fun ManagerHomeScreen(
                                 )
                             }
                         }
-                        Row (
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
-                        ){
+                        ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.order),
                                 contentDescription = "ArrowBackIosNew",
@@ -393,12 +398,12 @@ fun ManagerHomeScreen(
                             .padding(horizontal = 12.dep)
                             .padding(vertical = 12.dep)
                     ) {
-                        Row (
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
-                        ){
+                        ) {
                             Text(
                                 text = "Sales Men",
                                 fontSize = 16.sep,
@@ -422,12 +427,12 @@ fun ManagerHomeScreen(
                                 )
                             }
                         }
-                        Row (
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
-                        ){
+                        ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.group),
                                 contentDescription = "ArrowBackIosNew",
@@ -445,12 +450,12 @@ fun ManagerHomeScreen(
                     }
                 }
                 Spacer(modifier = Modifier.height(20.dep))
-                Row (
+                Row(
                     modifier = Modifier
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
-                ){
+                ) {
                     Text(
                         text = "Distributor order",
                         fontSize = 17.sep,
@@ -476,8 +481,8 @@ fun ManagerHomeScreen(
                         .fillMaxWidth(),
                     contentPadding = PaddingValues(vertical = 10.dep),
                     verticalArrangement = Arrangement.spacedBy(20.dep)
-                ){
-                    items(count = 2){
+                ) {
+                    items(count = 2) {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -496,66 +501,66 @@ fun ManagerHomeScreen(
                                 focusedElevation = 10.dep,
                             ),
                             shape = RoundedCornerShape(4.dep),
-                        ){
-                                Row (
-                                    modifier = Modifier
-                                        .padding(horizontal = 16.dep)
-                                        .padding(top = 16.dep)
-                                        .fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ){
-                                    Row (
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.Center
-                                    ){
-                                        Text(
-                                            text = "Order:#09782",
-                                            fontSize = 13.sep,
-                                            fontWeight = FontWeight.SemiBold,
-                                            color = Color.Black,
-                                            modifier = Modifier
-                                        )
-                                        Spacer(modifier = Modifier.width(6.dep))
-                                        Divider(
-                                            modifier = Modifier
-                                                .height(22.dep)
-                                                .width(1.5.dep),
-                                            color = Color(0xFF707070)
-                                        )
-                                        Spacer(modifier = Modifier.width(6.dep))
-                                        Text(
-                                            text = "Pending",
-                                            fontSize = 13.sep,
-                                            fontWeight = FontWeight.SemiBold,
-                                            color = Color(0xFF247FBB),
-                                            modifier = Modifier
-                                        )
-                                    }
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dep)
+                                    .padding(top = 16.dep)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
                                     Text(
-                                        text = "Items:32",
+                                        text = "Order:#09782",
                                         fontSize = 13.sep,
                                         fontWeight = FontWeight.SemiBold,
                                         color = Color.Black,
                                         modifier = Modifier
                                     )
+                                    Spacer(modifier = Modifier.width(6.dep))
+                                    Divider(
+                                        modifier = Modifier
+                                            .height(22.dep)
+                                            .width(1.5.dep),
+                                        color = Color(0xFF707070)
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dep))
+                                    Text(
+                                        text = "Pending",
+                                        fontSize = 13.sep,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = Color(0xFF247FBB),
+                                        modifier = Modifier
+                                    )
                                 }
+                                Text(
+                                    text = "Items:32",
+                                    fontSize = 13.sep,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color.Black,
+                                    modifier = Modifier
+                                )
+                            }
                             Spacer(modifier = Modifier.height(10.dep))
                             Divider(
                                 color = Color(0xFFE9E5E5)
                             )
                             Spacer(modifier = Modifier.height(12.dep))
-                            Row (
+                            Row(
                                 modifier = Modifier
                                     .padding(horizontal = 16.dep)
                                     .fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
-                            ){
-                                Row (
+                            ) {
+                                Row(
                                     horizontalArrangement = Arrangement.Center,
                                     verticalAlignment = Alignment.CenterVertically
-                                ){
+                                ) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.house),
                                         contentDescription = stringResource(id = R.string.notification),
@@ -570,10 +575,10 @@ fun ManagerHomeScreen(
                                         modifier = Modifier
                                     )
                                 }
-                                Row (
+                                Row(
                                     horizontalArrangement = Arrangement.Center,
                                     verticalAlignment = Alignment.CenterVertically
-                                ){
+                                ) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.date),
                                         contentDescription = stringResource(id = R.string.notification),
@@ -592,12 +597,12 @@ fun ManagerHomeScreen(
                                 }
                             }
                             Spacer(modifier = Modifier.height(12.dep))
-                            Row (
+                            Row(
                                 horizontalArrangement = Arrangement.Center,
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
                                     .padding(horizontal = 16.dep)
-                            ){
+                            ) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.location),
                                     contentDescription = stringResource(id = R.string.notification),
@@ -614,6 +619,26 @@ fun ManagerHomeScreen(
                                 )
                             }
                             Spacer(modifier = Modifier.height(12.dep))
+                            Button(
+                                onClick = {
+                                },
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dep)
+                                    .padding(bottom = 10.dep)
+                                    .fillMaxWidth(),
+                                colors = ButtonDefaults.buttonColors(Color(0xFF2DB87C)),
+                                elevation = ButtonDefaults.buttonElevation(
+                                    defaultElevation = 8.dep,
+                                    pressedElevation = 10.dep
+                                ),
+                                shape = RoundedCornerShape(4.dep)
+                            ) {
+                                Text(
+                                    text = "Confirm Order",
+                                    fontSize = 15.sep,
+                                    color = Color.White
+                                )
+                            }
                         }
                     }
                 }

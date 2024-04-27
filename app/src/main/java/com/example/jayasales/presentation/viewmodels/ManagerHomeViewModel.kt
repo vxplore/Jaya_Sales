@@ -43,6 +43,11 @@ class ManagerHomeViewModel @Inject constructor(
                 opendialog.value = !opendialog.value
                 doLogOut()
             }
+            MyDataIds.order->{
+                navigation {
+                    navigate(Routes.managerOrder.full)
+                }
+            }
         }
     }
 
