@@ -343,7 +343,7 @@ fun ManagerHomeScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "Order",
+                                text = "Orders",
                                 fontSize = 16.sep,
                                 fontWeight = FontWeight.SemiBold,
                                 color = Color.White,
@@ -395,6 +395,8 @@ fun ManagerHomeScreen(
                             .background(Color(0xFF2DB87C), RoundedCornerShape(4.dep))
                             .height(112.dep)
                             .weight(.5f)
+                            .clip(RoundedCornerShape(4.dep))
+                            .clickable { notifier.notify(MyDataIds.salesMen) }
                             .padding(horizontal = 12.dep)
                             .padding(vertical = 12.dep)
                     ) {
@@ -413,6 +415,7 @@ fun ManagerHomeScreen(
                             )
                             IconButton(
                                 onClick = {
+                                    notifier.notify(MyDataIds.salesMen)
                                 },
                                 modifier = Modifier
                                     .background(Color.White, CircleShape)
@@ -464,7 +467,7 @@ fun ManagerHomeScreen(
                         modifier = Modifier
                     )
                     TextButton(onClick = {
-
+                        notifier.notify(MyDataIds.order)
                     }) {
                         Text(
                             text = "View All",
@@ -475,14 +478,13 @@ fun ManagerHomeScreen(
                         )
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dep))
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth(),
                     contentPadding = PaddingValues(vertical = 10.dep),
                     verticalArrangement = Arrangement.spacedBy(20.dep)
                 ) {
-                    items(count = 2) {
+                    items(count = 20) {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -492,9 +494,9 @@ fun ManagerHomeScreen(
                                     clip = true,
                                     DefaultShadowColor
                                 )
-                                .clip(RoundedCornerShape(4.dep))
+                               /* .clip(RoundedCornerShape(4.dep))
                                 .clickable {
-                                },
+                                }*/,
                             colors = CardDefaults.cardColors(Color.White),
                             elevation = CardDefaults.cardElevation(
                                 defaultElevation = 8.dep,
@@ -621,6 +623,7 @@ fun ManagerHomeScreen(
                             Spacer(modifier = Modifier.height(12.dep))
                             Button(
                                 onClick = {
+                                          notifier.notify(MyDataIds.confirmOrder)
                                 },
                                 modifier = Modifier
                                     .padding(horizontal = 16.dep)

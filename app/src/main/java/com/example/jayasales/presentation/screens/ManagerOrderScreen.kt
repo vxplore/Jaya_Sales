@@ -3,6 +3,7 @@ package com.example.jayasales.presentation.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -68,7 +70,7 @@ import com.example.jayasales.model.PartiesDatum
 fun ManagerOrderScreen(
     notifier: NotificationService = rememberNotifier(),
     distributorOrder: SnapshotStateList<DistributorOrder> = listState(key = MyDataIds.distributorOrder),
-    ){
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -177,11 +179,10 @@ fun ManagerOrderScreen(
                             color = Color.Black
                         )
                     }
-                }
-                else {
+                } else {
                     LazyColumn(
                         modifier = Modifier
-                            .fillMaxWidth(),
+                            .fillMaxSize(),
                         //contentPadding = PaddingValues(vertical = 10.dep),
                         verticalArrangement = Arrangement.spacedBy(20.dep)
                     ) {
@@ -194,10 +195,10 @@ fun ManagerOrderScreen(
                                         RoundedCornerShape(4.dep),
                                         clip = true,
                                         DefaultShadowColor
-                                    )
-                                    .clip(RoundedCornerShape(4.dep))
-                                    .clickable {
-                                    },
+                                    ),
+                                /*  .clip(RoundedCornerShape(4.dep))
+                                  .clickable {
+                                  }*/
                                 colors = CardDefaults.cardColors(Color.White),
                                 elevation = CardDefaults.cardElevation(
                                     defaultElevation = 8.dep,
@@ -311,6 +312,7 @@ fun ManagerOrderScreen(
                                         contentDescription = stringResource(id = R.string.notification),
                                         tint = Color.Black,
                                         modifier = Modifier.size(20.dep)
+
                                     )
                                     Spacer(modifier = Modifier.width(4.dep))
                                     Text(
@@ -346,10 +348,351 @@ fun ManagerOrderScreen(
                         }
                     }
                 }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    //contentPadding = PaddingValues(vertical = 10.dep),
+                    verticalArrangement = Arrangement.spacedBy(20.dep)
+                ) {
+                    itemsIndexed(distributorOrder) { index, it ->
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .shadow(
+                                    4.dep,
+                                    RoundedCornerShape(4.dep),
+                                    clip = true,
+                                    DefaultShadowColor
+                                ),
+                            /*  .clip(RoundedCornerShape(4.dep))
+                              .clickable {
+                              }*/
+                            colors = CardDefaults.cardColors(Color.White),
+                            elevation = CardDefaults.cardElevation(
+                                defaultElevation = 8.dep,
+                                focusedElevation = 10.dep,
+                            ),
+                            shape = RoundedCornerShape(4.dep),
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dep)
+                                    .padding(top = 16.dep)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = "Order:#${it.order}",
+                                        fontSize = 13.sep,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = Color.Black,
+                                        modifier = Modifier
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dep))
+                                    Divider(
+                                        modifier = Modifier
+                                            .height(22.dep)
+                                            .width(1.5.dep),
+                                        color = Color(0xFF707070)
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dep))
+                                    Text(
+                                        text = it.status,
+                                        fontSize = 13.sep,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = Color(0xFF247FBB),
+                                        modifier = Modifier
+                                    )
+                                }
+                                Text(
+                                    text = "Items:${it.item}",
+                                    fontSize = 13.sep,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color.Black,
+                                    modifier = Modifier
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(10.dep))
+                            Divider(
+                                color = Color(0xFFE9E5E5)
+                            )
+                            Spacer(modifier = Modifier.height(12.dep))
+                            Row(
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dep)
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row(
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.house),
+                                        contentDescription = stringResource(id = R.string.notification),
+                                        tint = Color(0xFFD62B2B)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dep))
+                                    Text(
+                                        text = it.name,
+                                        fontSize = 15.sep,
+                                        //fontWeight = FontWeight.SemiBold,
+                                        color = Color(0xFFD62B2B),
+                                        modifier = Modifier
+                                    )
+                                }
+                                Row(
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.date),
+                                        contentDescription = stringResource(id = R.string.notification),
+                                        tint = Color.Black,
+                                        modifier = Modifier
+                                            .size(16.dep)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dep))
+                                    Text(
+                                        text = it.date,
+                                        fontSize = 12.sep,
+                                        //fontWeight = FontWeight.SemiBold,
+                                        color = Color.Black,
+                                        modifier = Modifier
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(12.dep))
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dep)
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.location),
+                                    contentDescription = stringResource(id = R.string.notification),
+                                    tint = Color.Black,
+                                    modifier = Modifier.size(20.dep)
+
+                                )
+                                Spacer(modifier = Modifier.width(4.dep))
+                                Text(
+                                    text = it.address,
+                                    fontSize = 14.sep,
+                                    //fontWeight = FontWeight.SemiBold,
+                                    color = Color.Black,
+                                    modifier = Modifier
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(12.dep))
+                            Divider()
+                            Text(
+                                text = "Order Status",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black,
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dep)
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .padding(start = 16.dep)
+                                    .fillMaxWidth()
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .weight(.25f)
+                                ) {
+                                    Text(
+                                        text = "Booked",
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = Color.Black
+                                    )
+                                    Spacer(modifier = Modifier.height(4.dep))
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .background(
+                                                    if (it.trackorderstatus == "Dispatched" || it.trackorderstatus == "Received" || it.trackorderstatus == "Ready to Load" || it.trackorderstatus == "Booked") {
+                                                        Color(0xFF2DB87C)
+                                                    } else {
+                                                        Color(0xFFD2D0D0)
+                                                    }, CircleShape
+                                                )
+                                                .size(16.dep)
+                                        )
+                                        Box(
+                                            modifier = Modifier
+                                                .background(
+                                                    if (it.trackorderstatus == "Dispatched" || it.trackorderstatus == "Received" || it.trackorderstatus == "Ready to Load") {
+                                                        Color(0xFF2DB87C)
+                                                    } else {
+                                                        Color(0xFFD2D0D0)
+                                                    }, CircleShape
+                                                )
+                                                .height(2.dep)
+                                                .fillMaxWidth()
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(4.dep))
+                                    Text(
+                                        text = "12/02/22",
+                                        fontSize = 8.sep,
+                                        color = Color(0xFF818181)
+                                    )
+                                }
+                                Column(
+                                    modifier = Modifier
+                                        .weight(.25f)
+                                ) {
+                                    Text(
+                                        text = "02/12/23",
+                                        fontSize = 8.sp,
+                                        color = Color(0xFF818181)
+                                    )
+                                    Spacer(modifier = Modifier.height(4.dep))
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .background(
+                                                    if (it.trackorderstatus == "Dispatched" || it.trackorderstatus == "Received" || it.trackorderstatus == "Ready to Load") {
+                                                        Color(0xFF2DB87C)
+                                                    } else {
+                                                        Color(0xFFD2D0D0)
+                                                    }, CircleShape
+                                                )
+                                                .size(16.dep)
+                                        )
+                                        Box(
+                                            modifier = Modifier
+                                                .background(
+                                                    if (it.trackorderstatus == "Dispatched" || it.trackorderstatus == "Received") {
+                                                        Color(0xFF2DB87C)
+                                                    } else {
+                                                        Color(0xFFD2D0D0)
+                                                    }, CircleShape
+                                                )
+                                                .height(2.dep)
+                                                .fillMaxWidth()
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(4.dep))
+                                    Text(
+                                        text = "Ready to Load",
+                                        fontSize = 8.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = Color.Black
+                                    )
+                                }
+                                Column(
+                                    modifier = Modifier
+                                        .weight(.25f)
+                                ) {
+                                    Text(
+                                        text = "Dispatched",
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = Color.Black
+                                    )
+                                    Spacer(modifier = Modifier.height(4.dep))
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .background(
+                                                    if (it.trackorderstatus == "Dispatched" || it.trackorderstatus == "Received") {
+                                                        Color(0xFF2DB87C)
+                                                    } else {
+                                                        Color(0xFFD2D0D0)
+                                                    }, CircleShape
+                                                )
+                                                .size(16.dep)
+                                        )
+                                        Box(
+                                            modifier = Modifier
+                                                .background(
+                                                    if (it.trackorderstatus == "Received") {
+                                                        Color(0xFF2DB87C)
+                                                    } else {
+                                                        Color(0xFFD2D0D0)
+                                                    }, CircleShape
+                                                )
+                                                .height(2.dep)
+                                                .fillMaxWidth()
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(4.dep))
+                                    Text(
+                                        text = "2-01-2024 6:40",
+                                        fontSize = 8.sp,
+                                        color = Color(0xFF818181)
+                                    )
+                                }
+                                Column(
+                                    modifier = Modifier
+                                        .weight(.25f),
+                                ) {
+                                    Text(
+                                        text = "2-01-2024 6:40",
+                                        fontSize = 8.sp,
+                                        color = Color(0xFF818181)
+                                    )
+                                    Spacer(modifier = Modifier.height(4.dep))
+
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .background(
+                                                    if (it.trackorderstatus == "Received") {
+                                                        Color(0xFF2DB87C)
+                                                    } else {
+                                                        Color(0xFFD2D0D0)
+                                                    }, CircleShape
+                                                )
+                                                .size(16.dep)
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(4.dep))
+                                    Text(
+                                        text = "Received",
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = Color.Black
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(20.dep))
+                        }
+                    }
+                }
             }
         }
     }
 }
+
 
 data class DistributorOrder(
     val order: String,
@@ -358,4 +701,11 @@ data class DistributorOrder(
     val date: String,
     val status: String,
     val address: String,
+    val trackorderstatus: String,
+    val tracker: List<TrackerItem> // Add this field
+)
+
+data class TrackerItem(
+    val trackdate: String,
+    val trackstatus: String
 )

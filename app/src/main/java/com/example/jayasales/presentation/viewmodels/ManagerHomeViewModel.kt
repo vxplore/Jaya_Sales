@@ -2,6 +2,7 @@ package com.example.jayasales.presentation.viewmodels
 
 import android.os.Bundle
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
 import com.debduttapanda.j3lib.InterCom
 import com.debduttapanda.j3lib.WirelessViewModel
 import com.debduttapanda.j3lib.models.EventBusDescription
@@ -15,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ManagerHomeViewModel @Inject constructor(
     private val repo: Repository
-):WirelessViewModel(){
+) : WirelessViewModel() {
 
     private val opendialog = mutableStateOf(false)
     override fun eventBusDescription(): EventBusDescription? {
@@ -29,23 +30,38 @@ class ManagerHomeViewModel @Inject constructor(
     }
 
     override fun onNotification(id: Any?, arg: Any?) {
-        when(id){
-            MyDataIds.back->{
+        when (id) {
+            MyDataIds.back -> {
                 popBackStack()
             }
-            MyDataIds.managerLogout->{
+
+            MyDataIds.managerLogout -> {
                 opendialog.value = !opendialog.value
             }
-            MyDataIds.managerDismiss->{
+
+            MyDataIds.managerDismiss -> {
                 opendialog.value = !opendialog.value
             }
+
             MyDataIds.managerConfirm -> {
                 opendialog.value = !opendialog.value
                 doLogOut()
             }
-            MyDataIds.order->{
+
+            MyDataIds.order -> {
                 navigation {
                     navigate(Routes.managerOrder.full)
+                }
+            }
+
+            MyDataIds.confirmOrder -> {
+                navigation {
+                    navigate(Routes.managerOrderDetails.full)
+                }
+            }
+            MyDataIds.salesMen -> {
+                navigation {
+                    navigate(Routes.salesMen.full)
                 }
             }
         }
@@ -53,10 +69,12 @@ class ManagerHomeViewModel @Inject constructor(
 
     override fun onStartUp(route: Route?, arguments: Bundle?) {
     }
+
     init {
         mapData(
             MyDataIds.managerOpendialog to opendialog
         )
+        setStatusBarColor(Color(0xFFFFEB56), true)
     }
 
     private fun doLogOut() {

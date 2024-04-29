@@ -2,12 +2,14 @@ package com.example.jayasales.presentation.viewmodels
 
 import android.os.Bundle
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.graphics.Color
 import com.debduttapanda.j3lib.InterCom
 import com.debduttapanda.j3lib.WirelessViewModel
 import com.debduttapanda.j3lib.models.EventBusDescription
 import com.debduttapanda.j3lib.models.Route
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.presentation.screens.DistributorOrder
+import com.example.jayasales.presentation.screens.TrackerItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -39,10 +41,18 @@ class ManagerOrderViewModel @Inject constructor(
         mapData(
             MyDataIds.distributorOrder to distributorOrder,
         )
-        distributorOrder.addAll(listOf(DistributorOrder("1234","12","Noushad","12/04/24","Pending","PadmaBabu Road")))
-        distributorOrder.addAll(listOf(DistributorOrder("1235","4","Sayan","1/03/24","Completed","Arambagh Basantapur")))
-        distributorOrder.addAll(listOf(DistributorOrder("1236","7","Ricky","09/01/24","Pending","Kolkata")))
-        distributorOrder.addAll(listOf(DistributorOrder("1237","9","Rakibuddin","18/04/24","Failed","Ripon Street")))
-        distributorOrder.addAll(listOf(DistributorOrder("1238","1","Moloy","18/04/24","Ongoing","Bally, Howrah")))
+        setStatusBarColor(Color(0xFFFFEB56), true)
+
+        distributorOrder.addAll(listOf(DistributorOrder("1234","12","Noushad","12/04/24","Pending","PadmaBabu Road","Dispatched",
+            listOf(TrackerItem("2/03/23","Booked"))
+        )))
+
+        distributorOrder.addAll(listOf(DistributorOrder("1234","12","Noushad","12/04/24","Pending","PadmaBabu Road","Received",
+            listOf(TrackerItem("2/03/23","Booked"))
+        )))
+        distributorOrder.addAll(listOf(DistributorOrder("1234","12","Noushad","12/04/24","Pending","PadmaBabu Road","Booked",
+            listOf(TrackerItem("2/03/23","Booked"))
+        )))
+        distributorOrder.addAll(listOf(DistributorOrder("1235","4","Sayan","1/03/24","Completed","Arambagh Basantapur", "Ready to Load",listOf(TrackerItem("2/04/23","Ready to Load")))))
     }
 }

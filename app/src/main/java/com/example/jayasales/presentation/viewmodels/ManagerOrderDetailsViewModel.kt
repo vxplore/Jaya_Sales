@@ -1,6 +1,7 @@
 package com.example.jayasales.presentation.viewmodels
 
 import android.os.Bundle
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import com.debduttapanda.j3lib.InterCom
 import com.debduttapanda.j3lib.WirelessViewModel
@@ -12,8 +13,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class SalesMenViewModel @Inject constructor(
+class ManagerOrderDetailsViewModel @Inject constructor(
 ):WirelessViewModel(){
+    private val profilename = mutableStateOf("")
     override fun eventBusDescription(): EventBusDescription? {
         return null
     }
@@ -26,18 +28,15 @@ class SalesMenViewModel @Inject constructor(
 
     override fun onNotification(id: Any?, arg: Any?) {
         when(id){
+            MyDataIds.profilename -> {
+                profilename.value = arg as String
+            }
             MyDataIds.back->{
                 popBackStack()
             }
-            MyDataIds.timeline->{
+            MyDataIds.addProduct->{
                 navigation {
-                    navigate(Routes.timeline.full)
-                }
-            }
-
-            MyDataIds.openMap->{
-                navigation {
-                    navigate(Routes.managerMap.full)
+                    navigate(Routes.managerAddProduct.full)
                 }
             }
         }
@@ -47,7 +46,9 @@ class SalesMenViewModel @Inject constructor(
     }
 
     init {
-        mapData()
+        mapData(
+            MyDataIds.profilename to profilename
+        )
         setStatusBarColor(Color(0xFFFFEB56), true)
     }
 }

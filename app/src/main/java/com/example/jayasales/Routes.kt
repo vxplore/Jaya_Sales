@@ -24,4 +24,8 @@ object Routes {
     val managerHome = Route("managerHome")
     val managerOrder = Route("managerOrder")
     val salesMen = Route("salesMen")
+    val managerOrderDetails = Route("managerOrderDetails")
+    val managerAddProduct = Route("managerAddProduct")
+    val timeline = Route("timeline")
+    val managerMap = Route("managerMap")
 }

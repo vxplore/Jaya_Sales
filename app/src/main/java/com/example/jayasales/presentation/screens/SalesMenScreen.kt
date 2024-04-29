@@ -35,6 +35,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +47,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.debduttapanda.j3lib.NotificationService
 import com.debduttapanda.j3lib.dep
+import com.debduttapanda.j3lib.listState
 import com.debduttapanda.j3lib.rememberNotifier
 import com.debduttapanda.j3lib.sep
 import com.example.jayasales.MyDataIds
@@ -55,6 +57,7 @@ import com.example.jayasales.R
 @Composable
 fun SalesMenScreen(
     notifier: NotificationService = rememberNotifier(),
+    salesmen: SnapshotStateList<DistributorOrder> = listState(key = MyDataIds.distributorOrder),
 ) {
     Scaffold(
         topBar = {
@@ -115,6 +118,7 @@ fun SalesMenScreen(
                             )
                             .clip(RoundedCornerShape(4.dep))
                             .clickable {
+                                       notifier.notify(MyDataIds.timeline)
                             },
                         colors = CardDefaults.cardColors(Color.White),
                         elevation = CardDefaults.cardElevation(
@@ -156,6 +160,7 @@ fun SalesMenScreen(
                             ) {
                                 IconButton(
                                     onClick = {
+                                              notifier.notify(MyDataIds.openMap)
                                     },
                                     modifier = Modifier
                                         .background(Color(0xFDE4B5B5), CircleShape)
@@ -187,6 +192,47 @@ fun SalesMenScreen(
                                 }
                             }
                         }
+                        Spacer(modifier = Modifier.height(8.dep))
+                        Row(
+                            modifier = Modifier
+                                .padding(horizontal = 16.dep)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+
+                                Text(
+                                    text = "Need to Start",
+                                    fontSize = 12.sep,
+                                    color = Color.Black,
+                                )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = "Todays Order",
+                                    fontSize = 12.sep,
+                                    color = Color.Black,
+                                )
+                                Spacer(modifier = Modifier.width(4.dep))
+                                Text(
+                                    text = "20",
+                                    fontSize = 16.sep,
+                                    color = Color.Black,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(8.dep))
+                        Text(
+                            text = "---",
+                            fontSize = 12.sep,
+                            color = Color.Black,
+                            modifier = Modifier
+                                .padding(horizontal = 16.dep)
+                        )
+                        Spacer(modifier = Modifier.height(4.dep))
                     }
                 }
             }

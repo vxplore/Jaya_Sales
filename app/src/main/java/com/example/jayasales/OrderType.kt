@@ -10,6 +10,6 @@ sealed class OrderType(
         Action
     }
 
-    object Product : OrderType("Distributor Order", Type.Navigation, "Distributor Order")
+    object Product : OrderType("Distributor Orders", Type.Navigation, "Distributor Orders")
     object Services : OrderType("Confirm Orders", Type.Navigation, "Confirm Orders")
 }

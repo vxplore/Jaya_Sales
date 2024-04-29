@@ -10,7 +10,10 @@ import com.example.jayasales.presentation.screens.ContactInformationScreen
 import com.example.jayasales.presentation.screens.HomeScreen
 import com.example.jayasales.presentation.screens.ItemScreen
 import com.example.jayasales.presentation.screens.LoginScreen
+import com.example.jayasales.presentation.screens.ManagerAddProductScreen
 import com.example.jayasales.presentation.screens.ManagerHomeScreen
+import com.example.jayasales.presentation.screens.ManagerMapScreen
+import com.example.jayasales.presentation.screens.ManagerOrderDetailsScreen
 import com.example.jayasales.presentation.screens.ManagerOrderScreen
 import com.example.jayasales.presentation.screens.MarkAttendanceScreen
 import com.example.jayasales.presentation.screens.MarkVisitScreen
@@ -24,12 +27,16 @@ import com.example.jayasales.presentation.screens.SalesMenScreen
 import com.example.jayasales.presentation.screens.SelectRouteScreen
 import com.example.jayasales.presentation.screens.SplashScreen
 import com.example.jayasales.presentation.screens.StoreDetailsScreen
+import com.example.jayasales.presentation.screens.TimeLineScreen
 import com.example.jayasales.presentation.screens.TimeSheetScreen
 import com.example.jayasales.presentation.viewmodels.AddNewStoreViewModel
 import com.example.jayasales.presentation.viewmodels.ContactInformationViewModel
 import com.example.jayasales.presentation.viewmodels.HomeViewModel
 import com.example.jayasales.presentation.viewmodels.LoginViewModel
+import com.example.jayasales.presentation.viewmodels.ManagerAddProductViewModel
 import com.example.jayasales.presentation.viewmodels.ManagerHomeViewModel
+import com.example.jayasales.presentation.viewmodels.ManagerMapViewModel
+import com.example.jayasales.presentation.viewmodels.ManagerOrderDetailsViewModel
 import com.example.jayasales.presentation.viewmodels.ManagerOrderViewModel
 import com.example.jayasales.presentation.viewmodels.MarkAttendanceViewModel
 import com.example.jayasales.presentation.viewmodels.MarkVisitViewModel
@@ -43,6 +50,7 @@ import com.example.jayasales.presentation.viewmodels.SalesMenViewModel
 import com.example.jayasales.presentation.viewmodels.SelectRouteViewModel
 import com.example.jayasales.presentation.viewmodels.SplashViewModel
 import com.example.jayasales.presentation.viewmodels.StoreDetailsViewModel
+import com.example.jayasales.presentation.viewmodels.TimeLineViewModel
 import com.example.jayasales.presentation.viewmodels.TimesheetViedModel
 
 
@@ -51,7 +59,7 @@ fun MyApp() {
     val navController = rememberNavController()
     NavHost(
         navController,
-        startDestination = Routes.salesMen.full
+        startDestination = Routes.managerHome.full
     ) {
         MyScreen(
             navController, Routes.splash,
@@ -172,6 +180,30 @@ fun MyApp() {
             wirelessViewModel = { hiltViewModel<SalesMenViewModel>() }
         ) {
             SalesMenScreen()
+        }
+        MyScreen(
+            navController, Routes.managerOrderDetails,
+            wirelessViewModel = { hiltViewModel<ManagerOrderDetailsViewModel>() }
+        ) {
+            ManagerOrderDetailsScreen()
+        }
+        MyScreen(
+            navController, Routes.managerAddProduct,
+            wirelessViewModel = { hiltViewModel<ManagerAddProductViewModel>() }
+        ) {
+            ManagerAddProductScreen()
+        }
+        MyScreen(
+            navController, Routes.timeline,
+            wirelessViewModel = { hiltViewModel<TimeLineViewModel>() }
+        ) {
+            TimeLineScreen()
+        }
+        MyScreen(
+            navController, Routes.managerMap,
+            wirelessViewModel = { hiltViewModel<ManagerMapViewModel>() }
+        ) {
+            ManagerMapScreen()
         }
     }
 }
