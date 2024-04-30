@@ -586,7 +586,7 @@ fun TypeDropDown(
     notifier: NotificationService = rememberNotifier()
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf("Sales Man") }
+    var selectedItem by remember { mutableStateOf("Select Type") }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -630,7 +630,7 @@ fun TypeDropDown(
                     DropdownMenuItem(
                         { Text(text = item.name, fontSize = 14.sep, color = Color(0xFF222222)) },
                         onClick = {
-                            notifier.notify(MyDataIds.routeIds,)
+                            notifier.notify(MyDataIds.routeIds,item.id)
                             selectedItem = item.name
                             expanded = false
                         }
@@ -642,5 +642,6 @@ fun TypeDropDown(
 }
 
 data class Type(
-    val name : String
+    val name : String,
+    val id : String
 )

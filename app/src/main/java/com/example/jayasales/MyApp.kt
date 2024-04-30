@@ -59,7 +59,7 @@ fun MyApp() {
     val navController = rememberNavController()
     NavHost(
         navController,
-        startDestination = Routes.managerHome.full
+        startDestination = Routes.splash.full
     ) {
         MyScreen(
             navController, Routes.splash,

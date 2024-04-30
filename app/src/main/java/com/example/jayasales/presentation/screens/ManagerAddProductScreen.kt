@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -25,6 +27,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -42,20 +45,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.debduttapanda.j3lib.NotificationService
+import com.debduttapanda.j3lib.boolState
 import com.debduttapanda.j3lib.dep
+import com.debduttapanda.j3lib.listState
 import com.debduttapanda.j3lib.rememberNotifier
 import com.debduttapanda.j3lib.sep
 import com.debduttapanda.j3lib.stringState
 import com.example.jayasales.MyDataIds
+import com.example.jayasales.model.DistributorDetailsProduct
+import com.example.jayasales.model.SearchData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManagerAddProductScreen(
     notifier: NotificationService = rememberNotifier(),
     qty: State<String> = stringState(key = MyDataIds.qty),
+    searchList: List<SearchData> = listState(key = MyDataIds.searchList),
+    loadingState: State<Boolean> = boolState(key = MyDataIds.loadingState),
 ) {
     Scaffold(
         topBar = {
@@ -97,75 +107,102 @@ fun ManagerAddProductScreen(
         ) {
             Spacer(modifier = Modifier.height(20.dep))
             OrderSearchBox()
-            Spacer(modifier = Modifier.height(16.dep))
-            Divider()
-            Spacer(modifier = Modifier.height(20.dep))
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                contentPadding = PaddingValues(vertical = 10.dep),
-                verticalArrangement = Arrangement.spacedBy(20.dep)
-            ) {
-                items(count = 1) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier
-                            .padding(horizontal = 16.dep)
-                            .fillMaxWidth()
-                    ) {
-                        Column {
+            if (loadingState.value) {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        //.padding(bottom = 60.dep)
+                        .fillMaxSize()
+                ) {
+                    CircularProgressIndicator(
+                        color = Color(0xFF2DB87C),
+                    )
+                }
+            }else {
+                Spacer(modifier = Modifier.height(16.dep))
+                Divider()
+                Spacer(modifier = Modifier.height(20.dep))
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentPadding = PaddingValues(vertical = 10.dep),
+                    verticalArrangement = Arrangement.spacedBy(20.dep)
+                ) {
+                    if (searchList.isEmpty()) {
+                        item {
                             Text(
-                                text = "#15032",
-                                fontSize = 12.sep,
-                                color = Color(0xFFA4A4A4),
+                                text = "Search your product",
+                                fontSize = 16.sep,
+                                textAlign = TextAlign.Center,
                                 modifier = Modifier
-                                //.padding(horizontal = 16.dep)
-                            )
-                            Spacer(modifier = Modifier.height(4.dep))
-                            Text(
-                                text = "Baking Powder",
-                                fontSize = 14.sep,
-                                color = Color.Black,
-                                modifier = Modifier
-                                //.padding(horizontal = 16.dep)
-                            )
-                            Spacer(modifier = Modifier.height(4.dep))
-                            Text(
-                                text = "300/16",
-                                fontSize = 12.sep,
-                                color = Color(0xFFA4A4A4),
-                                modifier = Modifier
-                                //.padding(horizontal = 16.dep)
+                                    .fillMaxWidth()
+                                    .padding(16.dep)
                             )
                         }
-                        OutlinedTextField(
-                            value = qty.value,
-                            onValueChange = {
-                                //qtyState.value = it
-                                notifier.notify(MyDataIds.qty, it)
-                            },
-                            placeholder = {
-                                Text(
-                                    text = "amount",
-                                    color = Color(0XFF898989),
-                                    fontSize = 7.sep
+                    } else {
+                        itemsIndexed(searchList) { index, it ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dep)
+                                    .fillMaxWidth()
+                            ) {
+                                Column {
+                                    Text(
+                                        text = "#${it.code}",
+                                        fontSize = 12.sep,
+                                        color = Color(0xFFA4A4A4),
+                                        modifier = Modifier
+                                        //.padding(horizontal = 16.dep)
+                                    )
+                                    Spacer(modifier = Modifier.height(4.dep))
+                                    Text(
+                                        text = it.name,
+                                        fontSize = 14.sep,
+                                        color = Color.Black,
+                                        modifier = Modifier
+                                        //.padding(horizontal = 16.dep)
+                                    )
+                                    Spacer(modifier = Modifier.height(4.dep))
+                                    Text(
+                                        text = "${it.weight}/${it.pcs}",
+                                        fontSize = 12.sep,
+                                        color = Color(0xFFA4A4A4),
+                                        modifier = Modifier
+                                        //.padding(horizontal = 16.dep)
+                                    )
+                                }
+                                OutlinedTextField(
+                                    value = qty.value,
+                                    onValueChange = {
+                                        //qtyState.value = it
+                                        notifier.notify(MyDataIds.qty, it)
+                                    },
+                                    placeholder = {
+                                        Text(
+                                            text = "amount",
+                                            color = Color(0XFF898989),
+                                            fontSize = 7.sep
+                                        )
+                                    },
+                                    maxLines = 1,
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Number,
+                                        imeAction = ImeAction.Done
+                                    ),
+                                    modifier = Modifier
+                                        //.padding(horizontal = 20.dep)
+                                        .size(60.dep)
+                                    //.fillMaxWidth()
                                 )
-                            },
-                            maxLines = 1,
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Done
-                            ),
-                            modifier = Modifier
-                                //.padding(horizontal = 20.dep)
-                                .size(60.dep)
-                            //.fillMaxWidth()
-                        )
+                            }
+                        }
                     }
                 }
             }
-
         }
     }
 
@@ -176,6 +213,7 @@ fun ManagerAddProductScreen(
     ){
         Button(
             onClick = {
+                      notifier.notify(MyDataIds.addNow)
             },
             modifier = Modifier
                 .padding(horizontal = 16.dep)
@@ -197,7 +235,7 @@ fun ManagerAddProductScreen(
 @Composable
 fun OrderSearchBox(
     notifier: NotificationService = rememberNotifier(),
-    orderSearch: State<String> = stringState(key = MyDataIds.orderSearch)
+    orderSearch: State<String> = stringState(key = MyDataIds.orderSearch),
 ) {
     OutlinedTextField(
         value = orderSearch.value,
@@ -225,6 +263,7 @@ fun OrderSearchBox(
                     )
                     .height(54.dep),
                 onClick = {
+                          notifier.notify(MyDataIds.search)
                 },
             ) {
                 Icon(

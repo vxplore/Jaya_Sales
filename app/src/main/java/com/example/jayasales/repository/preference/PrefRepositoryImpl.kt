@@ -31,6 +31,10 @@ class PrefRepositoryImpl @Inject constructor(
     private val returnProductIdKey = "returnProductIdKey"
     private val returnStoreIdKey = "returnStoreIdKey"
     private val reasonIdKey = "reasonIdKey"
+    private val DistributorOrderId = "reasonIdKey"
+    private val UserType = "UserType"
+    private val UpdateProductId = "UpdateProductId"
+
 
 
     private lateinit var myPref : SharedPreferences
@@ -204,6 +208,30 @@ class PrefRepositoryImpl @Inject constructor(
 
     override fun getLogEmail(): String? {
         return myPref.getString(logEmailKey,"")
+    }
+
+    override fun getUserType(): String? {
+        return myPref.getString(UserType,"")
+    }
+
+    override fun setUserType(userType: String?) {
+        myPref.edit().putString(UserType,userType.toString()).apply()
+    }
+
+    override fun setUpdateProductId(updateProductId: String) {
+        myPref.edit().putString(UpdateProductId,updateProductId.toString()).apply()
+    }
+
+    override fun getUpdateProductId(): String? {
+       return myPref.getString(UpdateProductId,"")
+    }
+
+    override fun setDistributorOrderId(distributorOrderId: String?) {
+        myPref.edit().putString(DistributorOrderId,distributorOrderId.toString()).apply()
+    }
+
+    override fun getDistributorOrderId(): String? {
+        return myPref.getString(DistributorOrderId,"")
     }
 
     override fun deleteUserId() {

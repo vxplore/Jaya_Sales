@@ -11,6 +11,8 @@ import com.example.jayasales.model.CheckInOutDataResponse
 import com.example.jayasales.model.CityDataResponse
 import com.example.jayasales.model.DashboardDataResponse
 import com.example.jayasales.model.DeleteStoreDataResponse
+import com.example.jayasales.model.DistributorOrderDataResponse
+import com.example.jayasales.model.DistributorOrderDetailsDataResponse
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
 import com.example.jayasales.model.MarkVisitDataResponse
@@ -24,10 +26,12 @@ import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.ReturnRequestDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
 import com.example.jayasales.model.RouteDataResponse
+import com.example.jayasales.model.SearchProductDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
 import com.example.jayasales.model.StateDataResponse
 import com.example.jayasales.model.StoreDetailsDataResponse
 import com.example.jayasales.model.TimeSheetDataResponse
+import com.example.jayasales.model.UpdateQuantityDataResponse
 import com.example.jayasales.model.UpdateStoreDataResponse
 import com.example.jayasales.model.ViewCartDataResponse
 import com.example.jayasales.repository.preference.PrefRepository
@@ -41,8 +45,8 @@ class MockRepositoryImpl @Inject constructor(
     private val myPref: PrefRepository,
     private val apiHelper: ApiInterface,
 ) : Repository {
-    override suspend fun login(email: String, password: String): LoginDataResponse? {
-        val response = apiHelper.Login(email, password)
+    override suspend fun login(email: String, password: String, user_type: String): LoginDataResponse? {
+        val response = apiHelper.Login(email, password,user_type)
         return if (response.isSuccessful) {
             response.body()
         } else {
@@ -411,6 +415,89 @@ class MockRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun distributorOrder(user_id: String): DistributorOrderDataResponse? {
+        val response = apiHelper.distributorOrder(user_id)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
+
+    override suspend fun distributorOrderDetails(
+        userId: String,
+        order_id: String
+    ): DistributorOrderDetailsDataResponse? {
+        val response = apiHelper.distributorOrderDetails(userId, order_id)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
+
+    override suspend fun updateQuantity(
+        userId: String,
+        order_id: String,
+        product_id: String,
+        quantity: String
+    ): UpdateQuantityDataResponse? {
+        val response = apiHelper.updateQuantity(userId,order_id, product_id, quantity)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
+
+    override suspend fun addProduct(
+        userId: String,
+        order_id: String,
+        product_id: String,
+        quantity: String
+    ): UpdateQuantityDataResponse? {
+        val response = apiHelper.addProduct(userId,order_id, product_id, quantity)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
+
+    override suspend fun deleteProduct(
+        userId: String,
+        order_id: String,
+        product_id: String
+    ): UpdateQuantityDataResponse? {
+        val response = apiHelper.deleteProduct(userId,order_id, product_id)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
+
+    override suspend fun confirmOrder(
+        userId: String,
+        order_id: String,
+    ): UpdateQuantityDataResponse? {
+        val response = apiHelper.confirmOrder(userId,order_id)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
+
+    override suspend fun searchProduct(search_text: String): SearchProductDataResponse? {
+        val response = apiHelper.searchProduct(search_text)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
+
 
     override fun getIsLoggedIn(): Boolean {
         return myPref.getIsLoggedIn()
@@ -576,6 +663,30 @@ class MockRepositoryImpl @Inject constructor(
 
     override fun setLogEmail(logEmail: String?) {
         myPref.setLogEmail(logEmail)
+    }
+
+    override fun getUserType(): String? {
+        return myPref.getUserType()
+    }
+
+    override fun setUserType(userType: String?) {
+        myPref.setUserType(userType)
+    }
+
+    override fun setDistributorOrderId(distributorOrderId: String?) {
+        myPref.setDistributorOrderId(distributorOrderId)
+    }
+
+    override fun getDistributorOrderId(): String? {
+        return myPref.getDistributorOrderId()
+    }
+
+    override fun setUpdateProductId(updateProductId: String) {
+        myPref.setUpdateProductId(updateProductId)
+    }
+
+    override fun getUpdateProductId(): String? {
+        return myPref.getUpdateProductId()
     }
 
     override fun removeUser() {

@@ -54,5 +54,18 @@ interface PrefRepository {
 
     fun getLogEmail(): String?
 
+
+    fun getUserType(): String?
+    fun setUserType(userType: String?)
+
+    fun setUpdateProductId(updateProductId:String)
+    fun getUpdateProductId() : String?
+
+
+
+    fun setDistributorOrderId(distributorOrderId: String?)
+
+    fun getDistributorOrderId(): String?
+
     fun deleteUserId()
 }

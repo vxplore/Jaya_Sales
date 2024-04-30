@@ -11,6 +11,8 @@ import com.example.jayasales.model.CheckInOutDataResponse
 import com.example.jayasales.model.CityDataResponse
 import com.example.jayasales.model.DashboardDataResponse
 import com.example.jayasales.model.DeleteStoreDataResponse
+import com.example.jayasales.model.DistributorOrderDataResponse
+import com.example.jayasales.model.DistributorOrderDetailsDataResponse
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
 import com.example.jayasales.model.MarkVisitDataResponse
@@ -24,10 +26,12 @@ import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.ReturnRequestDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
 import com.example.jayasales.model.RouteDataResponse
+import com.example.jayasales.model.SearchProductDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
 import com.example.jayasales.model.StateDataResponse
 import com.example.jayasales.model.StoreDetailsDataResponse
 import com.example.jayasales.model.TimeSheetDataResponse
+import com.example.jayasales.model.UpdateQuantityDataResponse
 import com.example.jayasales.model.UpdateStoreDataResponse
 import com.example.jayasales.model.ViewCartDataResponse
 import okhttp3.MultipartBody
@@ -54,6 +58,7 @@ interface ApiInterface {
     suspend fun Login(
         @Field("email") email: String,
         @Field("password") password: String,
+        @Field("user_type") user_type: String,
     ): Response<LoginDataResponse>
 
     @GET("forgot-password")
@@ -270,6 +275,60 @@ interface ApiInterface {
         @Field("store_id") storeId: String,
         @Field("cart_id") cartId: String,
     ): Response<RemoveResponse>
+    @FormUrlEncoded
+    @POST("sells_manager/distributor_order")
+    suspend fun distributorOrder(
+        @Field("user_id") userId: String,
+    ): Response<DistributorOrderDataResponse>
+
+    @FormUrlEncoded
+    @POST("sells_manager/order_details")
+    suspend fun distributorOrderDetails(
+        @Field("user_id") userId: String,
+        @Field("order_id") order_id: String,
+    ): Response<DistributorOrderDetailsDataResponse>
+
+    @FormUrlEncoded
+    @POST("sells_manager/update_product_quantity")
+    suspend fun updateQuantity(
+        @Field("user_id") user_id: String,
+        @Field("order_id") order_id: String,
+        @Field("product_id") product_id: String,
+        @Field("quantity") quantity: String,
+    ): Response<UpdateQuantityDataResponse>
+
+    @FormUrlEncoded
+    @POST("sells_manager/add_new_product")
+    suspend fun addProduct(
+        @Field("user_id") user_id: String,
+        @Field("order_id") order_id: String,
+        @Field("product_id") product_id: String,
+        @Field("quantity") quantity: String,
+    ): Response<UpdateQuantityDataResponse>
+
+    @FormUrlEncoded
+    @POST("sells_manager/delete_product")
+    suspend fun deleteProduct(
+        @Field("user_id") user_id: String,
+        @Field("order_id") order_id: String,
+        @Field("product_id") product_id: String,
+    ): Response<UpdateQuantityDataResponse>
+
+    @FormUrlEncoded
+    @POST("sells_manager/confirm_order")
+    suspend fun confirmOrder(
+        @Field("user_id") user_id: String,
+        @Field("order_id") order_id: String,
+    ): Response<UpdateQuantityDataResponse>
+
+    @FormUrlEncoded
+    @POST("sells_manager/product_list")
+    suspend fun searchProduct(
+        @Field("search_text") search_text: String,
+    ): Response<SearchProductDataResponse>
+
+
+
 
     @FormUrlEncoded
     @POST("sells/attendance")

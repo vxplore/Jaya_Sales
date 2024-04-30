@@ -31,6 +31,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,6 +40,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,6 +58,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.debduttapanda.j3lib.NotificationService
+import com.debduttapanda.j3lib.boolState
 import com.debduttapanda.j3lib.dep
 import com.debduttapanda.j3lib.listState
 import com.debduttapanda.j3lib.rememberNotifier
@@ -63,6 +66,7 @@ import com.debduttapanda.j3lib.sep
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.OrderType
 import com.example.jayasales.R
+import com.example.jayasales.model.DistributorDatum
 import com.example.jayasales.model.PartiesDatum
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,6 +74,8 @@ import com.example.jayasales.model.PartiesDatum
 fun ManagerOrderScreen(
     notifier: NotificationService = rememberNotifier(),
     distributorOrder: SnapshotStateList<DistributorOrder> = listState(key = MyDataIds.distributorOrder),
+    distributorOrderList: List<DistributorDatum> = listState(key = MyDataIds.distributorOrderList),
+    loadingState: State<Boolean> = boolState(key = MyDataIds.loadingState),
 ) {
     Scaffold(
         topBar = {
@@ -164,7 +170,21 @@ fun ManagerOrderScreen(
                     .height(24.dp)
             )
             if (selectedItem == 0) {
-                if (distributorOrder.isEmpty()) {
+                if (loadingState.value) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            //.padding(bottom = 60.dep)
+                            .fillMaxSize()
+                    ) {
+                        CircularProgressIndicator(
+                            color = Color(0xFF2DB87C),
+                        )
+                    }
+                }
+                else {
+                if (distributorOrderList.isEmpty()) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
@@ -186,7 +206,7 @@ fun ManagerOrderScreen(
                         //contentPadding = PaddingValues(vertical = 10.dep),
                         verticalArrangement = Arrangement.spacedBy(20.dep)
                     ) {
-                        itemsIndexed(distributorOrder) { index, it ->
+                        itemsIndexed(distributorOrderList) { index, it ->
                             Card(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -219,7 +239,7 @@ fun ManagerOrderScreen(
                                         horizontalArrangement = Arrangement.Center
                                     ) {
                                         Text(
-                                            text = "Order:#${it.order}",
+                                            text = "Order:#${it.order_id}",
                                             fontSize = 13.sep,
                                             fontWeight = FontWeight.SemiBold,
                                             color = Color.Black,
@@ -234,7 +254,7 @@ fun ManagerOrderScreen(
                                         )
                                         Spacer(modifier = Modifier.width(6.dep))
                                         Text(
-                                            text = it.status,
+                                            text = it.order_status,
                                             fontSize = 13.sep,
                                             fontWeight = FontWeight.SemiBold,
                                             color = Color(0xFF247FBB),
@@ -242,7 +262,7 @@ fun ManagerOrderScreen(
                                         )
                                     }
                                     Text(
-                                        text = "Items:${it.item}",
+                                        text = "Items:${it.items}",
                                         fontSize = 13.sep,
                                         fontWeight = FontWeight.SemiBold,
                                         color = Color.Black,
@@ -272,7 +292,7 @@ fun ManagerOrderScreen(
                                         )
                                         Spacer(modifier = Modifier.width(4.dep))
                                         Text(
-                                            text = it.name,
+                                            text = it.distributor.name,
                                             fontSize = 15.sep,
                                             //fontWeight = FontWeight.SemiBold,
                                             color = Color(0xFFD62B2B),
@@ -292,7 +312,7 @@ fun ManagerOrderScreen(
                                         )
                                         Spacer(modifier = Modifier.width(4.dep))
                                         Text(
-                                            text = it.date,
+                                            text = it.created_at,
                                             fontSize = 12.sep,
                                             //fontWeight = FontWeight.SemiBold,
                                             color = Color.Black,
@@ -316,7 +336,7 @@ fun ManagerOrderScreen(
                                     )
                                     Spacer(modifier = Modifier.width(4.dep))
                                     Text(
-                                        text = it.address,
+                                        text = "${it.location.name},${it.location.state},${it.location.pincode}",
                                         fontSize = 14.sep,
                                         //fontWeight = FontWeight.SemiBold,
                                         color = Color.Black,
@@ -326,6 +346,7 @@ fun ManagerOrderScreen(
                                 Spacer(modifier = Modifier.height(12.dep))
                                 Button(
                                     onClick = {
+                                        notifier.notify(MyDataIds.confirmOrder, index)
                                     },
                                     modifier = Modifier
                                         .padding(horizontal = 16.dep)
@@ -348,6 +369,7 @@ fun ManagerOrderScreen(
                         }
                     }
                 }
+            }
             } else {
                 LazyColumn(
                     modifier = Modifier

@@ -10,6 +10,8 @@ import com.example.jayasales.model.CheckInOutDataResponse
 import com.example.jayasales.model.CityDataResponse
 import com.example.jayasales.model.DashboardDataResponse
 import com.example.jayasales.model.DeleteStoreDataResponse
+import com.example.jayasales.model.DistributorOrderDataResponse
+import com.example.jayasales.model.DistributorOrderDetailsDataResponse
 import com.example.jayasales.model.GetOtpResponse
 import com.example.jayasales.model.LoginDataResponse
 import com.example.jayasales.model.MarkVisitDataResponse
@@ -23,10 +25,12 @@ import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.ReturnRequestDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
 import com.example.jayasales.model.RouteDataResponse
+import com.example.jayasales.model.SearchProductDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
 import com.example.jayasales.model.StateDataResponse
 import com.example.jayasales.model.StoreDetailsDataResponse
 import com.example.jayasales.model.TimeSheetDataResponse
+import com.example.jayasales.model.UpdateQuantityDataResponse
 import com.example.jayasales.model.UpdateStoreDataResponse
 import com.example.jayasales.model.ViewCartDataResponse
 import okhttp3.MultipartBody
@@ -34,7 +38,7 @@ import okhttp3.MultipartBody
 interface Repository {
 
 
-    suspend fun login(email: String, password: String): LoginDataResponse?
+    suspend fun login(email: String, password: String, user_type: String): LoginDataResponse?
     suspend fun getOtp(email: String): GetOtpResponse?
     suspend fun route(data: String): RouteDataResponse?
     suspend fun timeSheet(userId: String): TimeSheetDataResponse?
@@ -129,6 +133,43 @@ interface Repository {
     ): ReturnRequestDataResponse?
 
 
+    suspend fun distributorOrder(user_id: String): DistributorOrderDataResponse?
+
+    suspend fun distributorOrderDetails(
+        userId: String,
+        order_id: String,
+    ): DistributorOrderDetailsDataResponse?
+
+    suspend fun updateQuantity(
+        userId: String,
+        order_id: String,
+        product_id: String,
+        quantity: String,
+    ): UpdateQuantityDataResponse?
+
+    suspend fun addProduct(
+        userId: String,
+        order_id: String,
+        product_id: String,
+        quantity: String,
+    ): UpdateQuantityDataResponse?
+
+    suspend fun deleteProduct(
+        userId: String,
+        order_id: String,
+        product_id: String,
+    ): UpdateQuantityDataResponse?
+
+    suspend fun confirmOrder(
+        userId: String,
+        order_id: String,
+    ): UpdateQuantityDataResponse?
+
+    suspend fun searchProduct(
+        search_text: String,
+    ): SearchProductDataResponse?
+
+
     fun getIsLoggedIn(): Boolean
 
     fun saveUser(userId: String?)
@@ -175,6 +216,17 @@ interface Repository {
 
     fun getLogEmail(): String?
     fun setLogEmail(logEmail: String?)
+
+    fun getUserType(): String?
+    fun setUserType(userType: String?)
+
+    fun setDistributorOrderId(distributorOrderId: String?)
+
+    fun getDistributorOrderId(): String?
+
+    fun setUpdateProductId(updateProductId:String)
+    fun getUpdateProductId() : String?
+
 
     fun removeUser()
 

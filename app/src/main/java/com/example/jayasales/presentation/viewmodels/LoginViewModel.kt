@@ -39,6 +39,7 @@ class LoginViewModel @Inject constructor(
     private val loading = mutableStateOf(false)
     private val recoverLoading = mutableStateOf(false)
     private val type = mutableStateListOf<Type>()
+    private val selectType = mutableStateOf("")
     override fun eventBusDescription(): EventBusDescription? {
         return null
     }
@@ -98,6 +99,10 @@ class LoginViewModel @Inject constructor(
             MyDataIds.verify -> {
                 recoverPass()
             }
+            MyDataIds.routeIds->{
+                selectType.value = arg as String
+                Log.d("xcdhxcd",selectType.value)
+            }
         }
     }
 
@@ -152,8 +157,9 @@ class LoginViewModel @Inject constructor(
 
     init {
         setUp()
-        type.addAll(listOf(Type("Sales Man")))
-        type.addAll(listOf(Type("Sales Manager")))
+        type.addAll(listOf(Type("Sales Man","sales_man")))
+        type.addAll(listOf(Type("Sales Manager","sales_manager")))
+        selectType.value = "Sales Man"
     }
 
     private fun setUp() {
@@ -175,22 +181,29 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun userLogin() {
+        loading.value = !loading.value
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = repo.login(username.value, password.value)
+                val response = repo.login(username.value, password.value,selectType.value)
                 if (response != null && response.status) {
                     val responseBody = response.data
                     if (responseBody != null) {
                         Log.d("hujf", response.toString())
-                        loading.value = !loading.value
                         viewModelScope.launch {
-                            delay(3000)
                             repo.setIsLoggedIn(true)
                             repo.setLogUId(response.data.name)
                             repo.setLogEmail(response.data.email)
                             repo.saveUser(response.data.user_id)
-                            navigation {
-                                navigate(Routes.home.full)
+                            loading.value = !loading.value
+                            repo.setUserType(selectType.value)
+                            if (selectType.value=="sales_man") {
+                                navigation {
+                                    navigate(Routes.home.full)
+                                }
+                            }else{
+                                navigation {
+                                    navigate(Routes.managerHome.full)
+                                }
                             }
                         }
                     } else {
@@ -201,6 +214,8 @@ class LoginViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 Log.d("dbbdk", e.message.toString())
+            }finally {
+                loading.value = !loading.value
             }
         }
     }
