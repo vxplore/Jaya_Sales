@@ -10,6 +10,7 @@ import com.example.jayasales.model.CheckInOutDataResponse
 import com.example.jayasales.model.CityDataResponse
 import com.example.jayasales.model.DashboardDataResponse
 import com.example.jayasales.model.DeleteStoreDataResponse
+import com.example.jayasales.model.DistributorConfirmOrderDataResponse
 import com.example.jayasales.model.DistributorOrderDataResponse
 import com.example.jayasales.model.DistributorOrderDetailsDataResponse
 import com.example.jayasales.model.GetOtpResponse
@@ -25,11 +26,13 @@ import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.ReturnRequestDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
 import com.example.jayasales.model.RouteDataResponse
+import com.example.jayasales.model.SalesManDataResponse
 import com.example.jayasales.model.SearchProductDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
 import com.example.jayasales.model.StateDataResponse
 import com.example.jayasales.model.StoreDetailsDataResponse
 import com.example.jayasales.model.TimeSheetDataResponse
+import com.example.jayasales.model.TrackSalesManDataResponse
 import com.example.jayasales.model.UpdateQuantityDataResponse
 import com.example.jayasales.model.UpdateStoreDataResponse
 import com.example.jayasales.model.ViewCartDataResponse
@@ -134,6 +137,8 @@ interface Repository {
 
 
     suspend fun distributorOrder(user_id: String): DistributorOrderDataResponse?
+    suspend fun distributorConfirmOrder(user_id: String): DistributorConfirmOrderDataResponse?
+    suspend fun salesMan(user_id: String): SalesManDataResponse?
 
     suspend fun distributorOrderDetails(
         userId: String,
@@ -159,7 +164,11 @@ interface Repository {
         order_id: String,
         product_id: String,
     ): UpdateQuantityDataResponse?
-
+    suspend fun trackSalesman(
+        userId: String,
+        salesman_id: String,
+        date: String,
+    ): TrackSalesManDataResponse?
     suspend fun confirmOrder(
         userId: String,
         order_id: String,
@@ -226,6 +235,17 @@ interface Repository {
 
     fun setUpdateProductId(updateProductId:String)
     fun getUpdateProductId() : String?
+
+    fun setlat(lat:String)
+    fun getlat() : String?
+
+    fun setlng(lng:String)
+    fun getlng() : String?
+    fun setCallNo(callNo:String)
+    fun getCallNo() : String?
+
+    fun setSalesmenId(salesmenId:String)
+    fun getSalesmenId() : String?
 
 
     fun removeUser()

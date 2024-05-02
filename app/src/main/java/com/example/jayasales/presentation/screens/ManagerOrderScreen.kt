@@ -66,6 +66,7 @@ import com.debduttapanda.j3lib.sep
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.OrderType
 import com.example.jayasales.R
+import com.example.jayasales.model.ConfirmOrderDatum
 import com.example.jayasales.model.DistributorDatum
 import com.example.jayasales.model.PartiesDatum
 
@@ -73,7 +74,7 @@ import com.example.jayasales.model.PartiesDatum
 @Composable
 fun ManagerOrderScreen(
     notifier: NotificationService = rememberNotifier(),
-    distributorOrder: SnapshotStateList<DistributorOrder> = listState(key = MyDataIds.distributorOrder),
+    distributorConfirmOrder: SnapshotStateList<ConfirmOrderDatum> = listState(key = MyDataIds.distributorOrder),
     distributorOrderList: List<DistributorDatum> = listState(key = MyDataIds.distributorOrderList),
     loadingState: State<Boolean> = boolState(key = MyDataIds.loadingState),
 ) {
@@ -370,14 +371,29 @@ fun ManagerOrderScreen(
                     }
                 }
             }
-            } else {
+            }
+            else {
+                if (loadingState.value) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            //.padding(bottom = 60.dep)
+                            .fillMaxSize()
+                    ) {
+                        CircularProgressIndicator(
+                            color = Color(0xFF2DB87C),
+                        )
+                    }
+                }
+                else {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize(),
                     //contentPadding = PaddingValues(vertical = 10.dep),
                     verticalArrangement = Arrangement.spacedBy(20.dep)
                 ) {
-                    itemsIndexed(distributorOrder) { index, it ->
+                    itemsIndexed(distributorConfirmOrder) { index, it ->
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -387,9 +403,6 @@ fun ManagerOrderScreen(
                                     clip = true,
                                     DefaultShadowColor
                                 ),
-                            /*  .clip(RoundedCornerShape(4.dep))
-                              .clickable {
-                              }*/
                             colors = CardDefaults.cardColors(Color.White),
                             elevation = CardDefaults.cardElevation(
                                 defaultElevation = 8.dep,
@@ -410,7 +423,7 @@ fun ManagerOrderScreen(
                                     horizontalArrangement = Arrangement.Center
                                 ) {
                                     Text(
-                                        text = "Order:#${it.order}",
+                                        text = "Order:#${it.order_id}",
                                         fontSize = 13.sep,
                                         fontWeight = FontWeight.SemiBold,
                                         color = Color.Black,
@@ -425,7 +438,7 @@ fun ManagerOrderScreen(
                                     )
                                     Spacer(modifier = Modifier.width(6.dep))
                                     Text(
-                                        text = it.status,
+                                        text = it.track_status,
                                         fontSize = 13.sep,
                                         fontWeight = FontWeight.SemiBold,
                                         color = Color(0xFF247FBB),
@@ -433,7 +446,7 @@ fun ManagerOrderScreen(
                                     )
                                 }
                                 Text(
-                                    text = "Items:${it.item}",
+                                    text = "Items:${it.items.toString()}",
                                     fontSize = 13.sep,
                                     fontWeight = FontWeight.SemiBold,
                                     color = Color.Black,
@@ -463,7 +476,7 @@ fun ManagerOrderScreen(
                                     )
                                     Spacer(modifier = Modifier.width(4.dep))
                                     Text(
-                                        text = it.name,
+                                        text = it.distributor.name,
                                         fontSize = 15.sep,
                                         //fontWeight = FontWeight.SemiBold,
                                         color = Color(0xFFD62B2B),
@@ -483,7 +496,7 @@ fun ManagerOrderScreen(
                                     )
                                     Spacer(modifier = Modifier.width(4.dep))
                                     Text(
-                                        text = it.date,
+                                        text = it.created_at,
                                         fontSize = 12.sep,
                                         //fontWeight = FontWeight.SemiBold,
                                         color = Color.Black,
@@ -507,7 +520,7 @@ fun ManagerOrderScreen(
                                 )
                                 Spacer(modifier = Modifier.width(4.dep))
                                 Text(
-                                    text = it.address,
+                                    text = "${it.location.name},${it.location.state},${it.location.pincode}",
                                     fontSize = 14.sep,
                                     //fontWeight = FontWeight.SemiBold,
                                     color = Color.Black,
@@ -538,11 +551,11 @@ fun ManagerOrderScreen(
                                 ) {
                                     Text(
                                         text = "Booked",
-                                        fontSize = 10.sp,
+                                        fontSize = 8.sep,
                                         fontWeight = FontWeight.SemiBold,
                                         color = Color.Black
                                     )
-                                    Spacer(modifier = Modifier.height(4.dep))
+                                    Spacer(modifier = Modifier.height(8.dep))
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.Center
@@ -550,7 +563,7 @@ fun ManagerOrderScreen(
                                         Box(
                                             modifier = Modifier
                                                 .background(
-                                                    if (it.trackorderstatus == "Dispatched" || it.trackorderstatus == "Received" || it.trackorderstatus == "Ready to Load" || it.trackorderstatus == "Booked") {
+                                                    if (it.track_order.booked.status == true||it.track_order.ready_to_load.status == true||it.track_order.dispatched.status == true||it.track_order.received.status == true) {
                                                         Color(0xFF2DB87C)
                                                     } else {
                                                         Color(0xFFD2D0D0)
@@ -561,20 +574,21 @@ fun ManagerOrderScreen(
                                         Box(
                                             modifier = Modifier
                                                 .background(
-                                                    if (it.trackorderstatus == "Dispatched" || it.trackorderstatus == "Received" || it.trackorderstatus == "Ready to Load") {
+                                                    if  (it.track_order.ready_to_load.status == true || it.track_order.dispatched.status == true || it.track_order.received.status == true) {
                                                         Color(0xFF2DB87C)
                                                     } else {
                                                         Color(0xFFD2D0D0)
-                                                    }, CircleShape
+                                                    }
+                                                    , CircleShape
                                                 )
                                                 .height(2.dep)
                                                 .fillMaxWidth()
                                         )
                                     }
-                                    Spacer(modifier = Modifier.height(4.dep))
+                                    Spacer(modifier = Modifier.height(8.dep))
                                     Text(
-                                        text = "12/02/22",
-                                        fontSize = 8.sep,
+                                        text = it.track_order.booked.datetime,
+                                        fontSize = 6.sep,
                                         color = Color(0xFF818181)
                                     )
                                 }
@@ -583,11 +597,11 @@ fun ManagerOrderScreen(
                                         .weight(.25f)
                                 ) {
                                     Text(
-                                        text = "02/12/23",
-                                        fontSize = 8.sp,
+                                        text = it.track_order.ready_to_load.datetime,
+                                        fontSize = 6.sep,
                                         color = Color(0xFF818181)
                                     )
-                                    Spacer(modifier = Modifier.height(4.dep))
+                                    Spacer(modifier = Modifier.height(12.dep))
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.Center
@@ -595,7 +609,7 @@ fun ManagerOrderScreen(
                                         Box(
                                             modifier = Modifier
                                                 .background(
-                                                    if (it.trackorderstatus == "Dispatched" || it.trackorderstatus == "Received" || it.trackorderstatus == "Ready to Load") {
+                                                    if (it.track_order.ready_to_load.status || it.track_order.dispatched.status || it.track_order.received.status) {
                                                         Color(0xFF2DB87C)
                                                     } else {
                                                         Color(0xFFD2D0D0)
@@ -606,7 +620,7 @@ fun ManagerOrderScreen(
                                         Box(
                                             modifier = Modifier
                                                 .background(
-                                                    if (it.trackorderstatus == "Dispatched" || it.trackorderstatus == "Received") {
+                                                    if ( it.track_order.dispatched.status == true || it.track_order.received.status == true) {
                                                         Color(0xFF2DB87C)
                                                     } else {
                                                         Color(0xFFD2D0D0)
@@ -616,10 +630,10 @@ fun ManagerOrderScreen(
                                                 .fillMaxWidth()
                                         )
                                     }
-                                    Spacer(modifier = Modifier.height(4.dep))
+                                    Spacer(modifier = Modifier.height(8.dep))
                                     Text(
                                         text = "Ready to Load",
-                                        fontSize = 8.sp,
+                                        fontSize = 8.sep,
                                         fontWeight = FontWeight.SemiBold,
                                         color = Color.Black
                                     )
@@ -630,11 +644,11 @@ fun ManagerOrderScreen(
                                 ) {
                                     Text(
                                         text = "Dispatched",
-                                        fontSize = 10.sp,
+                                        fontSize = 8.sep,
                                         fontWeight = FontWeight.SemiBold,
                                         color = Color.Black
                                     )
-                                    Spacer(modifier = Modifier.height(4.dep))
+                                    Spacer(modifier = Modifier.height(8.dep))
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.Center
@@ -642,7 +656,7 @@ fun ManagerOrderScreen(
                                         Box(
                                             modifier = Modifier
                                                 .background(
-                                                    if (it.trackorderstatus == "Dispatched" || it.trackorderstatus == "Received") {
+                                                    if ( it.track_order.dispatched.status == true || it.track_order.received.status == true) {
                                                         Color(0xFF2DB87C)
                                                     } else {
                                                         Color(0xFFD2D0D0)
@@ -653,7 +667,7 @@ fun ManagerOrderScreen(
                                         Box(
                                             modifier = Modifier
                                                 .background(
-                                                    if (it.trackorderstatus == "Received") {
+                                                    if ( it.track_order.received.status == true) {
                                                         Color(0xFF2DB87C)
                                                     } else {
                                                         Color(0xFFD2D0D0)
@@ -663,10 +677,10 @@ fun ManagerOrderScreen(
                                                 .fillMaxWidth()
                                         )
                                     }
-                                    Spacer(modifier = Modifier.height(4.dep))
+                                    Spacer(modifier = Modifier.height(8.dep))
                                     Text(
-                                        text = "2-01-2024 6:40",
-                                        fontSize = 8.sp,
+                                        text = it.track_order.dispatched.datetime,
+                                        fontSize = 6.sep,
                                         color = Color(0xFF818181)
                                     )
                                 }
@@ -675,11 +689,11 @@ fun ManagerOrderScreen(
                                         .weight(.25f),
                                 ) {
                                     Text(
-                                        text = "2-01-2024 6:40",
-                                        fontSize = 8.sp,
+                                        text = it.track_order.received.datetime,
+                                        fontSize = 6.sep,
                                         color = Color(0xFF818181)
                                     )
-                                    Spacer(modifier = Modifier.height(4.dep))
+                                    Spacer(modifier = Modifier.height(8.dep))
 
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
@@ -688,7 +702,7 @@ fun ManagerOrderScreen(
                                         Box(
                                             modifier = Modifier
                                                 .background(
-                                                    if (it.trackorderstatus == "Received") {
+                                                    if ( it.track_order.received.status == true) {
                                                         Color(0xFF2DB87C)
                                                     } else {
                                                         Color(0xFFD2D0D0)
@@ -697,10 +711,10 @@ fun ManagerOrderScreen(
                                                 .size(16.dep)
                                         )
                                     }
-                                    Spacer(modifier = Modifier.height(4.dep))
+                                    Spacer(modifier = Modifier.height(8.dep))
                                     Text(
                                         text = "Received",
-                                        fontSize = 10.sp,
+                                        fontSize = 8.sep,
                                         fontWeight = FontWeight.SemiBold,
                                         color = Color.Black
                                     )
@@ -710,6 +724,7 @@ fun ManagerOrderScreen(
                         }
                     }
                 }
+            }
             }
         }
     }

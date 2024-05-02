@@ -11,6 +11,7 @@ import com.example.jayasales.model.CheckInOutDataResponse
 import com.example.jayasales.model.CityDataResponse
 import com.example.jayasales.model.DashboardDataResponse
 import com.example.jayasales.model.DeleteStoreDataResponse
+import com.example.jayasales.model.DistributorConfirmOrderDataResponse
 import com.example.jayasales.model.DistributorOrderDataResponse
 import com.example.jayasales.model.DistributorOrderDetailsDataResponse
 import com.example.jayasales.model.GetOtpResponse
@@ -26,11 +27,13 @@ import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.ReturnRequestDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
 import com.example.jayasales.model.RouteDataResponse
+import com.example.jayasales.model.SalesManDataResponse
 import com.example.jayasales.model.SearchProductDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
 import com.example.jayasales.model.StateDataResponse
 import com.example.jayasales.model.StoreDetailsDataResponse
 import com.example.jayasales.model.TimeSheetDataResponse
+import com.example.jayasales.model.TrackSalesManDataResponse
 import com.example.jayasales.model.UpdateQuantityDataResponse
 import com.example.jayasales.model.UpdateStoreDataResponse
 import com.example.jayasales.model.ViewCartDataResponse
@@ -282,6 +285,18 @@ interface ApiInterface {
     ): Response<DistributorOrderDataResponse>
 
     @FormUrlEncoded
+    @POST("sells_manager/confirm_order_list")
+    suspend fun distributorConfirmOrder(
+        @Field("user_id") userId: String,
+    ): Response<DistributorConfirmOrderDataResponse>
+
+    @FormUrlEncoded
+    @POST("sells_manager/salesmen")
+    suspend fun salesMan(
+        @Field("user_id") userId: String,
+    ): Response<SalesManDataResponse>
+
+    @FormUrlEncoded
     @POST("sells_manager/order_details")
     suspend fun distributorOrderDetails(
         @Field("user_id") userId: String,
@@ -296,6 +311,14 @@ interface ApiInterface {
         @Field("product_id") product_id: String,
         @Field("quantity") quantity: String,
     ): Response<UpdateQuantityDataResponse>
+
+    @FormUrlEncoded
+    @POST("sells_manager/track_salesman")
+    suspend fun trackSalesman(
+        @Field("user_id") user_id: String,
+        @Field("salesman_id") salesman_id: String,
+        @Field("date") date: String,
+    ): Response<TrackSalesManDataResponse>
 
     @FormUrlEncoded
     @POST("sells_manager/add_new_product")

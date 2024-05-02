@@ -11,6 +11,7 @@ import com.example.jayasales.model.CheckInOutDataResponse
 import com.example.jayasales.model.CityDataResponse
 import com.example.jayasales.model.DashboardDataResponse
 import com.example.jayasales.model.DeleteStoreDataResponse
+import com.example.jayasales.model.DistributorConfirmOrderDataResponse
 import com.example.jayasales.model.DistributorOrderDataResponse
 import com.example.jayasales.model.DistributorOrderDetailsDataResponse
 import com.example.jayasales.model.GetOtpResponse
@@ -26,11 +27,13 @@ import com.example.jayasales.model.ResetDataResponse
 import com.example.jayasales.model.ReturnRequestDataResponse
 import com.example.jayasales.model.ReviewCartDataResponse
 import com.example.jayasales.model.RouteDataResponse
+import com.example.jayasales.model.SalesManDataResponse
 import com.example.jayasales.model.SearchProductDataResponse
 import com.example.jayasales.model.SearchRouteDataResponse
 import com.example.jayasales.model.StateDataResponse
 import com.example.jayasales.model.StoreDetailsDataResponse
 import com.example.jayasales.model.TimeSheetDataResponse
+import com.example.jayasales.model.TrackSalesManDataResponse
 import com.example.jayasales.model.UpdateQuantityDataResponse
 import com.example.jayasales.model.UpdateStoreDataResponse
 import com.example.jayasales.model.ViewCartDataResponse
@@ -424,6 +427,24 @@ class MockRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun distributorConfirmOrder(user_id: String): DistributorConfirmOrderDataResponse? {
+        val response = apiHelper.distributorConfirmOrder(user_id)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
+
+    override suspend fun salesMan(user_id: String): SalesManDataResponse? {
+        val response = apiHelper.salesMan(user_id)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
+
     override suspend fun distributorOrderDetails(
         userId: String,
         order_id: String
@@ -470,6 +491,19 @@ class MockRepositoryImpl @Inject constructor(
         product_id: String
     ): UpdateQuantityDataResponse? {
         val response = apiHelper.deleteProduct(userId,order_id, product_id)
+        return if (response.isSuccessful){
+            response.body()
+        }else{
+            null
+        }
+    }
+
+    override suspend fun trackSalesman(
+        userId: String,
+        salesman_id: String,
+        date: String
+    ): TrackSalesManDataResponse? {
+        val response = apiHelper.trackSalesman(userId, salesman_id, date)
         return if (response.isSuccessful){
             response.body()
         }else{
@@ -687,6 +721,38 @@ class MockRepositoryImpl @Inject constructor(
 
     override fun getUpdateProductId(): String? {
         return myPref.getUpdateProductId()
+    }
+
+    override fun setlat(lat: String) {
+        myPref.setlat(lat)
+    }
+
+    override fun getlat(): String? {
+       return myPref.getlat()
+    }
+
+    override fun setlng(lng: String) {
+        myPref.setlng(lng)
+    }
+
+    override fun getlng(): String? {
+        return myPref.getlng()
+    }
+
+    override fun setCallNo(callNo: String) {
+        myPref.setCallNo(callNo)
+    }
+
+    override fun getCallNo(): String? {
+        return myPref.getCallNo()
+    }
+
+    override fun setSalesmenId(salesmenId: String) {
+        myPref.setSalesmenId(salesmenId)
+    }
+
+    override fun getSalesmenId(): String? {
+        return myPref.getSalesmenId()
     }
 
     override fun removeUser() {

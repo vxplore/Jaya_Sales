@@ -715,6 +715,7 @@ fun StoreDetailsScreen(
     }
 }
 
+
 private fun makePhoneCall(
     context: Context,
     phoneNumber: State<String>
@@ -722,8 +723,10 @@ private fun makePhoneCall(
     val phoneNumberUri = "tel:${phoneNumber.value}"
     Log.d("dcfdc", "$phoneNumber")
     val callIntent = Intent(
-        Intent.ACTION_CALL,
+        Intent.ACTION_DIAL,
         Uri.parse(phoneNumberUri)
     )
     context.startActivity(callIntent)
 }
+
+

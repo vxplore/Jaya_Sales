@@ -63,6 +63,19 @@ interface PrefRepository {
 
 
 
+    fun setlat(lat:String)
+    fun getlat() : String?
+
+    fun setlng(lng:String)
+    fun getlng() : String?
+
+    fun setCallNo(callNo:String)
+    fun getCallNo() : String?
+
+    fun setSalesmenId(salesmenId:String)
+    fun getSalesmenId() : String?
+
+
     fun setDistributorOrderId(distributorOrderId: String?)
 
     fun getDistributorOrderId(): String?

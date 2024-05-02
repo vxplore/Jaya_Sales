@@ -34,6 +34,10 @@ class PrefRepositoryImpl @Inject constructor(
     private val DistributorOrderId = "reasonIdKey"
     private val UserType = "UserType"
     private val UpdateProductId = "UpdateProductId"
+    private val Lat = "Lat"
+    private val Lng = "Lng"
+    private val CallNo = "CallNo"
+    private val SalesmenId = "SalesmenId"
 
 
 
@@ -224,6 +228,38 @@ class PrefRepositoryImpl @Inject constructor(
 
     override fun getUpdateProductId(): String? {
        return myPref.getString(UpdateProductId,"")
+    }
+
+    override fun setlat(lat: String) {
+        myPref.edit().putString(Lat,lat.toString()).apply()
+    }
+
+    override fun getlat(): String? {
+        return myPref.getString(Lat,"")
+    }
+
+    override fun setlng(lng: String) {
+        myPref.edit().putString(Lng,lng.toString()).apply()
+    }
+
+    override fun getlng(): String? {
+        return myPref.getString(Lng,"")
+    }
+
+    override fun setCallNo(callNo: String) {
+        myPref.edit().putString(CallNo,callNo.toString()).apply()
+    }
+
+    override fun getCallNo(): String? {
+        return myPref.getString(CallNo,"")
+    }
+
+    override fun setSalesmenId(salesmenId: String) {
+        myPref.edit().putString(SalesmenId,salesmenId.toString()).apply()
+    }
+
+    override fun getSalesmenId(): String? {
+       return myPref.getString(SalesmenId,"")
     }
 
     override fun setDistributorOrderId(distributorOrderId: String?) {

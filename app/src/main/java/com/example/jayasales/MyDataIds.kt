@@ -203,4 +203,7 @@ enum class MyDataIds {
     delete,
     searchList,
     search,
+    salesmen,
+    call,
+    tracker,
 }
