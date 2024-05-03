@@ -60,6 +60,7 @@ import com.debduttapanda.j3lib.rememberNotifier
 import com.debduttapanda.j3lib.rememberStringState
 import com.debduttapanda.j3lib.rememberTState
 import com.debduttapanda.j3lib.sep
+import com.debduttapanda.j3lib.stringState
 import com.example.jayasales.MyDataIds
 import com.example.jayasales.model.SalesManDatum
 import com.example.jayasales.model.TrackDatum
@@ -73,6 +74,7 @@ fun TimeLineScreen(
     notifier: NotificationService = rememberNotifier(),
     tracker: SnapshotStateList<TrackDatum> = listState(key = MyDataIds.tracker),
     loadingState: State<Boolean> = boolState(key = MyDataIds.loadingState),
+    nameState: State<String> = stringState(key = MyDataIds.nameState),
 ) {
     val viewModel: TimeLineViewModel = viewModel()
     Scaffold(
@@ -80,7 +82,7 @@ fun TimeLineScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Rakesh Kumar",
+                        text = nameState.value,
                         fontSize = 20.sep,
                         color = Color(0xFF2B2B2B),
                         fontWeight = FontWeight.Bold,

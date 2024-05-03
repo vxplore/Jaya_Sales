@@ -38,6 +38,7 @@ class TimeLineViewModel @Inject constructor(
     private val salesmanId = mutableStateOf("")
     private val tracker = mutableStateListOf<TrackDatum>()
     private val loadingState = mutableStateOf(false)
+    private val nameState = mutableStateOf("")
 
 
     override fun eventBusDescription(): EventBusDescription? {
@@ -74,6 +75,7 @@ class TimeLineViewModel @Inject constructor(
             MyDataIds.todayDate to today,
             MyDataIds.tracker to tracker,
             MyDataIds.loadingState to loadingState,
+            MyDataIds.nameState to nameState,
         )
 
         timeline()
@@ -83,6 +85,7 @@ class TimeLineViewModel @Inject constructor(
             mMonth.value = mCalendar.get(Calendar.MONTH)
             mDay.value = mCalendar.get(Calendar.DAY_OF_MONTH)
             currentDate.value=mCalendar.timeInMillis
+            nameState.value = repo.getCallNo()!!
             Log.d("ckidcd", formatter.format(Date(currentDate.value)))
             updateTodayValue() // Call the function to update today.value
             Log.d("ckidcd", today.value)

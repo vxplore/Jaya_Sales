@@ -50,16 +50,17 @@ class SalesMenViewModel @Inject constructor(
 
             MyDataIds.timeline -> {
                 indexRouteId.value = arg as Int
-                val salesmen = salesmen[indexRouteId.value].id
-                repo.setSalesmenId(salesmen)
-                Log.d("dyhdcvd",salesmen)
+                val salesman = salesmen[indexRouteId.value].id
+                val name = salesmen[indexRouteId.value].name
+                repo.setSalesmenId(salesman)
+                repo.setCallNo(name)
+                Log.d("dyhdcvd",salesman)
                 navigation {
                     navigate(Routes.timeline.full)
                 }
             }
 
             MyDataIds.openMap -> {
-
                 indexRouteId.value = arg as Int
                 val lat = salesmen[indexRouteId.value].lat
                 repo.setlat(lat)
@@ -72,12 +73,12 @@ class SalesMenViewModel @Inject constructor(
                 }
             }
 
-            MyDataIds.call->{
+           /* MyDataIds.call->{
                 indexRouteId.value = arg as Int
                 val phone = salesmen[indexRouteId.value].phone
                 repo.setCallNo(phone)
                 Log.d("dyhdcvd",phone)
-            }
+            }*/
 
         }
     }
